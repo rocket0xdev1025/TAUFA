@@ -8,7 +8,7 @@
 (() => {
 'use strict';
 let GAME = '0x54Be0f71ABCdCac8C321F60C4c1A754059d7616C';
-const TAUFA = '0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee';
+const TAUFA = 'TBA';
 const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const FEE_ESCROW = '0xAcefe251da006887dA41C063D06CC82A060824BA'; // Stockereum: creator fees wait here until claimed
 const CREATOR = '0x559d2Ea694084046D72ea048CBA32a5c057a91b7';    // TAUFA's fee recipient, also the game owner
