@@ -1,0 +1,1618 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Math · Minpentai</title>
+<link rel="icon" href="/favicon.ico?v=1" sizes="16x16 32x32 48x48 64x64">
+<link rel="icon" href="/favicon-32x32.png?v=1" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon.svg?v=1" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1" sizes="180x180">
+<meta name="description" content="The mathematics of Minpentai: the Critters rule, three theorems, the pieces, the money and the weather, with live figures running the game's own engine.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+:root{
+  --page:#f6f4ff; --paper:#fdfcff; --ink:#1d1a3a; --dim:#6e6a8f; --rule:#e6e1fb; --rule2:#d6cff7;
+  --eth:#5b5ee8; --eth2:#4146c9; --deep:#272b6e; --field:#334488;
+  --cyan:#cceeff; --lav:#c9a7f5; --aqua:#33ddee; --lime:#a5ef7a; --pink:#f7a8d0; --peach:#ffcfae;
+  --prism:linear-gradient(90deg,#f7a8d0,#c9a7f5 30%,#8fb6ff 55%,#7fe3f0 78%,#a5ef7a);
+  --g1:#ece8fd; --g8:#e0daf9;
+  --ink2:#3d3963; --rose:#c43c7f; --teal:#0b8290; --stay:#8f8bb0;
+  --serif:"Newsreader",Georgia,serif;
+  --ui:"Manrope",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --body:680px; --margin:264px; --gap:48px; --toc:184px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font:400 19px/1.62 var(--serif);font-optical-sizing:auto;-webkit-font-smoothing:antialiased;
+  background-color:var(--page);
+  background-image:linear-gradient(var(--g8) 1px,transparent 1px),linear-gradient(90deg,var(--g8) 1px,transparent 1px),linear-gradient(var(--g1) 1px,transparent 1px),linear-gradient(90deg,var(--g1) 1px,transparent 1px);
+  background-size:64px 64px,64px 64px,8px 8px,8px 8px;background-position:-1px -1px}
+a{color:var(--eth2);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--deep)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--eth);outline-offset:2px}
+.mono,.n{font-family:var(--mono);font-size:.84em;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+cite{font-style:italic}
+.nw{white-space:nowrap}
+/* Manrope turns "(c)" into a copyright sign through its contextual alternates; UI labels opt out */
+.mp-nav,.mp-foot,.kicker,.meta,.btn,.ro,.rot,.lg,.kv,.slab,.th,.fl,.ct,.cs,.cap,.thead,.plate h4,.toc,.toc-inline,svg text,table.bt{font-variant-ligatures:none;font-feature-settings:"calt" 0,"liga" 0}
+
+/* ---------- shared nav ---------- */
+.mp-nav{position:relative;background:var(--paper);border-bottom:1px solid var(--rule);z-index:5}
+.mp-nav:after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--prism)}
+.mp-nav-in{max-width:1288px;margin:0 auto;padding:12px 32px;display:flex;align-items:center;gap:28px}
+.mp-brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;min-width:0}
+.mp-brand:hover{color:inherit}
+.mp-brand svg{width:34px;height:34px;flex:none}
+.mp-brand b{display:block;font:600 22px/1 var(--serif);letter-spacing:.005em;color:var(--deep)}
+.mp-brand small{display:block;font:500 11.5px/1.3 var(--ui);color:var(--dim);margin-top:4px}
+.mp-links{display:flex;gap:28px;margin-left:auto}
+.mp-links a{position:relative;font:600 14px/1 var(--ui);color:var(--ink2);text-decoration:none;padding:9px 0}
+.mp-links a:hover{color:var(--eth2)}
+.mp-links a[aria-current="page"]{color:var(--deep)}
+.mp-links a[aria-current="page"]:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:var(--prism)}
+
+/* ---------- layout ---------- */
+.layout{max-width:1288px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:var(--toc) minmax(0,1fr);column-gap:var(--gap)}
+.essay,.hero-main{grid-column:2;min-width:0;width:100%;max-width:calc(var(--body) + var(--gap) + var(--margin))}
+.essay>section>*,.hero-main>*{max-width:var(--body)}
+.essay>section>.wide,.hero-main>.wide{max-width:none}
+.toc{grid-column:1;min-width:0}
+.toc-in{position:sticky;top:28px;padding-top:40px}
+.toc .tt{font:700 10.5px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:0 0 12px 14px}
+.toc a{display:block;font:500 13px/1.35 var(--ui);color:var(--dim);text-decoration:none;padding:6px 0 6px 12px;border-left:2px solid var(--rule)}
+.toc a:hover{color:var(--deep)}
+.toc a.on{color:var(--deep);border-left-color:var(--eth);font-weight:700}
+.toc .tn{font:500 11px/1 var(--mono);color:var(--eth2);margin-right:7px}
+.toc-inline{display:none}
+
+/* ---------- hero ---------- */
+.hero{padding:56px 0 8px}
+.kicker{font:700 11.5px/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;color:var(--eth2);margin:0 0 18px}
+h1{font:500 66px/1.02 var(--serif);letter-spacing:-.018em;color:var(--deep);margin:0 0 18px}
+.dek{font:italic 400 22px/1.5 var(--serif);color:var(--ink2);margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;font:500 12.5px/1.5 var(--mono);color:var(--ink2);margin:0 0 28px;padding:10px 0;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2)}
+.meta i{font:700 10.5px/1 var(--ui);font-style:normal;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-right:7px}
+.hero-panel{padding:0 !important;overflow:hidden}
+.hero-cv{display:block;margin:0 auto}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--rule2);background:var(--paper);flex-wrap:wrap}
+.tbar{position:relative;flex:1 1 140px;height:18px;min-width:120px}
+.tbar:before{content:"";position:absolute;left:0;right:0;top:8px;height:2px;background:var(--rule2)}
+.tbar b{position:absolute;left:0;top:8px;height:2px;background:var(--eth);width:0}
+.tbar i{position:absolute;top:3px;left:0;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--paper);border:2px solid var(--eth)}
+.tbar.back b{background:var(--rose)} .tbar.back i{border-color:var(--rose)}
+.epi{margin:34px 0 8px;padding:2px 0 2px 22px;border-left:2px solid var(--pink);max-width:620px}
+.epi p{font:italic 400 21px/1.5 var(--serif);color:var(--deep);margin:0 0 8px}
+.epi footer{font:600 12.5px/1.4 var(--ui);letter-spacing:.03em;color:var(--dim)}
+
+/* ---------- type ---------- */
+section{position:relative}
+h2{font:500 40px/1.08 var(--serif);letter-spacing:-.012em;color:var(--deep);margin:88px 0 20px;scroll-margin-top:20px}
+h2 .sn{display:block;font:600 12px/1 var(--mono);letter-spacing:.08em;color:var(--eth2);margin-bottom:14px}
+h3{font:600 23px/1.3 var(--serif);color:var(--ink);margin:44px 0 10px}
+p{margin:0 0 18px}
+.lede{font-size:1.06em}
+.iw{margin:-2px 0 24px;padding:2px 0 2px 16px;border-left:2px solid var(--lav);color:var(--ink2)}
+.iw .k{font:800 10px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--eth2);margin-right:9px;position:relative;top:-2px}
+.katex{font-size:1.07em}
+.katex-display{margin:.8em 0;overflow-x:auto;overflow-y:hidden;padding:4px 0;max-width:var(--body)}
+.katex-display>.katex{max-width:100%}
+.mnote{float:right;clear:right;width:var(--margin);margin:6px 0 22px;font:400 14.5px/1.55 var(--serif);color:var(--dim);border-top:1px solid var(--rule2);padding-top:10px}
+.mnote b{font:700 10px/1 var(--ui);letter-spacing:.13em;text-transform:uppercase;color:var(--eth2);display:block;margin-bottom:7px}
+.mnote .katex{font-size:1em}
+.q{font-style:italic}
+.chip{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:baseline;margin-right:5px;position:relative;top:1px}
+
+/* ---------- boxes ---------- */
+.thm{background:var(--paper);border:1px solid var(--rule2);border-left:3px solid var(--eth);padding:20px 24px 14px;margin:30px 0 28px}
+.thm .th{font:800 11px/1 var(--ui);letter-spacing:.13em;text-transform:uppercase;color:var(--eth2);margin:0 0 12px}
+.thm .st{font-style:italic;margin-bottom:12px}
+.thm .pf{font-size:.94em;color:var(--ink2);margin:0 0 10px}
+.thm .pf .pl{font-style:italic;font-weight:600;color:var(--ink);margin-right:4px}
+.qed{float:right;color:var(--deep);margin-left:10px}
+.prov{margin:30px 0 8px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+.prov-h,.prov-r{display:grid;grid-template-columns:1fr 1fr;column-gap:24px}
+.prov-h{font:800 10.5px/1 var(--ui);letter-spacing:.13em;text-transform:uppercase;color:var(--dim);padding:12px 0 10px;border-bottom:1px solid var(--ink)}
+.prov-r{padding:12px 0;border-bottom:1px solid var(--rule2);font:400 15.5px/1.5 var(--serif)}
+.prov-r:last-child{border-bottom:0}
+.prov-r .bk{color:var(--ink2)}
+.prov-r .bk em{color:var(--deep)}
+.prov-r .ch{display:block;font:500 11.5px/1.2 var(--ui);color:var(--dim);margin-top:4px}
+.prov-r .us b{font-weight:600;color:var(--deep)}
+.prov-r .sec{font:500 11.5px/1 var(--mono);color:var(--eth2);margin-left:6px}
+.prov-cap{font:italic 400 15px/1.5 var(--serif);color:var(--dim);margin:10px 0 0}
+.limits{border:1px solid var(--ink);background:var(--paper);padding:22px 26px 10px;margin:26px 0}
+.limits ol{margin:0;padding-left:1.3em}
+.limits li{margin:0 0 12px;padding-left:4px}
+.limits li::marker{font:600 .82em var(--mono);color:var(--eth2)}
+.limits li b{font-weight:600;color:var(--deep)}
+.refs{margin:6px 0 0;padding-left:1.5em;font:400 15.5px/1.55 var(--serif);color:var(--ink2)}
+.refs li{margin:0 0 9px;padding-left:4px}
+.refs li::marker{font:600 .8em var(--mono);color:var(--eth2)}
+table.bt{border-collapse:collapse;width:100%;margin:6px 0 4px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);font:500 14px/1.35 var(--ui)}
+table.bt th{font:800 10.5px/1.2 var(--ui);letter-spacing:.11em;text-transform:uppercase;color:var(--dim);text-align:center;padding:10px 6px 8px;border-bottom:1px solid var(--ink)}
+table.bt th:first-child,table.bt td:first-child{text-align:left}
+table.bt td{padding:9px 6px;text-align:center;border-bottom:1px solid var(--rule)}
+table.bt tr:last-child td{border-bottom:0}
+table.bt th.km{text-transform:none;font:600 12px/1.2 var(--mono);letter-spacing:0;color:var(--ink2)}
+.op-stay{color:var(--stay)} .op-flip{color:var(--eth)} .op-turn{color:var(--rose)} .op-swap{color:var(--eth)}
+
+/* ---------- figures ---------- */
+.fig{margin:34px 0 44px}
+.fig.wide{clear:both}
+.panel{background:var(--paper);border:1px solid var(--rule2);border-radius:2px;padding:18px}
+.fig figcaption{font:italic 400 15.5px/1.55 var(--serif);color:var(--dim);margin-top:12px;max-width:var(--body)}
+.fig figcaption .fl{font:800 10.5px/1 var(--ui);font-style:normal;letter-spacing:.13em;text-transform:uppercase;color:var(--eth2);margin-right:8px}
+.ctrls{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}
+.btn{font:700 12.5px/1 var(--ui);color:var(--deep);background:#fff;border:1px solid var(--rule2);border-radius:6px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--eth);color:var(--eth2)}
+.btn[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+.ro{font:500 12.5px/1.5 var(--mono);color:var(--ink2);font-variant-numeric:tabular-nums}
+.ro b{font-weight:600;color:var(--deep)}
+.rot{font:500 14px/1.6 var(--ui);color:var(--ink2);margin:10px 0 0;max-width:620px}
+.rot b{font-weight:700;color:var(--deep)}
+.rot .neg{color:var(--rose);font-weight:700}
+.lg{display:flex;flex-wrap:wrap;gap:6px 18px;font:600 12px/1.4 var(--ui);color:var(--ink2);margin-top:12px}
+.lg span{display:inline-flex;align-items:center;gap:6px}
+.lg i{display:inline-block;width:12px;height:12px;border-radius:2px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:24px;background:transparent;margin:6px 0 2px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--deep);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--eth);margin-top:-8px;box-shadow:0 1px 0 rgba(39,43,110,.15)}
+input[type=range]::-moz-range-track{height:2px;background:var(--deep)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--eth)}
+.slab{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font:700 11px/1.3 var(--ui);letter-spacing:.06em;color:var(--dim);margin-top:14px}
+.slab .ro{letter-spacing:0;font-weight:500}
+canvas{display:block}
+.pix{image-rendering:pixelated;image-rendering:crisp-edges}
+svg text{font-family:var(--ui)}
+.sv-l{font:600 11px var(--ui);fill:var(--dim)}
+.sv-t{font:700 11.5px var(--ui);fill:var(--ink2)}
+.sv-m{font:500 11px var(--mono);fill:var(--ink2)}
+.sv-s{font:italic 400 13px var(--serif);fill:var(--dim)}
+
+/* Fig. 1 */
+.mg{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+.mg figure{margin:0}
+.mg .cap{font:600 11.5px/1.3 var(--ui);color:var(--ink2);margin-bottom:8px;text-align:center}
+.mg .cap .mono{color:var(--dim);font-size:11px}
+.bookfig{border-top:0;padding-top:0}
+.bookfig b{margin-top:2px}
+.bookfig .bk-svg{display:block;width:100%;margin:6px 0 9px;background:#fff;border:1px solid var(--rule2)}
+.bookfig .bk-svg svg{display:block;width:100%;height:auto}
+/* Fig. 2 */
+.trow{display:grid;grid-template-columns:156px 1fr;gap:10px 18px;padding:12px 6px;border-bottom:1px solid var(--rule)}
+.trow:last-child{border-bottom:0}
+.trow.k3{background:linear-gradient(90deg,rgba(247,168,208,.28),rgba(247,168,208,.10));border-radius:2px}
+.thead{display:flex;flex-direction:column;gap:5px;padding-top:3px}
+.thead .kk{font:600 14px/1 var(--mono);color:var(--deep)}
+.thead .op{font:700 11.5px/1.3 var(--ui)}
+.thead .q{font:italic 400 13px/1.35 var(--serif);color:var(--rose)}
+.tlist{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.tent{display:inline-flex;align-items:center;gap:4px}
+.tile{display:block}
+.arr{display:block}
+/* Fig. 4 */
+.scrub{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.scrub .side{min-width:0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font:500 13px/1.45 var(--ui);color:var(--ink2);margin:0}
+.kv dt{color:var(--dim)} .kv dd{margin:0;font:500 13px/1.45 var(--mono);color:var(--deep);font-variant-numeric:tabular-nums}
+.ok{color:#18805b !important} .bad{color:var(--rose) !important}
+/* Fig. 6 */
+.plate{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule2);background:var(--paper)}
+.plate>div{padding:16px 18px 14px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);min-width:0}
+.plate>div:nth-child(2n){border-right:0}
+.plate>div:nth-last-child(-n+2){border-bottom:0}
+.plate h4{font:700 13px/1.2 var(--ui);letter-spacing:.01em;color:var(--deep);margin:0 0 8px}
+.plate h4 .pk{font:italic 500 15px/1 var(--serif);color:var(--eth2);margin-right:6px;letter-spacing:0}
+.plate .pd{font:400 14px/1.45 var(--serif);color:var(--ink2);margin:8px 0 0}
+.plate svg{display:block;max-width:100%}
+/* Fig. 7 */
+.coll{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.cpan{display:flex;flex-direction:column;align-items:center}
+.cpan .ct{font:700 11.5px/1.3 var(--ui);color:var(--ink2);margin-bottom:8px;text-align:center;min-height:2.6em;display:flex;align-items:flex-end;justify-content:center}
+.cpan .cs{font:600 11.5px/1.35 var(--ui);color:var(--dim);margin-top:8px;text-align:center;min-height:2.8em}
+/* facts */
+.facts{list-style:none;padding:0;margin:4px 0 24px}
+.facts li{position:relative;padding:0 0 0 30px;margin:0 0 14px}
+.facts li:before{content:attr(data-n);position:absolute;left:0;top:.2em;font:600 12px/1 var(--mono);color:var(--eth2)}
+.facts .big{font:600 .92em var(--mono);color:var(--deep)}
+
+@media (max-width:1239px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .toc{display:none}
+  .essay,.hero-main{grid-column:1;margin:0 auto}
+  .toc-inline{display:block;margin:6px 0 0;padding:14px 0;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2)}
+  .toc-inline .tt{font:800 10.5px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+  .toc-inline ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+  .toc-inline a{font:600 13px/1.5 var(--ui);color:var(--ink2);text-decoration:none}
+  .toc-inline a:hover{color:var(--eth2)}
+  .toc-inline .tn{font:500 11px var(--mono);color:var(--eth2);margin-right:5px}
+}
+@media (max-width:1039px){
+  .essay,.hero-main{max-width:var(--body)}
+  .mnote{float:none;width:auto;margin:6px 0 24px;padding:10px 0 0 0}
+}
+@media (max-width:720px){
+  body{font-size:17.5px;line-height:1.6}
+  /* one row, as on the Play page: brand on the left, page links on the right */
+  .mp-nav-in{flex-wrap:wrap;padding:8px 16px;gap:4px 12px}
+  .mp-brand svg{width:28px;height:28px}
+  .mp-brand b{font-size:20px}
+  .mp-brand small{font-size:10.5px}
+  .mp-links{gap:18px}
+  .layout{padding:0 16px}
+  .hero{padding-top:34px}
+  h1{font-size:42px}
+  .dek{font-size:19px}
+  h2{font-size:31px;margin-top:64px}
+  .panel{padding:12px}
+  .thm{padding:16px 16px 10px}
+  .prov-h{display:none}
+  .prov-r{grid-template-columns:1fr;row-gap:8px}
+  .prov-r .bk:before{content:attr(data-l);display:block;font:800 10px/1 var(--ui);letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+  .prov-r .us:before{content:attr(data-l);display:block;font:800 10px/1 var(--ui);letter-spacing:.13em;text-transform:uppercase;color:var(--eth2);margin-bottom:5px}
+  .trow{grid-template-columns:1fr;gap:8px}
+  .thead{flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+  .scrub{grid-template-columns:1fr}
+  .scrub canvas{justify-self:center}
+  .plate{grid-template-columns:1fr}
+  .plate>div{border-right:0 !important;border-bottom:1px solid var(--rule) !important}
+  .plate>div:last-child{border-bottom:0 !important}
+  .coll{gap:8px}
+  .limits{padding:18px 18px 6px}
+  .epi p{font-size:19px}
+}
+@media (max-width:560px){
+  /* phones: the caption would push the links onto a second row, so it is hidden, as on the Play and Story pages */
+  .mp-brand small{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none !important;animation:none !important}
+}
+
+/* ---------- shared footer ---------- */
+.mp-foot{position:relative;margin-top:110px;background:var(--paper);border-top:1px solid var(--rule)}
+.mp-foot:before{content:"";position:absolute;left:0;right:0;top:-2px;height:2px;background:var(--prism)}
+.mp-foot-in{max-width:1288px;margin:0 auto;padding:28px 32px 44px;font:500 13px/1.65 var(--ui);color:var(--dim)}
+.mp-foot-in p{margin:0 0 12px;max-width:900px}
+.mp-foot-links{display:flex;gap:10px;font-weight:700}
+.mp-foot-links a{color:var(--deep);text-decoration:none}
+.mp-foot-links a:hover{color:var(--eth2)}
+@media (max-width:720px){.mp-foot-in{padding:24px 16px 36px}}
+.fca{display:block;margin-top:6px}
+.fca code{font:600 12px var(--mono);color:var(--ink);word-break:break-all}
+</style>
+</head>
+<body>
+
+<header class="mp-nav" id="top">
+  <div class="mp-nav-in">
+    <a class="mp-brand" href="index.html">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="pz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7a8d0"/><stop offset=".45" stop-color="#c9a7f5"/><stop offset="1" stop-color="#7fe3f0"/></linearGradient></defs><path d="M32 3 L53 32 L32 61 L11 32 Z" fill="#272b6e"/><path d="M32 3 L53 32 L32 40 Z" fill="url(#pz)"/><path d="M32 3 L11 32 L32 40 Z" fill="#5b5ee8"/><path d="M11 32 L32 40 L32 61 Z" fill="#334488"/><path d="M53 32 L32 40 L32 61 Z" fill="#8a6cf0"/><rect x="28" y="18" width="8" height="8" fill="#fff"/></svg>
+      <span><b>Minpentai</b><small><span class="en">a game from the novel Snowmoon, on Ethereum</span></small></span>
+    </a>
+    <nav class="mp-links" aria-label="Pages">
+      <a href="index.html"><span class="en">Play</span></a>
+      <a href="story.html"><span class="en">Story</span></a>
+      <a href="math.html" aria-current="page"><span class="en">Math</span></a>
+      <a href="https://x.com/MinpentaiFi" target="_blank" rel="noopener noreferrer" aria-label="Minpentai on X (opens in a new tab)">X ↗</a>
+    </nav>
+  </div>
+</header>
+
+<header class="hero">
+  <div class="layout">
+    <div class="toc" aria-hidden="true"></div>
+    <div class="hero-main">
+      <p class="kicker"><span class="en">Math · the rules, written down</span></p>
+      <h1><span class="en">The mathematics of Minpentai</span></h1>
+      <p class="dek"><span class="en">One reversible rule, four pieces built from it, and a ledger that splits every payment. Each claim on this page is either proved or measured, and every figure runs the game’s own engine.</span></p>
+      <p class="meta"><span><i><span class="en">rule</span></i>Critters</span><span><i><span class="en">board</span></i>256 × 256</span><span><i><span class="en">bell</span></i><span class="en">128 generations</span></span><span><i><span class="en">season</span></i><span class="en">14 days</span></span></p>
+
+      <figure class="fig wide" id="fig0" style="margin-top:0">
+        <div class="panel hero-panel">
+          <div id="heroWrap"><canvas id="heroCv" class="hero-cv" role="img" aria-label="TAU FA written in live cells dissolves under the rule, then runs backward and reassembles"></canvas></div>
+          <div class="bar">
+            <div class="tbar" id="heroBar"><b></b><i></i></div>
+            <span class="ro" id="heroT" aria-live="off">t = 0</span>
+          </div>
+        </div>
+        <figcaption><span class="fl"><span class="en">Fig. 0</span></span><span class="en">Time runs both ways. TAU FA, the last call of the book’s countdown, drawn in live cells. Run forward, the rule of §2 scatters it into gliders and debris. Then the inverse map runs it back, and every cell returns. Nothing is recorded on the way: each earlier frame is computed from the later one.</span></figcaption>
+      </figure>
+
+      <blockquote class="epi">
+        <p>“Anything that can be created can be destroyed. You just have to take the path that creates it and do the same thing in reverse.”</p>
+        
+        <footer>Zei · <cite>Snowmoon</cite>, ch. 4</footer>
+      </blockquote>
+
+      <nav class="toc-inline" aria-label="Contents">
+        <div class="tt"><span class="en">Contents</span></div>
+        <ol>
+          <li><a href="#book"><span class="tn">0</span><span class="en">Book and game</span></a></li>
+          <li><a href="#s1"><span class="tn">1</span><span class="en">Neighborhood</span></a></li>
+          <li><a href="#s2"><span class="tn">2</span><span class="en">Rule</span></a></li>
+          <li><a href="#s3"><span class="tn">3</span><span class="en">Theorems</span></a></li>
+          <li><a href="#s4"><span class="tn">4</span><span class="en">Pieces</span></a></li>
+          <li><a href="#s5"><span class="tn">5</span><span class="en">Money</span></a></li>
+          <li><a href="#s6"><span class="tn">6</span><span class="en">Weather</span></a></li>
+          <li><a href="#s7"><span class="tn">7</span><span class="en">Limits</span></a></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="layout">
+  <nav class="toc" aria-label="Contents">
+    <div class="toc-in">
+      <div class="tt"><span class="en">Contents</span></div>
+      <a href="#book"><span class="tn">0</span><span class="en">Book and game</span></a>
+      <a href="#s1"><span class="tn">1</span><span class="en">The neighborhood</span></a>
+      <a href="#s2"><span class="tn">2</span><span class="en">The rule</span></a>
+      <a href="#s3"><span class="tn">3</span><span class="en">Three theorems</span></a>
+      <a href="#s4"><span class="tn">4</span><span class="en">The pieces</span></a>
+      <a href="#s5"><span class="tn">5</span><span class="en">The money</span></a>
+      <a href="#s6"><span class="tn">6</span><span class="en">Weather</span></a>
+      <a href="#s7"><span class="tn">7</span><span class="en">Limits</span></a>
+    </div>
+  </nav>
+
+  <article class="essay">
+
+<!-- ======================= 0. book vs game ======================= -->
+<section id="book">
+  <h2><span class="sn">§ 0</span><span class="en">What comes from the book</span></h2>
+  <aside class="mnote"><b><span class="en">How to read this page</span></b><span class="en">Every formula is followed by a line marked <em>In words</em>. You can read only those lines and still follow the argument.</span></aside>
+  <p class="lede"><span class="en">In <cite>Snowmoon</cite>, Minpentai is a strategy game played on a grid under a time-reversible rule, with gliders, walls, symbols and intervention turns. This game keeps the physics and adds a ledger. The table says which is which.</span></p>
+  <div class="prov" role="table">
+    <div class="prov-h" role="row"><span role="columnheader"><span class="en">In Snowmoon</span></span><span role="columnheader"><span class="en">In this game</span></span></div>
+    <div class="prov-r" role="row">
+      <div class="bk" data-l="" role="cell"><span class="en"><em>“rotate one eighty if three,”</em> a time-reversible rule</span><span class="ch"><span class="en">Zei, ch. 4</span></span></div>
+      <div class="us" data-l="" role="cell"><span class="en"><b>Critters</b>, exactly (Toffoli and Margolus, 1987)</span><span class="sec">§2</span></div>
+    </div>
+    <div class="prov-r" role="row">
+      <div class="bk" data-l="" role="cell"><span class="en"><em>Symbols</em>: a player’s pattern of dots; a copy anywhere lets its owner see within thirty squares</span><span class="ch"><span class="en">ch. 4</span></span></div>
+      <div class="us" data-l="" role="cell"><span class="en"><b>Sigils</b>: a 2 × 2 block at the center of a site plot, your stake in the season</span><span class="sec">§4</span></div>
+    </div>
+    <div class="prov-r" role="row">
+      <div class="bk" data-l="" role="cell"><span class="en"><em>Intervention turns</em>, when players may put down more squares near their symbols</span><span class="ch"><span class="en">ch. 4</span></span></div>
+      <div class="us" data-l="" role="cell"><span class="en"><b>Bells</b> every 4 hours; between bells the board runs 128 generations</span><span class="sec">§4</span></div>
+    </div>
+    <div class="prov-r" role="row">
+      <div class="bk" data-l="" role="cell"><span class="en">The <em>priests</em> go into a sealed dungeon to decide each tournament’s rule sets</span><span class="ch"><span class="en">ch. 4, ch. 10</span></span></div>
+      <div class="us" data-l="" role="cell"><span class="en">A <b>rule card</b> per 14-day season; season 1 is Critters</span><span class="sec">§7</span></div>
+    </div>
+    <div class="prov-r" role="row">
+      <div class="bk" data-l="" role="cell"><span class="en">Minpentai as <em>training for a drone war</em> with the Arctic Empire</span><span class="ch"><span class="en">ch. 10, 17, 21</span></span></div>
+      <div class="us" data-l="" role="cell"><span class="en"><b>Arctic rams</b> enter from the board edge when TAUFA is sold</span><span class="sec">§6</span></div>
+    </div>
+    <div class="prov-r" role="row">
+      <div class="bk" data-l="" role="cell"><span class="en">No money. The book’s Minpentai has no buy-in.</span></div>
+      <div class="us" data-l="" role="cell"><span class="en"><b>Ours only</b>: sigils cost ETH; tribute, war chest, TAUFA</span><span class="sec">§5</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 1. neighborhood ======================= -->
+<section id="s1">
+  <h2><span class="sn">§ 1</span><span class="en">The board and its neighborhood</span></h2>
+  <aside class="mnote bookfig"><b><span class="en">From the book</span></b><span class="bk-svg" id="zeiGrid" role="img" aria-label="Zei's board from Snowmoon chapter 4: black cells on squared paper, labeled t=15"><svg xmlns="http://www.w3.org/2000/svg" width="384" height="256" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" viewBox="0 0 384 256" shape-rendering="crispEdges"><rect width="384" height="256" fill="#fff"/><g fill="#1e1e1e" transform="scale(16)"><path d="M16 3h1v1h-1M16 6h1v1h-1M16 11h1v1h-1M16 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.145;.16" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M15 4h1v1h-1M15 5h1v1h-1M15 12h1v1h-1M15 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.145;.155;.16;.17" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M17 3h1v1h-1M17 6h1v1h-1M17 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.09;.11" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M18 3h1v1h-1M18 6h1v1h-1M18 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.11;.13" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M19 3h1v1h-1M19 6h1v1h-1M19 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.055;.07" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M20 3h1v1h-1M20 6h1v1h-1M20 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.07;.09" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M21 3h1v1h-1M21 6h1v1h-1M21 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.02;.04" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M22 3h1v1h-1M22 6h1v1h-1M22 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.04;.055" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M17 4h1v1h-1M17 5h1v1h-1M17 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.11;.12;.13;.14" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M18 4h1v1h-1M18 5h1v1h-1M18 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.08;.09;.1;.11" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M19 4h1v1h-1M19 5h1v1h-1M19 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.07;.08;.09;.1" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M20 4h1v1h-1M20 5h1v1h-1M20 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.045;.055;.06;.07" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M21 4h1v1h-1M21 5h1v1h-1M21 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.04;.045;.055;.06" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M22 4h1v1h-1M22 5h1v1h-1M22 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.01;.02;.03;.04" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M23 4h1v1h-1M23 5h1v1h-1M23 13h1v1h-1"><animate attributeName="opacity" values="1;0;1;0" keyTimes="0;.01;.02;.03" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M9 0h1v1h-1M10 15h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.73;.745" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M0 1h1v1h-1M0 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.945;.96" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M1 1h1v1h-1M1 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.89;.91" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M2 1h1v1h-1M2 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.91;.93" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M3 1h1v1h-1M3 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.855;.87" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M4 1h1v1h-1M4 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.87;.89" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M5 1h1v1h-1M5 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.82;.84" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M6 1h1v1h-1M6 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.84;.855" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M7 1h1v1h-1M7 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.78;.8" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M8 1h1v1h-1M8 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.8;.82" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M0 2h1v1h-1M0 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.92;.93;.94;.945" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M1 2h1v1h-1M1 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.91;.92;.93;.94" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M2 2h1v1h-1M2 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.88;.89;.9;.91" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M3 2h1v1h-1M3 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.87;.88;.89;.9" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M4 2h1v1h-1M4 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.845;.855;.86;.87" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M5 2h1v1h-1M5 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.84;.845;.855;.86" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M6 2h1v1h-1M6 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.81;.82;.83;.84" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M7 2h1v1h-1M7 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.8;.81;.82;.83" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M8 2h1v1h-1M8 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.77;.78;.79;.8" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M16 5h1v1h-1M16 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.12;.13;.14;.145" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M15 6h1v1h-1M15 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.13;.145" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M15 7h1v1h-1M18 7h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.58;.6" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M16 8h1v1h-1M17 8h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.57;.58;.6;.61" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M9 9h1v1h-1M9 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.33;.345" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 9h1v1h-1M13 10h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.31;.33;.345;.36" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M10 10h1v1h-1M10 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.32;.33;.345;.355" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M23 10h1v1h-1M23 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.47;.48;.49;.5;.68;.69;.7;.71" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 13h1v1h-1M14 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0" keyTimes="0;.18;.2;.47;.49;.51;.53" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M10 0h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.7;.71;.72;.73;.745;.755;.76;.77" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 0h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.22;.255;.27;.31;.33;.345;.36;.4;.42;.455;.545;.58;.6;.64;.655;.67;.69;.7;.71;.72;.755;.76;.77;.78;.8;.82;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 0h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.245;.255;.27;.28;.3;.31;.33;.345;.36;.37;.39;.4;.42;.43;.455;.47;.49;.51;.53;.545;.57;.58;.6;.61;.63;.64;.655;.67;.69;.78;.8;.82;.83;.84;.855;.87;.89;.91;.93;.945;.96;.97;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 0h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.24;.255;.27;.28;.29;.3;.37;.38;.39;.4;.42;.44;.56;.58;.6;.61;.62;.63;.79;.8;.82;.83;.97;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 0h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.22;.24;.255;.27;.4;.42;.44;.455;.545;.56;.58;.6" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M9 1h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.33;.345;.655;.67;.69;.71;.745;.76;.89;.91" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M10 1h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.7;.71;.72;.745;.755;.76;.77;.78" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 1h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.69;.7;.71;.72;.745;.755;.76;.77;.82;.84;.89;.91;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 1h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.24;.255;.27;.28;.3;.31;.36;.37;.39;.4;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.6;.61;.63;.64;.69;.71;.745;.76;.78;.79;.83;.84;.855;.87;.93;.945;.96;.97" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 1h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.245;.255;.28;.29;.3;.31;.33;.345;.36;.37;.38;.39;.42;.43;.57;.58;.61;.62;.63;.64;.655;.67;.71;.73;.78;.8;.83;.84;.89;.91;.96;.97" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 1h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.31;.33;.345;.36;.64;.655;.67;.69;.71;.73;.78;.8;.855;.87;.93;.945" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M16 1h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.27;.29;.345;.36;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.64;.655;.71;.73;.78;.8;.855;.87;.93;.945" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M9 2h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0" keyTimes="0;.71;.745;.76;.77;.78;.79" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M10 2h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.32;.33;.345;.355;.645;.655;.67;.69;.71;.74;.745;.755;.76;.77;.88;.89;.91;.92" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 2h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.24;.255;.27;.31;.32;.355;.36;.4;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.6;.64;.645;.68;.69;.71;.72;.74;.745;.755;.76;.77;.78;.84;.855;.87;.88;.92;.93;.945;.96" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 2h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.68;.69;.7;.71;.74;.745;.76;.77;.81;.82;.84;.845;.88;.89;.91;.92;.955;.96;.98;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 2h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.31;.33;.345;.36;.64;.655;.67;.68;.69;.71;.73;.74;.77;.78;.8;.81;.845;.855;.87;.88;.92;.93;.945;.955;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 2h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.255;.26;.29;.31;.33;.345;.36;.38;.41;.42;.58;.59;.62;.64;.655;.67;.7;.71;.73;.74;.77;.78;.8;.81;.84;.845;.88;.89;.91;.92;.955;.96;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M15 2h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.26;.27;.29;.3;.34;.345;.36;.37;.41;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.59;.63;.64;.655;.66;.7;.71;.73;.74;.77;.78;.8;.81;.845;.855;.87;.88;.92;.93;.945;.955;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M9 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.745;.77;.78;.79" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M10 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.32;.33;.345;.355;.645;.655;.67;.68;.72;.73;.74;.745;.755;.77;.88;.89;.91;.92" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.24;.255;.27;.29;.31;.32;.355;.36;.38;.4;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.6;.62;.64;.645;.67;.74;.745;.755;.77;.78;.8;.82;.87;.88;.92;.93;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.68;.74;.77;.78;.8;.81;.845;.855;.87;.88;.92;.93;.945;.955;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.16;.18;.67;.68;.69;.7;.74;.745;.76;.77;.81;.82;.84;.845;.88;.89;.91;.92;.955;.96;.98;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.18;.2;.22;.24;.255;.26;.3;.31;.33;.34;.37;.38;.4;.41;.49;.51;.59;.6;.62;.63;.66;.67;.69;.7;.74;.745;.76;.77;.81;.82;.845;.855;.87;.88;.92;.93;.945;.955;.98;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M15 3h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.13;.145;.26;.27;.29;.31;.33;.345;.36;.38;.4;.41;.59;.6;.62;.64;.655;.67;.69;.7;.74;.745;.76;.77;.81;.82;.84;.845;.88;.89;.91;.92;.955;.96;.98;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M9 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.33;.345;.655;.67;.73;.745;.89;.91" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M10 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.745;.78" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0" keyTimes="0;.78;.8;.855;.87;.93;.945" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 4h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.24;.255;.27;.29;.31;.36;.38;.4;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.6;.62;.64;.66;.67;.68;.745;.78;.8;.82;.83;.86;.87;.93;.94;.97;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.18;.19;.2;.22;.24;.255;.31;.33;.38;.4;.48;.49;.51;.52;.6;.62;.66;.67;.68;.69;.745;.76;.82;.83;.855;.87;.93;.945;.97;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.155;.16;.17;.18;.67;.69;.745;.76;.82;.84;.89;.91;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M16 4h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.12;.13;.14;.145;.27;.29;.31;.33;.345;.36;.38;.4;.6;.62;.64;.655;.67;.69;.745;.76;.82;.84;.89;.91;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 5h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.2;.22;.455;.47;.53;.545;.64;.655" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 5h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.19;.2;.47;.48;.49;.51;.52;.53;.655;.66;.67;.68;.83;.84;.855;.87;.89;.91;.93;.945;.96;.97" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 5h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.18;.2;.47;.49;.51;.53;.655;.66;.67;.68;.83;.84;.855;.86;.94;.945;.96;.97" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 5h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.155;.16;.17;.18;.2;.22;.455;.47;.49;.51;.53;.545;.64;.655" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 6h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.47;.49;.51;.53;.655;.67;.84;.855;.87;.89;.91;.93;.945;.96" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 6h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.2;.21;.22;.23;.445;.455;.46;.47;.53;.54;.545;.555;.63;.64;.645;.655" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 6h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.16;.18;.2;.21;.22;.23;.445;.455;.46;.47;.49;.51;.53;.54;.545;.555;.63;.64;.645;.655" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 6h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.18;.2;.47;.49;.51;.53;.655;.67;.84;.855;.945;.96" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 7h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.255;.27;.31;.33;.345;.36;.4;.42;.455;.47;.49;.51;.53;.545;.58;.6;.64;.655;.67;.69;.71;.73;.745;.76;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 7h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.21;.22;.23;.255;.27;.31;.33;.345;.36;.4;.42;.445;.455;.46;.54;.545;.555;.58;.6;.63;.64;.645" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 7h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.21;.22;.23;.24;.255;.27;.4;.42;.44;.445;.455;.46;.54;.545;.555;.56;.58;.6;.62;.63;.64;.645" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 7h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.24;.255;.27;.29;.38;.4;.42;.44;.56;.58;.6;.62" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 8h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.22;.255;.27;.31;.33;.345;.36;.4;.42;.455;.545;.58;.6;.64" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 8h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.245;.255;.27;.28;.3;.31;.33;.345;.36;.37;.39;.4;.42;.43;.455;.47;.49;.51;.53;.545;.57;.58;.6;.61;.64;.655;.67;.69;.71;.73;.745;.76;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 8h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.24;.255;.27;.28;.29;.3;.37;.38;.39;.4;.42;.44;.56;.58;.6;.62" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 8h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.22;.24;.255;.27;.4;.42;.44;.455;.545;.56;.58;.6;.62;.64" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.24;.255;.27;.28;.3;.31;.36;.37;.39;.4;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.6;.62;.64;.655;.67;.69;.71;.73;.745;.76;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.245;.255;.28;.29;.3;.31;.33;.345;.36;.37;.38;.39;.42;.43;.57;.58;.6;.61" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M16 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.27;.29;.345;.36;.42;.44;.455;.47;.49;.51;.53;.545;.56;.57;.61;.62;.64;.655;.67;.69;.71;.73;.745;.76;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M17 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0" keyTimes="0;.56;.57;.58;.6;.61;.62" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M19 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.53;.545;.64;.655" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M20 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.545;.56;.62;.64" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M21 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.49;.51;.67;.69" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M22 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.51;.53;.655;.67" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M23 9h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.455;.47;.71;.73" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 10h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.24;.255;.27;.31;.32;.355;.36;.4;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.6;.62;.64;.655;.67;.69;.71;.73;.745;.76;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 10h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.255;.26;.29;.31;.33;.345;.36;.38;.41;.42;.58;.6" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M15 10h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.26;.27;.29;.3;.34;.345;.36;.37;.41;.42;.44;.455;.47;.49;.51;.53;.545;.56;.62;.64;.655;.67;.69;.71;.73;.745;.76;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M18 10h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.555;.56;.57;.58;.6;.61;.62;.63" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M19 10h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.545;.555;.56;.57;.61;.62;.63;.64" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M20 10h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.52;.53;.54;.545;.64;.645;.655;.66" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M21 10h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.51;.52;.53;.54;.645;.655;.66;.67" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M22 10h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.48;.49;.5;.51;.67;.68;.69;.7" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.24;.255;.27;.29;.31;.32;.355;.36;.38;.4;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.6;.62;.64;.655;.67;.69;.71;.73;.745;.76;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0" keyTimes="0;.16;.18" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.18;.2;.22;.24;.255;.26;.3;.31;.33;.34;.37;.38;.4;.41;.49;.51" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M15 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.13;.145;.26;.27;.29;.31;.33;.345;.36;.38;.4;.41" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M17 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.09;.11;.58;.6" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M18 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.11;.13;.555;.56;.57;.58;.6;.61;.62;.63" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M19 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.055;.07;.545;.555;.56;.57;.61;.62;.63;.64" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M20 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.07;.09;.52;.53;.54;.545;.64;.645;.655;.66" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M21 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.51;.52;.53;.54;.645;.655;.66;.67" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M22 11h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.04;.055;.48;.49;.5;.51;.67;.68;.69;.7" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 12h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.24;.255;.27;.29;.31;.36;.38;.4;.42;.44;.455;.47;.49;.51;.53;.545;.56;.58;.6;.62;.64;.655;.67;.69;.71;.73;.745;.76;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.18;.19;.2;.22;.24;.255;.31;.33;.38;.4;.48;.49;.51;.52" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.155;.16;.17;.18" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M16 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.12;.13;.14;.145;.27;.29;.31;.33;.345;.36;.38;.4" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M17 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.11;.12;.13;.14;.56;.58;.6;.62" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M18 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0" keyTimes="0;.08;.09;.1;.11;.58;.6" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M19 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.07;.08;.09;.1;.53;.545;.64;.655" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M20 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.045;.055;.06;.07;.545;.56;.62;.64" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M21 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.04;.045;.055;.06;.49;.51;.67;.69" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M22 12h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0" keyTimes="0;.01;.02;.03;.04;.51;.53;.655;.67" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M23 12h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0" keyTimes="0;.01;.02;.03;.455;.47;.71;.73" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0" keyTimes="0;.2;.22;.455;.47;.53;.545" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.19;.2;.47;.48;.49;.51;.52;.53" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 13h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.155;.16;.17;.18;.2;.22;.455;.47;.49;.51;.53;.545" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 14h1v1h-1"><animate attributeName="opacity" values="1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.47;.49;.51;.53" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.2;.21;.22;.23;.445;.455;.46;.47;.53;.54;.545;.555" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 14h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.16;.18;.2;.21;.22;.23;.445;.455;.46;.47;.49;.51;.53;.54;.545;.555" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M9 15h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0" keyTimes="0;.71;.73;.745;.76" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M11 15h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.02;.04;.055;.07;.09;.11;.13;.145;.16;.18;.2;.22;.255;.27;.31;.33;.345;.36;.4;.42;.455;.47;.49;.51;.53;.545;.58;.6;.64;.655;.67;.69;.78;.8;.82;.84;.855;.87;.89;.91;.93;.945;.96;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M12 15h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.21;.22;.23;.255;.27;.31;.33;.345;.36;.4;.42;.445;.455;.46;.54;.545;.555;.58;.6;.64;.655;.67;.69;.71;.76;.78;.8;.82;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M13 15h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1;0" keyTimes="0;.21;.22;.23;.24;.255;.27;.4;.42;.44;.445;.455;.46;.54;.545;.555;.56;.58;.6" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path><path d="M14 15h1v1h-1" opacity="0"><animate attributeName="opacity" values="0;1;0;1;0;1;0;1;0;1;0;1;0;1;0;1" keyTimes="0;.24;.255;.27;.29;.38;.4;.42;.44;.56;.58;.6;.62;.8;.82;.98" calcMode="discrete" dur="11s" repeatCount="indefinite"/></path></g><pattern id="zg-gr" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M0 0h16v1h-16M0 0h1v16h-1" fill="#dcdcdc"/></pattern><rect width="384" height="256" fill="url(#zg-gr)"/><defs><image id="zg-spr" width="137" height="12" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIkAAAAMCAMAAABhh26QAAADAFBMVEW/ISG/IyO/JSXAJCTAJSXAKCjAKSnBJyfBKCjBKSnCKirCKyvCLS3DLi7DLy/DMDDDMTHDPj7EQUHEQkLEQ0PFSEjFS0vFTU3GODjGOTnGOzvGUVHGU1PHPj7HPz/HVlbHV1fHWVnHWlrIQEDIQUHIQkLJQ0PJRETJRUXKR0fKSEjKaWnLSkrLS0vLbm7MT0/MeXnNUFDNUVHNUlLNU1POVFTOVVXOVlbOhobPV1fPWFjPWVnPWlrQW1vQXFzQXV3QkZHRX1/RYGDRYWHRlZXSYmLSY2PSZGTSZWXSnJzSnZ3Snp7Sn5/SoKDTZWXTZmbToaHTpaXUamrUa2vUqanUqqrUrKzVb2/Vr6/VsbHWcHDWcnLWs7PWtLTXdHTXvr7Xv7/Yd3fYeXnYwMDYwsLZenrZfHzZyMjZycnafX3afn7bgYHbgoLb1NTb2NjchYXchobch4fc2trc29vc3Nzdiordi4vejIzejY3gk5PglZXhl5fhmZnimprjn5/koaHko6Pmp6fmqannq6vnra3osLDps7PptLTqtbXqtrbqt7fquLjruLjrubnrurrsvLzsvb3svr7twcHtwsLuw8PuxMTuxsbvyMjvycnwysrwzMzwzc3xzs7xz8/x0NDy0dHz1dXz1tb13Nz13d323t7239/24OD24eH34uL34+P35eX45+f46Oj56en56ur56+v57Oz67Oz78PD78fH78vL89PT89fX89vb9+fn9+vr++/v+/Pz+/f3//v7///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADVRa6GAAACfklEQVR42s3U+1+LURwH8BFRD20uNck9FMrMslPJLZcSCrlkiBByTcptZkQqmftS5LbaFFFRyJ4+f5vzfPb0qnn1W790Xq+dnZ3v837ts3OZAWGtchT9KJthTCW5pY97c2wLe4GfhyfKD9Vp01/g914x85lW2jMBL2cL8zWo5yxxn1EoRGwMvFYR9xbt68X8Ls3m0EbTLqNNoX1OK2jX0Fpp02izu4YlUfTxZRfSrwBpdyKBHrt6bDGct3E2Xlb6YqPw4K72291V2JWvPbzxOuLbcWoJsrzYX6pZF61C66P9RmulBW0D7T3aAK23dCjJDcO60DipE2eSge+QSXy1uGjCj37smysrp7crcHq0JKv9uOSUMwMzupHyAUdnwRhERaJmv9IqtL9oX9E+pAVtP+1y2ne0wcSwNWkVssGo4qpJm4xkaUux7A6O9wLNuZUKzpfYFgRgdIlFHXL+yQrgfUTyuKfIbECeolmVNrTA92kn0YJ2K20ubQltBG2dMsLuhCcJTOvR3nY78MfSKZNccGNnBqLrsSNTTtuPy1c98orRnivSTf8lCSTRemhB+4i2nraVtpbWZRphTfTdCSXpSz0ClP1FxVTULBVmg6ND7oIR89ijZZvcqSkqKmJwsx8nbYO7E0rSl9pCG6QVtEHaIC1og7RttmFJotShE1uuJxkoqJHf5ahDkZX3VEGhB4cycKIRB9YCBa9l1dKEolTkP8YqN09suZ5EWtA20YL2DW0jLWibaavcw5Jsyg67xUxSPVmYs/FF2BN8epI2m5gTQPdmkRCA36Kd3k92u/kj/DbLSnXwFjOJtII2y6cnkXYDbRYtaAVtmTom/9nGRpJ/YqzWg3gmMoQAAAAASUVORK5CYII="/><clipPath id="zg-cprefix"><rect x="2" y="4" width="11" height="12"/></clipPath><clipPath id="zg-c0"><rect x="13" y="4" width="6" height="12"/></clipPath><clipPath id="zg-c1"><rect x="19" y="4" width="6" height="12"/></clipPath><clipPath id="zg-c2"><rect x="25" y="4" width="6" height="12"/></clipPath></defs><g clip-path="url(#zg-cprefix)"><use href="#zg-spr" x="2" y="4"/></g><g clip-path="url(#zg-c0)"><use href="#zg-spr" x="2" y="4"><animate attributeName="x" values="2;-4;-10;-16;-22;-28;-34;-40;-46;-52;-4;-10;-16;-22;-28;-34;-40;-46;-52;-4" keyTimes="0;.01;.02;.03;.04;.045;.055;.06;.07;.08;.09;.18;.27;.36;.455;.545;.64;.73;.82;.91" calcMode="discrete" dur="11s" repeatCount="indefinite"/></use></g><g clip-path="url(#zg-c1)"><use href="#zg-spr" x="-112" y="4"><animate attributeName="x" values="-112;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52;-58;-64;-70;-76;-82;-88;-94;-100;-106;-52" keyTimes="0;.09;.1;.11;.12;.13;.14;.145;.155;.16;.17;.18;.19;.2;.21;.22;.23;.24;.245;.255;.26;.27;.28;.29;.3;.31;.32;.33;.34;.345;.355;.36;.37;.38;.39;.4;.41;.42;.43;.44;.445;.455;.46;.47;.48;.49;.5;.51;.52;.53;.54;.545;.555;.56;.57;.58;.59;.6;.61;.62;.63;.64;.645;.655;.66;.67;.68;.69;.7;.71;.72;.73;.74;.745;.755;.76;.77;.78;.79;.8;.81;.82;.83;.84;.845;.855;.86;.87;.88;.89;.9;.91" calcMode="discrete" dur="11s" repeatCount="indefinite"/></use></g><g clip-path="url(#zg-c2)"><use href="#zg-spr" x="-106" y="4"><animate attributeName="x" values="-106;-46;-52;-58;-64;-70;-76;-82;-88;-94;-100" keyTimes="0;.91;.92;.93;.94;.945;.955;.96;.97;.98;.99" calcMode="discrete" dur="11s" repeatCount="indefinite"/></use></g></svg></span><span class="en">Zei’s board as <cite>Snowmoon</cite> draws it in chapter 4 (illustration from the novel, GPL v3). Every figure on this page keeps its convention: black cells on squared paper.</span></aside>
+  <p><span class="en">The board is a grid of cells, each alive (1) or empty (0). Time moves in generations \(t = 0, 1, 2, \dots\). Unlike Conway’s Life, a generation does not look at each cell’s eight neighbors. It cuts the board into 2 × 2 blocks and updates every block on its own.</span></p>
+  <aside class="mnote"><b><span class="en">Margolus, 1984</span></b><span class="en">The shifting cut is due to Norman Margolus. Blocks that never talk to each other are what make reversibility easy to prove (§3).</span></aside>
+  <p><span class="en">The trick is that the cut moves. On even generations the blocks start at the corner \((0,0)\); on odd generations they start at \((1,1)\), one cell down and one cell right. Something on the edge of a block at one tick sits in the middle of a block at the next, so patterns can travel.</span></p>
+  \[ \begin{gathered} B^{(t)}_{ij} = I^{(t)}_i \times I^{(t)}_j \\[2pt] I^{(t)}_i = \{\,2i+p_t,\ 2i+p_t+1\,\} \\[2pt] p_t = t \bmod 2 \end{gathered} \tag{1} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">At tick \(t\), block \((i,j)\) covers two rows and two columns starting at \(2i+p\) and \(2j+p\), where \(p\) is 0 on even ticks and 1 on odd ticks.</span></p>
+
+  <figure class="fig" id="fig1">
+    <div class="panel">
+      <div class="mg">
+        <figure><div class="cap" id="mgCapR"></div><canvas id="mgRaw" class="pix" role="img" aria-label="Raw state with the current 2 by 2 cut"></canvas></figure>
+        <figure><div class="cap" id="mgCapD"></div><canvas id="mgDisp" class="pix" role="img" aria-label="Display state with the current 2 by 2 cut"></canvas></figure>
+      </div>
+      <div class="ctrls" style="justify-content:center">
+        <span class="ro" id="mgT"></span>
+      </div>
+      <div class="lg" style="justify-content:center">
+        <span><i style="background:rgba(91,94,232,.35);outline:1.5px solid #5b5ee8"></i><span class="en">flip (k = 0, 1, 4)</span></span>
+        <span><i style="background:rgba(143,139,176,.35);outline:1.5px solid #8f8bb0"></i><span class="en">stay (k = 2)</span></span>
+        <span><i style="background:rgba(247,168,208,.8);outline:1.5px solid #c43c7f"></i><span class="en">flip, then turn 180° (k = 3)</span></span>
+      </div>
+    </div>
+    <figcaption><span class="fl"><span class="en">Fig. 1</span></span><span class="en">The Margolus neighborhood, live. Bold lines are the current cut: violet on even ticks, teal on odd ticks. In the raw panel, every block that holds part of a pattern is tinted by what the rule will do to it (Fig. 2); blocks of plain background <span class="nw">(\(k = 0\) or \(4\))</span> simply flip and are left untinted. The glider climbs 2 cells every 4 ticks; the block beside it never moves.</span></figcaption>
+  </figure>
+  <aside class="mnote"><b><span class="en">Why the left panel flashes</span></b><span class="en">An empty block has \(k = 0\) live cells, and the rule flips it. So on every odd tick the whole empty board is full. Players never see this, because odd ticks are drawn inverted (Theorem 2).</span></aside>
+</section>
+
+<!-- ======================= 2. rule ======================= -->
+<section id="s2">
+  <h2><span class="sn">§ 2</span><span class="en">The rule</span></h2>
+  <p><span class="en">Read a block row by row as \(x = (a\,b\,/\,c\,d)\). Write \(|x| = a+b+c+d\) for its live count, \(\bar x\) for its complement (every cell flipped) and \(\rho\) for the half turn:</span></p>
+  \[ x = \begin{pmatrix} a & b \\ c & d \end{pmatrix}, \qquad \rho(x) = \begin{pmatrix} d & c \\ b & a \end{pmatrix} \]
+  <aside class="mnote"><b><span class="en">The order does not matter</span></b><span class="en">Flipping and turning commute: \(\rho(\bar x) = \overline{\rho(x)}\). Zei’s phrase can be read either way.</span></aside>
+  <p><span class="en">The whole physics of Minpentai is one function on the sixteen possible blocks:</span></p>
+  \[ f(x) = \begin{cases} x & \text{if } |x| = 2 \\[2pt] \rho(\bar x) & \text{if } |x| = 3 \\[2pt] \bar x & \text{if } |x| \in \{0, 1, 4\} \end{cases} \tag{2} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">A block with two live cells is left alone. A block with three is flipped and then given a half turn. Every other block is flipped. The middle line is the one Zei names in chapter 4: <span class="q">“rotate one eighty if three.”</span></span></p>
+  <p><span class="en">This is the Critters rule of Toffoli and Margolus (1987), and it is the only rule in season 1. Fig. 2 is generated by feeding all sixteen blocks through the game’s step function.</span></p>
+
+  <figure class="fig" id="fig2">
+    <div class="panel" style="padding:8px 14px"><div id="ttable"></div></div>
+    <figcaption><span class="fl"><span class="en">Fig. 2</span></span><span class="en">The complete transition table: all 16 blocks, grouped by live count \(k\), each followed by its image \(f(x)\). Only \(k = 3\) takes two moves.</span></figcaption>
+  </figure>
+</section>
+
+<!-- ======================= 3. theorems ======================= -->
+<section id="s3">
+  <h2><span class="sn">§ 3</span><span class="en">Three theorems</span></h2>
+  <p><span class="en">Three facts follow from (2), and the game is built on them. Each comes with a short proof and something you can run.</span></p>
+
+  <div class="thm" id="thm1">
+    <div class="th"><span class="en">Theorem 1 · Reversibility</span></div>
+    <div class="st"><span class="en">\(f\) is a bijection of the sixteen blocks, with inverse</span>
+    \[ f^{-1}(y) = \begin{cases} y & \text{if } |y| = 2 \\[2pt] \rho(\bar y) & \text{if } |y| = 1 \\[2pt] \bar y & \text{if } |y| \in \{0, 3, 4\} \end{cases} \tag{3} \]
+    <span class="en">Hence one tick of the board is a bijection, and its inverse applies \(f^{-1}\) on the same cut. The present determines the past.</span></div>
+    <p class="pf"><span class="pl"><span class="en">Proof.</span></span><span class="en">\(f\) sends the blocks with \(|x| = 2\) to themselves, swaps the classes \(|x| = 0\) and \(|x| = 4\), and sends \(|x| = 1\) to \(|x| = 3\) and back. Flipping and turning are one-to-one, and the paired classes have equal sizes (1 and 1, 4 and 4), so \(f\) is a one-to-one map of a finite set into itself, hence onto. Substituting (2) into (3) gives \(f^{-1}(f(x)) = x\) in every case. A tick applies \(f\) to disjoint blocks that tile the board, so it is a product of bijections.</span><span class="qed">∎</span></p>
+  </div>
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">Run backward, the rule reads “rotate one eighty if one.” Zei puts it plainly in chapter 2: <span class="q">“So if you can do something in one direction, you can always run the same steps in reverse.”</span></span></p>
+
+  <figure class="fig" id="fig3">
+    <div class="panel"><svg id="permSvg" role="img" aria-label="The block map drawn as a permutation"></svg></div>
+    <figcaption><span class="fl"><span class="en">Fig. 3</span></span><span class="en">\(f\) as a permutation of the sixteen blocks. Every block has exactly one arrow out and one arrow in, which is what “bijection” means. Reverse every arrow and you have \(f^{-1}\).</span></figcaption>
+  </figure>
+  <aside class="mnote"><b><span class="en">Cycle type</span></b><span class="en">Six fixed points, one swap and two 4-cycles, so \(f^4\) is the identity on a single block. That says nothing about the board: the cut moves every tick.</span></aside>
+
+  <figure class="fig" id="fig4">
+    <div class="panel">
+      <div class="scrub">
+        <canvas id="scCv" class="pix" role="img" aria-label="A random patch on a 48 by 48 torus at the chosen generation"></canvas>
+        <div class="side">
+          <dl class="kv">
+            <dt><span class="en">generation</span></dt><dd id="scTv">t = 0</dd>
+            <dt><span class="en">live cells, display</span></dt><dd id="scDv">0</dd>
+            <dt><span class="en">live cells, raw</span></dt><dd id="scRv">0</dd>
+            <dt><span class="en">fingerprint</span></dt><dd id="scHv"></dd>
+            <dt><span class="en">vs. the start</span></dt><dd id="scMv"></dd>
+          </dl>
+          <div class="slab"><span><span class="en">DRAG TIME</span></span><span class="ro">0–240</span></div>
+          <input type="range" id="scT" min="0" max="240" value="0" step="1" aria-label="generation">
+          <div class="ctrls">
+            <button class="btn" id="scRun" type="button"><span class="en">Run forward, then back</span></button>
+            <button class="btn" id="scNew" type="button"><span class="en">New random patch</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <figcaption><span class="fl"><span class="en">Fig. 4</span></span><span class="en">Scrub time in either direction. A 48 × 48 board, wrapped into a torus so nothing falls off, starts from a random patch. Dragging left runs \(f^{-1}\); no past state is stored. Back at \(t = 0\), the fingerprint matches the start. The display count never moves (Theorem 2); the raw count jumps every tick.</span></figcaption>
+  </figure>
+
+  <div class="thm" id="thm2">
+    <div class="th"><span class="en">Theorem 2 · Conservation</span></div>
+    <div class="st"><span class="en">Let the display be the raw state with odd ticks inverted. Then the number of live cells in the display never changes:</span>
+    \[ d_t = \begin{cases} x_t & t \text{ even} \\ \bar x_t & t \text{ odd} \end{cases} \;\;\Longrightarrow\;\; |d_{t+1}| = |d_t| \tag{4} \]</div>
+    <p class="pf"><span class="pl"><span class="en">Proof.</span></span><span class="en">Look at one block of the cut, with raw contents \(x\). On an even tick its display goes from \(x\) to \(\overline{f(x)}\); on an odd tick it goes from \(\bar x\) to \(f(x)\). Checking the classes of (2) one by one shows that the new display block has exactly as many live cells as the old one; in fact it only moves cells, as the table below shows. Summing over the blocks of the cut gives (4).</span><span class="qed">∎</span></p>
+    <table class="bt" aria-label="The rule as seen in the display">
+      <thead><tr><th><span class="en">display, live cells</span></th><th class="km">k = 0</th><th class="km">k = 1</th><th class="km">k = 2</th><th class="km">k = 3</th><th class="km">k = 4</th></tr></thead>
+      <tbody>
+        <tr><td><span class="en">even tick</span></td><td class="op-stay"><span class="en">stay</span></td><td class="op-stay"><span class="en">stay</span></td><td class="op-swap"><span class="en">swap</span></td><td class="op-turn"><span class="en">turn 180°</span></td><td class="op-stay"><span class="en">stay</span></td></tr>
+        <tr><td><span class="en">odd tick</span></td><td class="op-stay"><span class="en">stay</span></td><td class="op-turn"><span class="en">turn 180°</span></td><td class="op-swap"><span class="en">swap</span></td><td class="op-stay"><span class="en">stay</span></td><td class="op-stay"><span class="en">stay</span></td></tr>
+      </tbody>
+    </table>
+    <p class="pf" style="margin-top:8px"><span class="en">Swap: the two live cells jump to the two empty places.</span></p>
+  </div>
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">On the board you see, cells only ever move around; nothing is created or destroyed. The raw state is not conserved (on odd ticks the empty background is all ones), which is why the game draws the display, and why every move a player makes is applied on an even tick, where raw and display agree.</span></p>
+
+  <div class="thm" id="thm3">
+    <div class="th"><span class="en">Theorem 3 · Still life</span></div>
+    <div class="st"><span class="en">A 2 × 2 block of live cells whose top-left corner has two odd coordinates, with nothing else in the 4 × 4 square around it, looks the same at every tick.</span></div>
+    <p class="pf"><span class="pl"><span class="en">Proof.</span></span><span class="en">On an even tick the cut starts at even coordinates, so the block’s four cells fall into four different blocks of the cut, one each: \(k = 1\), which the display table leaves alone. On an odd tick the cut starts at odd coordinates, so the block is exactly one block of the cut: \(k = 4\), also left alone.</span><span class="qed">∎</span></p>
+  </div>
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">Alignment is everything. Put the same block at even coordinates and the roles swap: on odd ticks each cell is alone in its block and turns 180°, so the block bursts into four corners and comes back two ticks later, a period-4 oscillator. That is why every piece in the game is anchored at odd coordinates, and why a sigil sits at \((8i+3,\ 8j+3)\).</span></p>
+
+  <figure class="fig" id="fig5">
+    <div class="panel"><svg id="stillSvg" role="img" aria-label="A block at odd coordinates stays; a block at even coordinates oscillates"></svg></div>
+    <figcaption><span class="fl"><span class="en">Fig. 5</span></span><span class="en">The same four cells at two alignments, ticks 0 to 4, with each tick’s cut drawn in. Top: corner at odd coordinates, a still life. Bottom: corner at even coordinates, a period-4 oscillator.</span></figcaption>
+  </figure>
+</section>
+
+<!-- ======================= 4. pieces ======================= -->
+<section id="s4">
+  <h2><span class="sn">§ 4</span><span class="en">The pieces</span></h2>
+  <p><span class="en">Everything a player can place is one of four patterns, stamped on an even generation with its top-left corner at odd coordinates. The contract accepts (piece, odd \(y\), odd \(x\)) and nothing else. One cell off, a glider stops flying: it stays where it is and oscillates.</span></p>
+  <aside class="mnote"><b><span class="en">Only one glider</span></b><span class="en">An exhaustive search over every pattern that fits in a 4 × 4 box, at all four alignments, finds exactly one kind of glider: 4 cells, half a cell per generation, moving along the axes. Every 8-cell mover found is two of them flying together.</span></aside>
+
+  <figure class="fig wide" id="fig6">
+    <div class="plate" id="plate">
+      <div><h4 id="plA"></h4><svg id="plGl"></svg><p class="pd" id="plAd"></p></div>
+      <div><h4 id="plB"></h4><svg id="plDir"></svg><p class="pd" id="plBd"></p></div>
+      <div><h4 id="plC"></h4><svg id="plRam"></svg><p class="pd" id="plCd"></p></div>
+      <div><h4 id="plD"></h4><svg id="plMap"></svg><p class="pd" id="plDd"></p></div>
+    </div>
+    <figcaption><span class="fl"><span class="en">Fig. 6</span></span><span class="en">Plate of pieces, drawn cell for cell from the game’s pattern table. The pink tick marks each anchor, the top-left corner the contract checks.</span></figcaption>
+  </figure>
+
+  <h3><span class="en">What the pieces do</span></h3>
+  <p><span class="en">Measured on the real rule in our physics tests; Fig. 7 replays one case of each.</span></p>
+  <aside class="mnote"><b><span class="en">Walls on the real lattice</span></b><span class="en">Posts can only stand at open-plot centers, which are 16 cells apart along a row, and a straight row that sparse leaks (36 of 76 glider aims got through). A real wall zigzags across two rows of plots instead. In our check that shape turned back all 76 single-glider aims. Against 76 ram aims nothing got past it either, but every ram left debris inside the wall and cost about one post.</span></aside>
+  <ol class="facts">
+    <li data-n="i"><span class="en">A single glider cannot break a lone sigil: <span class="big">0 of 32</span> distinct hits break it. It bounces straight back.</span></li>
+    <li data-n="ii"><span class="en">A ram cracks it: <span class="big">4 of 4</span> touching aims, in all four directions.</span></li>
+    <li data-n="iii"><span class="en">Posts make mirrors. A row of nine posts 8 cells apart reflected <span class="big">42 of 42</span> glider aims with no leaks. Against rams it lost <span class="big">0.48</span> posts per ram, and the sigil behind it was never killed (<span class="big">0 of 21</span> aims, against <span class="big">4 of 21</span> with no wall). This is the wall Zei describes in chapter 2, <span class="q">“a wall structure that reflected their gliders right back at them.”</span></span></li>
+  </ol>
+
+  <figure class="fig wide" id="fig7">
+    <div class="panel">
+      <div class="coll" id="coll">
+        <div class="cpan"><div class="ct" id="c0t"></div><canvas id="c0" class="pix"></canvas><div class="cs" id="c0s"></div></div>
+        <div class="cpan"><div class="ct" id="c1t"></div><canvas id="c1" class="pix"></canvas><div class="cs" id="c1s"></div></div>
+        <div class="cpan"><div class="ct" id="c2t"></div><canvas id="c2" class="pix"></canvas><div class="cs" id="c2s"></div></div>
+      </div>
+      <div class="ctrls" style="justify-content:center">
+        <span class="ro" id="colT">t = 0</span>
+      </div>
+    </div>
+    <figcaption><span class="fl"><span class="en">Fig. 7</span></span><span class="en">Three collisions on the game’s engine, including its 2-cell absorbing frame (hatched), which deletes whatever reaches the edge. (a) A glider hits a sigil and bounces; the sigil is broken for 28 generations, then whole again. (b) A ram cracks the sigil for good. (c) A glider aimed at the gap between two posts is still turned back.</span></figcaption>
+  </figure>
+
+  <h3><span class="en">The census</span></h3>
+  <p><span class="en">Fig. 7a shows the problem: a harmless bounce leaves the sigil broken for a while. So the game never judges a sigil at a single instant. At generations 96, 104, 112, 120 and 128 of every bell it checks whether the sigil’s 2 × 2 is complete, and</span></p>
+  \[ \text{alive}_n \iff \bigvee_{t\, \in\, \{96,\,104,\,112,\,120,\,128\}} I_n(t) \tag{5} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">\(I_n(t)\) is 1 if the sigil is intact at generation \(t\) of bell \(n\). One intact sample out of five is enough. A sigil that fails all five is cracked: it stops earning until its owner repairs it, and if it fails again at the next bell it falls and becomes a ruin.</span></p>
+  <div class="thm">
+    <div class="th"><span class="en">Lemma · Bounces never crack a sigil</span></div>
+    <div class="st"><span class="en">A disturbance lasting at most 32 consecutive generations cannot fail the census.</span></div>
+    <p class="pf"><span class="pl"><span class="en">Proof.</span></span><span class="en">The samples run from generation 96 to 128, a span of 33 generations, so a shorter window misses the first sample or the last. A bounce breaks the sigil for at most 28 generations, measured over every hit.</span><span class="qed">∎</span></p>
+  </div>
+  <p><span class="en">Our tests show why it matters. With a single census at generation 128, one well-timed glider could fake a kill in <span class="n">496</span> of <span class="n">3,920</span> placements. With five samples, in none.</span></p>
+
+  <figure class="fig" id="fig8">
+    <div class="panel">
+      <svg id="censusSvg" role="img" aria-label="Census samples and a disturbance window"></svg>
+      <div class="ctrls">
+        <button class="btn" id="cnBounce" type="button" aria-pressed="true"><span class="en">Bounce · 28 generations</span></button>
+        <button class="btn" id="cnCrack" type="button" aria-pressed="false"><span class="en">Crack · until the bell</span></button>
+      </div>
+      <div class="slab"><span><span class="en">WINDOW STARTS AT GENERATION</span></span><span class="ro" id="cnA">90</span></div>
+      <input type="range" id="cnRange" min="0" max="120" value="90" step="1" aria-label="window start">
+    </div>
+    <figcaption><span class="fl"><span class="en">Fig. 8</span></span><span class="en">The census as a covering problem. Slide the window. A bounce can cover at most four of the five samples; a crack covers all five.</span></figcaption>
+  </figure>
+</section>
+
+<!-- ======================= 5. money ======================= -->
+<section id="s5">
+  <h2><span class="sn">§ 5</span><span class="en">The money</span></h2>
+  <p class="lede"><span class="en">Nothing in this section comes from the book: Minpentai in <cite>Snowmoon</cite> has no buy-in. Every payment below is ours.</span></p>
+
+  <h3><span class="en">The price of a sigil</span></h3>
+  <p><span class="en">Let \(p_0 = 0.03\) ETH be the floor, \(t_s\) the time of the last sale and \(p_s\) the price that sale left behind. Then</span></p>
+  \[ \begin{gathered} p(t) = p_0 + (p_s - p_0)\, 2^{-(t - t_s)/6\,\mathrm{h}} \\[2pt] p_s \leftarrow 1.003\; p(t_s) \end{gathered} \tag{6} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">Every sale makes the next sigil 0.3% more expensive, and whatever sits above the floor halves every six hours.</span></p>
+  <div class="thm">
+    <div class="th"><span class="en">Proposition · Steady price</span></div>
+    <div class="st"><span class="en">If sales arrive steadily, \(r\) per hour, the price paid at each sale settles at</span>
+    \[ \begin{gathered} p^* = p_0 \left( 1 + \frac{0.003\, a}{1 - 1.003\, a} \right) \\[2pt] a = 2^{-1/(6r)} \end{gathered} \tag{7} \]
+    <span class="en">provided \(1.003\,a &lt; 1\), that is, \(r &lt; r_c = 1/(6 \log_2 1.003) \approx 38.6\) sales per hour. Faster than that, the price keeps climbing until buyers slow down.</span></div>
+    <p class="pf"><span class="pl"><span class="en">Proof.</span></span><span class="en">Let \(q_n\) be the premium \(p - p_0\) just before sale \(n\). The sale lifts it to \(1.003\,(p_0 + q_n) - p_0\), and the next \(1/r\) hours multiply it by \(a\), so \(q_{n+1} = a\,(1.003\, q_n + 0.003\, p_0)\). This map is a contraction exactly when \(1.003\,a &lt; 1\), and its fixed point gives (7).</span><span class="qed">∎</span></p>
+  </div>
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">At 10 sales an hour the price hovers near <span class="n">0.040</span> ETH; at 30 an hour, near <span class="n">0.135</span> ETH. The six-hour half-life is strong: the price only runs away if sigils sell faster than one every 93 seconds.</span></p>
+
+  <figure class="fig" id="fig9">
+    <div class="panel">
+      <svg id="priceSvg" role="img" aria-label="Price of the next sigil over 48 hours"></svg>
+      <div class="slab"><span><span class="en">SALES PER HOUR, FIRST 36 HOURS</span></span><span class="ro" id="prR">r = 10</span></div>
+      <input type="range" id="prRange" min="0" max="45" value="10" step="1" aria-label="sales per hour">
+      <p class="rot" id="prOut"></p>
+    </div>
+    <figcaption><span class="fl"><span class="en">Fig. 9</span></span><span class="en">The price of the next sigil over two days, with \(r\) sales per hour for 36 hours and none after. Each sale is a 0.3% jump; between sales the premium decays with a six-hour half-life. The dashed line is \(p^*\) from (7).</span></figcaption>
+  </figure>
+
+  <p><span class="en">From day 8 there is one more floor, where \(C\) is the war chest and \(n\) the number of standing sigils:</span></p>
+  \[ p(t) \;\ge\; 0.8 \cdot \frac{0.9\, C}{n} \tag{8} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">A late sigil costs at least 80% of what one sigil’s share of the war chest is worth, so nobody can buy into the chest cheaply in the last days.</span></p>
+
+  <h3><span class="en">Where each payment goes</span></h3>
+  <p><span class="en">A sigil bought at price \(p\) is split four ways: tribute, war chest, buy-and-burn of TAUFA, and operations.</span></p>
+  \[ p \;=\; 0.45\,p \;+\; 0.42\,p \;+\; 0.08\,p \;+\; 0.05\,p \tag{9} \]
+  <figure class="fig wide" id="fig10">
+    <div class="panel"><svg id="splitSvg" role="img" aria-label="Where one payment goes, to scale"></svg></div>
+    <figcaption><span class="fl"><span class="en">Fig. 10</span></span><span class="en">One payment, followed to the end of the season. Band widths are to scale. Of every 100 units, 82.8 come back to this season’s players and 17.2 leave.</span></figcaption>
+  </figure>
+
+  <h3><span class="en">Tribute without a loop</span></h3>
+  <p><span class="en">Paying hundreds of sigils one by one would cost too much gas. Instead the contract keeps one running number \(A\), the tribute earned so far by a sigil that has always stood, and a debt \(D_i\) for each player. When player \(b\) buys at price \(p\) while \(n\) sigils stand, \(n_b\) of them \(b\)’s own:</span></p>
+  \[ \begin{gathered} \Delta A = \frac{0.45\, p}{n - n_b} \\[2pt] A \leftarrow A + \Delta A, \qquad D_b \leftarrow D_b + n_b\, \Delta A \end{gathered} \tag{10} \]
+  <aside class="mnote"><b><span class="en">Why the buyer is excluded</span></b><span class="en">Otherwise a buyer with many standing sigils would pay part of the 45% to themselves, a discount everyone else would pay for. The contract stores \(A\) scaled by \(10^{12}\); in tests, three distributions left a rounding error of 2 wei.</span></aside>
+  <p><span class="en">A player with \(a_i\) standing sigils can claim at any time</span></p>
+  \[ \mathrm{pending}_i = a_i\, A - D_i \tag{11} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">The 45% is shared equally by every standing sigil except the buyer’s own. Whenever \(a_i\) changes by \(\delta\) (a plant, a crack, a repair), \(D_i \leftarrow D_i + \delta A\), so each sigil earns only from sales after it was planted and while it stands.</span></p>
+  <p><span class="en">Creator fees take a slower road. Stockereum pays a creator fee of 2% of TAUFA trading volume. All of it goes into a fee pool \(H\), and every hour the pool pays \(1/308\) of itself to the standing sigils, with nobody excluded:</span></p>
+  \[ \Delta A = \frac{H}{308\, n} \;\text{ per hour}, \qquad H \leftarrow \Big(1 - \frac{1}{308}\Big) H \tag{12} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">About 7.5% of the pool is paid out each day: a 4 ETH pool pays 0.30 ETH on the first day. Half of any fee payment reaches the sigils within about 8.9 days, and two thirds within a 14-day season. What is left carries into the next season. A fee payment cannot be captured by buying a sigil just before it arrives, because it is paid out over days, not at once.</span></p>
+
+  <h3><span class="en">Season settlement</span></h3>
+  <p><span class="en">At the end of the 14 days, 90% of the war chest \(C\) is paid out by claim weight, and 10% carries over to the next season:</span></p>
+  <div class="en">\[ \begin{gathered} \mathrm{payout}_i = 0.9\, C\, \frac{w_i}{\sum_j w_j} \\[4pt] w_{\text{standing}} = 1 + \tfrac12\, m, \qquad w_{\text{ruin}} = \tfrac12 \end{gathered} \tag{13} \]</div>
+  
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">A standing sigil holds one unit of claim, plus half a unit for each of the \(m\) ruins it has captured; a ruin keeps half a unit. When a sigil falls, half of its unit stays with the ruin and half moves to the nearest older standing sigil, so a fall moves claim weight around rather than destroying it.</span></p>
+
+  <h3><span class="en">The identity</span></h3>
+  <p><span class="en">Add up what comes back to the season’s players. With \(S\) the season’s spending on sigils, \(F\) the creator fees the pool pays out during the season and \(K\) what players spend on cells:</span></p>
+  \[ \begin{aligned} R &= (0.45 + 0.9 \times 0.42)\, S + F - K \\ &= 0.828\, S + F - K \end{aligned} \tag{14} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">As a group, players get back 82.8% of what they pay for sigils, plus all trading fees, minus what they burn on cells. Without trading fees the group loses at least 17.2%, and any one player’s gain is other players’ loss. Tribute flows from later sigils to earlier ones: if new sigils stop, tribute stops.</span></p>
+
+  <h3><span class="en">Who loses</span></h3>
+  <p><span class="en">The identity fixes the total, not the split. For the split we coupled the real 256 × 256 board to this economy and simulated whole seasons, with the tuned parameters on this page. Slide through the creator-fee levels we simulated.</span></p>
+  <figure class="fig" id="fig11">
+    <div class="panel">
+      <svg id="feeSvg" role="img" aria-label="Share of players who lost money by creator fee level"></svg>
+      <div class="slab"><span><span class="en">CREATOR FEES PER DAY</span></span><span class="ro" id="feeV">0.5 ETH</span></div>
+      <input type="range" id="feeRange" min="0" max="2" value="0" step="1" aria-label="creator fees per day">
+      <p class="rot" id="feeOut" aria-live="polite"></p>
+    </div>
+    <figcaption><span class="fl"><span class="en">Fig. 11</span></span><span class="en">Share of players who ended the season with less ETH than they put in. Bars span three crowd sizes (100, 300 and 1,000 players); dots mark each. Simulation results, not a forecast: each dot pools 32 seasons (4 arrival curves × 8 seeds); 40% of players tend their sigils and 8% attack; demand does not react to returns. Only these three fee levels were simulated, so nothing is drawn between them. The runs used a 0.003 ETH floor with a tenth of these fees; every amount scales by 10 to the live 0.03 ETH floor, which leaves every share unchanged.</span></figcaption>
+  </figure>
+</section>
+
+<!-- ======================= 6. weather ======================= -->
+<section id="s6">
+  <h2><span class="sn">§ 6</span><span class="en">Weather and the attack budget</span></h2>
+  <p><span class="en">In the book, Minpentai is training for a war. Mu tells Zei in chapter 10: <span class="q">“It’s military training.”</span> Here the enemy is the market. Let \(s\) be the net amount of TAUFA sold over the last 24 hours, measured from the pool’s time-weighted reserves with the game’s own buys added back. Each bell, \(k\) Arctic rams enter from the board edge:</span></p>
+  \[ k = \min\!\left(4,\ \left\lfloor \log_2\!\left(1 + \frac{s}{0.1\ \mathrm{ETH}}\right) \right\rfloor \right) \tag{15} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">\(k\) rams need \(s \ge 0.1\,(2^k - 1)\) ETH: 0.1, 0.3, 0.7 and 1.5 ETH for one to four. No selling, no rams; each extra ram needs about twice as much selling as the one before.</span></p>
+  <aside class="mnote"><b><span class="en">Weather is terrain</span></b><span class="en">Lanes and the four L-shaped rocks that fall each bell come from the season seed and are published one bell ahead. Time-weighting makes it about 24 times more expensive to summon rams by selling and buying back than if the pool were read twice.</span></aside>
+  <figure class="fig" id="fig12">
+    <div class="panel">
+      <svg id="wxSvg" role="img" aria-label="Rams per bell as a function of net selling"></svg>
+      <div class="slab"><span><span class="en">NET TAUFA SOLD, LAST 24 HOURS</span></span><span class="ro" id="wxV">s = 0.42 ETH</span></div>
+      <input type="range" id="wxRange" min="0" max="200" value="42" step="1" aria-label="net sold in ETH">
+      <p class="rot" id="wxOut"></p>
+    </div>
+    <figcaption><span class="fl"><span class="en">Fig. 12</span></span><span class="en">Rams per bell against 24-hour net selling: a staircase with steps at \(0.1\,(2^k - 1)\) ETH, capped at four.</span></figcaption>
+  </figure>
+  <p><span class="en">Players’ own attacks share one budget: 8 weapon cells per bell for the whole board, which is one ram, with a target of 4. The price of a cell moves like Ethereum’s base fee under EIP-1559, where \(u_n \le 8\) is the number of weapon cells used at bell \(n\):</span></p>
+  \[ c_{n+1} = \max\!\left( c_0,\ c_n \left( 1 + \frac{1}{8} \cdot \frac{u_n - 4}{4} \right) \right) \tag{16} \]
+  <p class="iw"><span class="k"><span class="en">In words</span></span><span class="en">A bell that uses the whole budget makes the next one 12.5% more expensive, a bell that uses none of it makes the next one 12.5% cheaper, and the price never drops below the launch price. Repairs sit outside this budget and always cost the launch price.</span></p>
+  <p><span class="en">With these numbers, our simulations lost about <span class="n">28%</span> of untended sigils per season and <span class="n">13%</span> of tended ones, and <span class="n">92%</span> of the sigils standing when the siege began were still standing at the end. The edge takes most of the weather: untended loss was <span class="n">63%</span> on the outer ring of sites, against <span class="n">15%</span> in the interior.</span></p>
+</section>
+
+<!-- ======================= 7. limits ======================= -->
+<section id="s7">
+  <h2><span class="sn">§ 7</span><span class="en">Assumptions and limits</span></h2>
+  <div class="limits">
+    <ol>
+      <li><span class="en"><b>The edge is not reversible.</b> The real board has a 2-cell frame that deletes whatever enters it, so debris can leave. Theorem 1 holds in the interior; once something has touched the frame, running backward no longer brings it back.</span></li>
+      <li><span class="en"><b>Proofs and measurements are different things.</b> Theorems 1–3 and the lemma are proved. The piece facts in §4 are measurements on isolated setups: one sigil, one wall, one projectile. On a crowded board, two gliders arriving together can break what one cannot.</span></li>
+      <li><span class="en"><b>The census can still be wrong.</b> Five samples remove bounce misreads, but in simulation 4–6% of declared deaths were still false.</span></li>
+      <li><span class="en"><b>The money results are simulations.</b> Player behavior is assumed, not measured: 40% tend their sigils, 8% attack, attackers aim well, nobody builds posts, and demand does not react to returns. The low loss shares at high fees are optimistic for that reason.</span></li>
+      <li><span class="en"><b>Capacity is small.</b> The board has 512 sites. In the simulations a season held about 190–230 players; with 1,000 arrivals, 78% could not get a sigil.</span></li>
+      <li><span class="en"><b>Everything here is for one rule card.</b> A new season rule changes the physics, and §2–§4 would have to be redone.</span></li>
+      <li><span class="en"><b>No promise of profit.</b> Later sigils pay earlier ones. You can lose what you pay.</span></li>
+    </ol>
+  </div>
+  <h3><span class="en">Sources</span></h3>
+  <ol class="refs">
+    <li>Norman Margolus, “Physics-like models of computation,” <cite>Physica D</cite> 10 (1984). <span class="en">The shifting 2 × 2 cut of §1.</span></li>
+    <li>Tommaso Toffoli and Norman Margolus, <cite>Cellular Automata Machines</cite> (MIT Press, 1987). <span class="en">The Critters rule of §2.</span></li>
+    <li><cite>Snowmoon</cite> (2026, GPL v3), <span class="en">chapters 2, 4, 10, 17 and 21: every quotation on this page, and the game itself.</span></li>
+    <li>EIP-1559, “Fee market change for ETH 1.0 chain” (2019). <span class="en">The pricing rule behind (16).</span></li>
+    <li><span class="en">This game’s physics tests and integrated season simulations, run on independent engines that agree bit for bit. The figures on this page are computed in your browser by the step function of the playable demo; view the source to check.</span></li>
+  </ol>
+</section>
+
+  </article>
+</main>
+
+<footer class="mp-foot">
+  <div class="mp-foot-in">
+    <p class="en">Fan-made game based on the novel <cite>Snowmoon</cite> by Vitalik Buterin (GPL v3, <a href="https://vitalik.eth.limo/snowmoon">vitalik.eth.limo/snowmoon</a>). Quotes and illustrations from the novel are used under the GPL. Not affiliated with Vitalik Buterin, the Ethereum Foundation or Stockereum. Later sigils pay earlier sigils, and most late players lose money. Nothing here is a promise of profit. The game contract is upgradeable by its owner.
+      <span class="fca">$TAUFA contract: <code>0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee</code> · <a href="https://stockereum.com/t/0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee" target="_blank" rel="noopener">Stockereum</a> · <a href="https://etherscan.io/token/0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee" target="_blank" rel="noopener">Etherscan</a></span></p>
+    
+    <nav class="mp-foot-links" aria-label="Pages"><a href="index.html"><span class="en">Play</span></a><span aria-hidden="true">·</span><a href="story.html"><span class="en">Story</span></a><span aria-hidden="true">·</span><a href="math.html" aria-current="page"><span class="en">Math</span></a><span aria-hidden="true">·</span><a href="https://x.com/MinpentaiFi" target="_blank" rel="noopener noreferrer" aria-label="Minpentai on X (opens in a new tab)">X ↗</a></nav>
+  </div>
+</footer>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const dpr = () => Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+const C = { paper:'#fdfcff', page:'#f6f4ff', ink:'#1d1a3a', ink2:'#3d3963', dim:'#6e6a8f', rule:'#e6e1fb', rule2:'#d6cff7', g1:'#ece8fd', g8:'#e0daf9',
+  eth:'#5b5ee8', eth2:'#4146c9', deep:'#272b6e', field:'#334488', lav:'#c9a7f5', pink:'#f7a8d0', aqua:'#33ddee', cyan:'#cceeff', lime:'#a5ef7a',
+  rose:'#c43c7f', teal:'#0b8290', stay:'#8f8bb0', ok:'#18805b' };
+const OPC = { flip: C.eth, stay: C.stay, turn: C.rose };
+const OPT = { flip: 'rgba(91,94,232,.22)', stay: 'rgba(143,139,176,.28)', turn: 'rgba(247,168,208,.62)' };
+
+/* =============================== engine ===============================
+   Same block rule and piece table as prototype/index.html; the backward branch
+   is the one in prototype/physics-sandbox.html. Partition offset p = generation & 1.
+   k = 2 stays; k = 3 (forward) or k = 1 (backward) flips and turns 180°; anything else flips.
+   The display inverts odd generations. Pieces are stamped on even generations at (odd, odd). */
+const PIECE = {
+  GN:['.##.','#..#'], GS:['#..#','.##.'], GW:['.#','#.','#.','.#'], GE:['#.','.#','.#','#.'],
+  RN:['.##.','#..#','.##.','#..#'], RS:['#..#','.##.','#..#','.##.'], RW:['.#.#','#.#.','#.#.','.#.#'], RE:['#.#.','.#.#','.#.#','#.#.'],
+  BLOCK:['##','##'],
+};
+const cellsOf = rows => rows.flatMap((r, dy) => [...r].map((c, dx) => c === '#' ? [dy, dx] : null).filter(Boolean));
+const PC = Object.fromEntries(Object.entries(PIECE).map(([k, v]) => [k, cellsOf(v)]));
+
+class Board {
+  constructor(H, W, frame = 0) { this.H = H; this.W = W; this.FRAME = frame; this.g = new Uint8Array(H * W); this.tmp = new Uint8Array(H * W); this.gen = 0; }
+  idx(y, x) { const H = this.H, W = this.W; return (((y % H) + H) % H) * W + (((x % W) + W) % W); }
+  step(fwd = true) {
+    const H = this.H, W = this.W, g = this.g, tmp = this.tmp;
+    const idx = (y, x) => this.idx(y, x);
+    const p = fwd ? (this.gen & 1) : ((this.gen - 1) & 1);
+    for (let by = 0; by < H; by += 2) for (let bx = 0; bx < W; bx += 2) {
+      const y0 = by + p, x0 = bx + p;
+      const ia = idx(y0, x0), ib = idx(y0, x0 + 1), ic = idx(y0 + 1, x0), id = idx(y0 + 1, x0 + 1);
+      const a = g[ia], b = g[ib], c = g[ic], d = g[id], s = a + b + c + d;
+      if (s === 2) { tmp[ia] = a; tmp[ib] = b; tmp[ic] = c; tmp[id] = d; }
+      else if (fwd ? s === 3 : s === 1) { tmp[ia] = 1 - d; tmp[ib] = 1 - c; tmp[ic] = 1 - b; tmp[id] = 1 - a; }
+      else { tmp[ia] = 1 - a; tmp[ib] = 1 - b; tmp[ic] = 1 - c; tmp[id] = 1 - d; }
+    }
+    this.g = tmp; this.tmp = g; this.gen += fwd ? 1 : -1;
+    if (this.FRAME) { // absorbing frame, as on the real board: force the edge to empty space
+      const bg = this.gen & 1, F = this.FRAME, G = this.g;
+      for (let k = 0; k < F; k++) {
+        for (let x = 0; x < W; x++) { G[idx(k, x)] = bg; G[idx(H - 1 - k, x)] = bg; }
+        for (let y = 0; y < H; y++) { G[idx(y, k)] = bg; G[idx(y, W - 1 - k)] = bg; }
+      }
+    }
+  }
+  shown(y, x) { const v = this.g[this.idx(y, x)]; return (this.gen & 1) ? 1 - v : v; }
+  stamp(key, y, x) { for (const [dy, dx] of PC[key]) this.g[this.idx(y + dy, x + dx)] = 1; }
+  set(y, x, v) { this.g[this.idx(y, x)] = v; }
+  liveDisplay() { const odd = this.gen & 1; let n = 0; for (let i = 0; i < this.g.length; i++) n += this.g[i] ^ odd; return n; }
+  liveRaw() { let n = 0; for (let i = 0; i < this.g.length; i++) n += this.g[i]; return n; }
+  hash() { const odd = this.gen & 1; let h = 0x811c9dc5; for (let i = 0; i < this.g.length; i++) { h ^= (this.g[i] ^ odd) + 1; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); }
+  intact(y, x) { return this.shown(y, x) && this.shown(y, x + 1) && this.shown(y + 1, x) && this.shown(y + 1, x + 1); }
+}
+/* f on a single block, computed by the engine itself (a 2 × 2 torus at an even generation is one block) */
+function fEngine(bits) { const B = new Board(2, 2); bits.forEach((v, i) => B.set(i >> 1, i & 1, v)); B.step(true); return [0, 1, 2, 3].map(i => B.g[i]); }
+const STATES = Array.from({ length: 16 }, (_, n) => [(n >> 3) & 1, (n >> 2) & 1, (n >> 1) & 1, n & 1]);
+const sum = x => x.reduce((a, b) => a + b, 0);
+const comp = x => x.map(v => 1 - v);
+const opOfRaw = k => (k === 2 ? 'stay' : k === 3 ? 'turn' : 'flip');
+
+/* =============================== helpers =============================== */
+const NS = 'http://www.w3.org/2000/svg';
+function S(tag, attrs, parent) { const e = document.createElementNS(NS, tag); if (attrs) for (const k in attrs) if (attrs[k] !== null && attrs[k] !== undefined) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function T(parent, x, y, s, attrs) { const e = S('text', Object.assign({ x, y }, attrs || {}), parent); e.textContent = s; return e; }
+function clear(el) { while (el.firstChild) el.removeChild(el.firstChild); }
+function sizeCanvas(cv, wCss, hCss) { const d = dpr(); cv.width = Math.round(wCss * d); cv.height = Math.round(hCss * d); cv.style.width = wCss + 'px'; cv.style.height = hCss + 'px'; return d; }
+function contentWidth(el) { const cs = getComputedStyle(el); return el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight); }
+function animator(tick) {
+  let on = false, last = 0, raf = 0;
+  const frame = now => { if (!on) return; const dt = Math.min(80, now - last); last = now; tick(dt); raf = requestAnimationFrame(frame); };
+  return { start() { if (on) return; on = true; last = performance.now(); raf = requestAnimationFrame(frame); }, stop() { on = false; cancelAnimationFrame(raf); }, get on() { return on; } };
+}
+function watchVisible(el, cb) { if (!('IntersectionObserver' in window)) { cb(true); return; } new IntersectionObserver(es => es.forEach(e => cb(e.isIntersecting)), { rootMargin: '60px' }).observe(el); }
+function onResize(el, fn) { let w = -1, t = 0; const run = () => { const nw = el.clientWidth; if (nw !== w) { w = nw; fn(); } }; if ('ResizeObserver' in window) new ResizeObserver(() => { clearTimeout(t); t = setTimeout(run, 60); }).observe(el); else window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(run, 60); }); }
+const fmt = (v, d) => v.toFixed(d);
+
+/* paint a board on a canvas: paper, optional tints, cells, grid lines, then overlays */
+function paint(ctx, d, B, cs, o) {
+  o = o || {};
+  const W = B.W, H = B.H, P = v => Math.round(v * d), lw = Math.max(1, Math.round(d));
+  const tw = P(W * cs) + lw, th = P(H * cs) + lw;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, tw, th);
+  if (o.under) o.under(ctx, P, lw);
+  const odd = B.gen & 1, raw = !!o.raw;
+  ctx.fillStyle = raw ? C.field : (o.ink || C.ink);
+  for (let y = 0; y < H; y++) { const row = y * W; for (let x = 0; x < W; x++) { const v = raw ? B.g[row + x] : (B.g[row + x] ^ odd); if (v) { const x0 = P(x * cs), y0 = P(y * cs); ctx.fillRect(x0, y0, P((x + 1) * cs) - x0, P((y + 1) * cs) - y0); } } }
+  if (o.grid !== false) {
+    for (let x = 0; x <= W; x++) { ctx.fillStyle = (o.major && x % o.major === 0) ? C.g8 : C.g1; ctx.fillRect(P(x * cs), 0, lw, th); }
+    for (let y = 0; y <= H; y++) { ctx.fillStyle = (o.major && y % o.major === 0) ? C.g8 : C.g1; ctx.fillRect(0, P(y * cs), tw, lw); }
+  }
+  if (o.over) o.over(ctx, P, lw);
+  return { tw, th };
+}
+
+/* =============================== Fig. 0 · time reversal =============================== */
+const Hero = (() => {
+  const wrap = $('#heroWrap'), cv = $('#heroCv'), ctx = cv.getContext('2d'), tEl = $('#heroT'), bar = $('#heroBar');
+  const FONT = { T:['#####','..#..','..#..','..#..','..#..','..#..','..#..'], A:['.###.','#...#','#...#','#####','#...#','#...#','#...#'], U:['#...#','#...#','#...#','#...#','#...#','#...#','.###.'], F:['#####','#....','#....','####.','#....','#....','#....'], ' ':['...','...','...','...','...','...','...'] };
+  const CS = 8;
+  let B = null, cols = 0, rows = 0, scale = 1, TT = 120, trail = null, hash0 = '', phase = 'hold0', phaseT = 0, acc = 0, d = 1;
+  let playing = !reduced, visible = false, lastCols = -1;
+  function stampText(B, text, sc) {
+    const widths = [...text].map(ch => FONT[ch][0].length);
+    const tw = (widths.reduce((a, b) => a + b, 0) + text.length - 1) * sc;
+    const oy = Math.floor((rows - 7 * sc) / 2), ox = Math.floor((cols - tw) / 2);
+    let x = ox;
+    for (const ch of text) {
+      const gl = FONT[ch];
+      gl.forEach((row, r) => [...row].forEach((c, k) => { if (c === '#') for (let a = 0; a < sc; a++) for (let b = 0; b < sc; b++) B.set(oy + r * sc + a, x + k * sc + b, 1); }));
+      x += (gl[0].length + 1) * sc;
+    }
+  }
+  function build(force) {
+    const w = Math.max(200, wrap.clientWidth - 2);
+    const nc = Math.max(40, Math.floor(w / CS)) & ~1;
+    if (!force && nc === lastCols) return;
+    lastCols = cols = nc; rows = cols >= 80 ? 44 : 34; scale = cols >= 80 ? 2 : 1; TT = scale === 2 ? 120 : 96;
+    B = new Board(rows, cols); stampText(B, 'TAU FA', scale);
+    trail = new Float32Array(rows * cols); hash0 = B.hash(); phase = 'hold0'; phaseT = 0; acc = 0;
+    d = sizeCanvas(cv, cols * CS + 1, rows * CS + 1);
+    draw(); status();
+  }
+  function draw() {
+    const odd = B.gen & 1;
+    paint(ctx, d, B, CS, { major: 8, under: (c, P) => {
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+        const i = y * cols + x, v = B.g[i] ^ odd;
+        trail[i] = v ? 1 : trail[i] * 0.88;
+        const t = trail[i];
+        if (!v && t > 0.04) { c.fillStyle = `rgba(201,167,245,${(t * 0.55).toFixed(3)})`; const x0 = P(x * CS), y0 = P(y * CS); c.fillRect(x0, y0, P((x + 1) * CS) - x0, P((y + 1) * CS) - y0); }
+      }
+    } });
+  }
+  function status() {
+    const g = B.gen, f = g / TT;
+    bar.querySelector('b').style.width = (f * 100) + '%';
+    bar.querySelector('i').style.left = (f * 100) + '%';
+    bar.classList.toggle('back', phase === 'back');
+    let s;
+    if (g === 0) s = B.hash() === hash0 ? (`t = 0 · identical to the start, fingerprint ${hash0}`) : `t = 0`;
+    else if (phase === 'back') s = (`t = ${g} ← running the inverse map`);
+    else if (phase === 'holdT') s = (`t = ${g} · turning time around`);
+    else s = (`t = ${g} → forward`);
+    tEl.textContent = s;
+  }
+  const anim = animator(dt => {
+    phaseT += dt;
+    if (phase === 'hold0' && phaseT > 1500) { phase = 'fwd'; phaseT = 0; }
+    else if (phase === 'holdT' && phaseT > 1100) { phase = 'back'; phaseT = 0; }
+    if (phase === 'fwd' || phase === 'back') {
+      acc += dt * 0.032;
+      let n = Math.floor(acc); acc -= n;
+      while (n-- > 0) {
+        if (phase === 'fwd') { B.step(true); if (B.gen >= TT) { phase = 'holdT'; phaseT = 0; acc = 0; break; } }
+        else { B.step(false); if (B.gen <= 0) { phase = 'hold0'; phaseT = 0; acc = 0; if (reduced) { playing = false; anim.stop(); } break; } }
+      }
+    }
+    draw(); status();
+  });
+  function sync() { if (playing && visible) anim.start(); else anim.stop(); status(); }
+  watchVisible(cv, v => { visible = v; sync(); });
+  onResize(wrap, () => build(false));
+  build(true);
+  return { state: () => ({ gen: B.gen, cols, rows, hash: B.hash(), hash0 }) };
+})();
+
+/* =============================== Fig. 1 · Margolus neighborhood =============================== */
+const Marg = (() => {
+  const cvR = $('#mgRaw'), cvD = $('#mgDisp'), cxR = cvR.getContext('2d'), cxD = cvD.getContext('2d');
+  const N = 12; let B, cs = 22, d = 1, playing = !reduced, visible = false, timer = 0;
+  function reset() { B = new Board(N, N); B.stamp('GN', 7, 3); B.stamp('BLOCK', 5, 9); }
+  function layout() {
+    const host = cvR.closest('.panel'); const w = contentWidth(host);
+    cs = Math.max(10, Math.min(24, Math.floor((w - 24) / 2 / N)));
+    d = sizeCanvas(cvR, N * cs + 1, N * cs + 1); sizeCanvas(cvD, N * cs + 1, N * cs + 1);
+    const wpx = (N * cs + 1) + 'px'; cvR.parentNode.style.width = wpx; cvD.parentNode.style.width = wpx; // captions wrap instead of widening the panels
+    draw();
+  }
+  function cutLines(c, P, lw) {
+    const p = B.gen & 1, col = p ? C.teal : C.eth, w2 = Math.max(2, Math.round(2 * d)), tot = P(N * cs) + lw;
+    c.fillStyle = col;
+    for (let m = p; m <= N; m += 2) { const v = P(m * cs) - Math.floor((w2 - lw) / 2); c.fillRect(v, 0, w2, tot); c.fillRect(0, v, tot, w2); }
+  }
+  function tints(c, P) {
+    const p = B.gen & 1;
+    for (let by = 0; by < N; by += 2) for (let bx = 0; bx < N; bx += 2) {
+      const y0 = by + p, x0 = bx + p, k = B.g[B.idx(y0, x0)] + B.g[B.idx(y0, x0 + 1)] + B.g[B.idx(y0 + 1, x0)] + B.g[B.idx(y0 + 1, x0 + 1)];
+      if (k === 0 || k === 4) continue;
+      const op = opOfRaw(k);
+      for (const [yy, xx] of [[y0, x0]]) { // a block may wrap around the torus: draw its pieces
+        const parts = [];
+        for (const dy of [0, 1]) for (const dx of [0, 1]) parts.push([((yy + dy) % N + N) % N, ((xx + dx) % N + N) % N]);
+        c.fillStyle = OPT[op];
+        for (const [py, px] of parts) { const x1 = P(px * cs), y1 = P(py * cs); c.fillRect(x1, y1, P((px + 1) * cs) - x1, P((py + 1) * cs) - y1); }
+        c.strokeStyle = OPC[op]; c.lineWidth = Math.max(1.5, 1.5 * d);
+        if (y0 + 1 < N && x0 + 1 < N) { const inset = 2.5 * d; c.strokeRect(P(x0 * cs) + inset, P(y0 * cs) + inset, P(2 * cs) - 2 * inset, P(2 * cs) - 2 * inset); }
+      }
+    }
+  }
+  function draw() {
+    paint(cxR, d, B, cs, { raw: true, over: (c, P, lw) => { tints(c, P); cutLines(c, P, lw); } });
+    paint(cxD, d, B, cs, { over: cutLines });
+    const p = B.gen & 1;
+    $('#mgT').textContent = (`t = ${B.gen} · ${p ? 'odd' : 'even'} tick · cut from (${p}, ${p})`);
+    $('#mgCapR').innerHTML = ('raw state x<sub>t</sub> · <span class="mono">what the rule sees</span>');
+    $('#mgCapD').innerHTML = ('display d<sub>t</sub> · <span class="mono">what players see</span>');
+  }
+  function fwd() { B.step(true); if (B.gen >= 24) { B.gen -= 24; } draw(); }
+  function sync() { clearInterval(timer); if (playing && visible) timer = setInterval(fwd, 1000); draw(); }
+  watchVisible(cvR, v => { visible = v; sync(); });
+  onResize(cvR.closest('.panel'), layout);
+  reset(); layout();
+})();
+
+/* =============================== Fig. 2 · transition table =============================== */
+function tileSVG(bits, s, extraClass) {
+  const svg = S('svg', { width: s + 2, height: s + 2, viewBox: `0 0 ${s + 2} ${s + 2}`, class: 'tile' + (extraClass ? ' ' + extraClass : ''), 'shape-rendering': 'crispEdges', 'aria-hidden': 'true' });
+  tileInto(svg, bits, 1, 1, s);
+  return svg;
+}
+function tileInto(parent, bits, x, y, s) {
+  const h = s / 2, g = S('g', { transform: `translate(${x},${y})`, 'shape-rendering': 'crispEdges' }, parent);
+  S('rect', { x: -0.5, y: -0.5, width: s + 1, height: s + 1, fill: C.paper, stroke: C.rule2 }, g);
+  bits.forEach((v, i) => { if (v) S('rect', { x: (i & 1) * h + 1, y: (i >> 1) * h + 1, width: h - 2, height: h - 2, fill: C.ink }, g); });
+  S('line', { x1: h, y1: 0, x2: h, y2: s, stroke: C.g8 }, g); S('line', { x1: 0, y1: h, x2: s, y2: h, stroke: C.g8 }, g);
+  return g;
+}
+function arrowSVG(op, label) {
+  const w = label ? 40 : 26, svg = S('svg', { width: w, height: 22, viewBox: `0 0 ${w} 22`, class: 'arr', 'aria-hidden': 'true' });
+  const col = OPC[op];
+  S('path', { d: `M3 14 H${w - 5}`, stroke: col, 'stroke-width': 1.5, fill: 'none' }, svg);
+  S('path', { d: `M${w - 9} 10.5 L${w - 4} 14 L${w - 9} 17.5`, stroke: col, 'stroke-width': 1.5, fill: 'none', 'stroke-linejoin': 'round' }, svg);
+  if (label) T(svg, w / 2, 7.5, label, { 'text-anchor': 'middle', style: `font:700 8.5px var(--ui);fill:${col};letter-spacing:.02em` });
+  return svg;
+}
+function buildTable() {
+  const host = $('#ttable'); clear(host);
+  const s = host.clientWidth < 480 ? 22 : 26;
+  for (let k = 0; k <= 4; k++) {
+    const row = document.createElement('div'); row.className = 'trow k' + k;
+    const head = document.createElement('div'); head.className = 'thead';
+    const op = opOfRaw(k);
+    const opName = { flip: ('flip'), stay: ('stay'), turn: ('flip, then turn 180°') }[op];
+    head.innerHTML = `<span class="kk">k = ${k}</span><span class="op op-${op}">${opName}</span>` + (k === 3 ? `<span class="q">${('“rotate one eighty if three”')}</span>` : '');
+    row.appendChild(head);
+    const list = document.createElement('div'); list.className = 'tlist';
+    const xs = STATES.filter(x => sum(x) === k).sort((a, b) => parseInt(b.join(''), 2) - parseInt(a.join(''), 2));
+    for (const x of xs) {
+      const ent = document.createElement('div'); ent.className = 'tent';
+      ent.setAttribute('role', 'img');
+      const y = fEngine(x);
+      ent.setAttribute('aria-label', `${x.join('')} → ${y.join('')}`);
+      ent.appendChild(tileSVG(x, s));
+      if (k === 3) { ent.appendChild(arrowSVG('flip', ('flip'))); ent.appendChild(tileSVG(comp(x), s)); ent.appendChild(arrowSVG('turn', ('turn'))); }
+      else ent.appendChild(arrowSVG(op));
+      ent.appendChild(tileSVG(y, s));
+      list.appendChild(ent);
+    }
+    row.appendChild(list);
+    host.appendChild(row);
+  }
+}
+buildTable(); onResize($('#ttable'), buildTable);
+
+/* =============================== Fig. 3 · permutation =============================== */
+function defsArrows(svg, id) {
+  const defs = S('defs', null, svg);
+  for (const [k, col] of Object.entries(OPC)) {
+    const m = S('marker', { id: `${id}-${k}`, viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs);
+    S('path', { d: 'M1 1 L9 5 L1 9', fill: 'none', stroke: col, 'stroke-width': 1.6, 'stroke-linejoin': 'round' }, m);
+  }
+}
+function buildPerm() {
+  const svg = $('#permSvg'); clear(svg);
+  const W = Math.max(280, contentWidth(svg.parentNode)), s = 26, narrow = W < 600;
+  defsArrows(svg, 'pm');
+  const key = x => x.join('');
+  const pos = {};
+  const label = (x, y, t, anchor) => T(svg, x, y, t, { class: 'sv-t', 'text-anchor': anchor || 'start' });
+  const sub = (x, y, t, anchor) => T(svg, x, y, t, { class: 'sv-l', 'text-anchor': anchor || 'start' });
+  let H;
+  const fixed = STATES.filter(x => sum(x) === 2);
+  if (!narrow) {
+    // three groups side by side, centered: fixed points (3 × 2), the swap, two squares
+    const side = 84, cg = 46, wA = 2 * 56 + s, wB = s + 40, wC = 2 * (side + s) + cg;
+    const gap = Math.min(64, Math.max(28, (W - wA - wB - wC - 16) / 2));
+    const ox = Math.max(4, (W - (wA + wB + wC + 2 * gap)) / 2);
+    const xA = ox, xB = xA + wA + gap, xC = xB + wB + gap;
+    H = 234;
+    label(xA, 16, ('Six fixed points')); sub(xA, 31, ('k = 2 · stay'));
+    fixed.forEach((x, i) => { pos[key(x)] = [xA + (i % 3) * 56, 82 + Math.floor(i / 3) * 86]; });
+    label(xB, 16, ('One swap')); sub(xB, 31, ('k = 0 ↔ 4 · flip'));
+    pos['0000'] = [xB + 20, 82]; pos['1111'] = [xB + 20, 168];
+    label(xC, 16, ('Two 4-cycles')); sub(xC, 31, ('k = 1 → 3 → 1 → 3'));
+    const sq = (x0, ids) => { const c = [[x0, 78], [x0 + side, 78], [x0 + side, 78 + side], [x0, 78 + side]]; ids.forEach((id, i) => { pos[id] = c[i]; }); };
+    sq(xC, ['0001', '1110', '1000', '0111']);
+    sq(xC + side + s + cg, ['0010', '1101', '0100', '1011']);
+  } else {
+    H = 470;
+    label(0, 16, ('Six fixed points · k = 2 · stay'));
+    const gx = (W - 6 * s) / 6;
+    fixed.forEach((x, i) => { pos[key(x)] = [gx / 2 + i * (s + gx), 62]; });
+    label(0, 128, ('One swap · k = 0 ↔ 4 · flip'));
+    pos['0000'] = [W / 2 - 70, 150]; pos['1111'] = [W / 2 + 70 - s, 150];
+    label(0, 222, ('Two 4-cycles · k = 1 → 3 → 1 → 3'));
+    const side = Math.min(104, (W - 2 * s - 40) / 2 - 10);
+    const sq = (ox, ids) => { const c = [[ox, 250], [ox + side, 250], [ox + side, 250 + side], [ox, 250 + side]]; ids.forEach((id, i) => { pos[id] = c[i]; }); };
+    sq(8, ['0001', '1110', '1000', '0111']);
+    sq(W - side - s - 8, ['0010', '1101', '0100', '1011']);
+    H = 250 + side + s + 44;
+  }
+  svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const center = id => [pos[id][0] + s / 2, pos[id][1] + s / 2];
+  // arrows
+  for (const x of STATES) {
+    const from = key(x), to = key(fEngine(x)), op = opOfRaw(sum(x)), col = OPC[op];
+    const [x1, y1] = center(from);
+    if (from === to) {
+      S('path', { d: `M${x1 - 6} ${y1 - s / 2 - 2} C${x1 - 16} ${y1 - s / 2 - 24}, ${x1 + 16} ${y1 - s / 2 - 24}, ${x1 + 6} ${y1 - s / 2 - 3}`, fill: 'none', stroke: col, 'stroke-width': 1.5, 'marker-end': `url(#pm-${op})` }, svg);
+      continue;
+    }
+    const [x2, y2] = center(to);
+    const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+    const off = s / 2 + 5;
+    const sx = x1 + ux * off, sy = y1 + uy * off, ex = x2 - ux * (off + 1), ey = y2 - uy * (off + 1);
+    const swap = (from === '0000' || from === '1111');
+    if (swap) { const bend = 18, mx = (sx + ex) / 2 - uy * bend, my = (sy + ey) / 2 + ux * bend; S('path', { d: `M${sx} ${sy} Q${mx} ${my} ${ex} ${ey}`, fill: 'none', stroke: col, 'stroke-width': 1.5, 'marker-end': `url(#pm-${op})` }, svg); }
+    else S('path', { d: `M${sx} ${sy} L${ex} ${ey}`, fill: 'none', stroke: col, 'stroke-width': 1.5, 'marker-end': `url(#pm-${op})` }, svg);
+  }
+  for (const x of STATES) { const [px, py] = pos[key(x)]; tileInto(svg, x, px, py, s); }
+  // legend, bottom left; each label is measured after it is placed
+  const ly = H - 6; let lx = narrow ? 0 : 4;
+  [['flip', ('flip')], ['turn', ('flip, then turn 180°')], ['stay', ('stay')]].forEach(([op, t]) => {
+    S('line', { x1: lx, y1: ly - 4, x2: lx + 18, y2: ly - 4, stroke: OPC[op], 'stroke-width': 2 }, svg);
+    const tx = T(svg, lx + 24, ly, t, { class: 'sv-l' });
+    lx += 24 + tx.getComputedTextLength() + 22;
+  });
+}
+buildPerm(); onResize($('#permSvg').parentNode, buildPerm);
+
+/* =============================== Fig. 4 · scrubber =============================== */
+const Scrub = (() => {
+  const cv = $('#scCv'), ctx = cv.getContext('2d'), range = $('#scT');
+  const N = 48; let B, hash0 = '', seed = 20261009, cs = 8, d = 1, runT = 0, runDir = 0, anim = null;
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  function newPatch() { B = new Board(N, N); for (let y = 17; y < 31; y++) for (let x = 17; x < 31; x++) if (rnd() < 0.4) B.set(y, x, 1); hash0 = B.hash(); range.value = 0; draw(); }
+  function layout() { const host = cv.closest('.panel'); const w = contentWidth(host); const avail = w < 560 ? w : Math.min(408, w - 240); cs = Math.max(5, Math.min(8, Math.floor(avail / N))); d = sizeCanvas(cv, N * cs + 1, N * cs + 1); draw(); }
+  function goTo(t) { while (B.gen < t) B.step(true); while (B.gen > t) B.step(false); draw(); }
+  function draw() {
+    paint(ctx, d, B, cs, { major: 8 });
+    const live = B.liveDisplay(), raw = B.liveRaw(), h = B.hash();
+    $('#scTv').textContent = 't = ' + B.gen;
+    $('#scDv').textContent = live.toLocaleString('en-US') + (' · constant');
+    $('#scRv').textContent = raw.toLocaleString('en-US') + (B.gen & 1 ? (' · background is all ones') : '');
+    $('#scHv').textContent = h;
+    const m = $('#scMv');
+    if (B.gen === 0) { const ok = h === hash0; m.textContent = ok ? ('identical ✓') : ('different'); m.className = ok ? 'ok' : 'bad'; }
+    else { m.textContent = (`${B.gen} generations away`); m.className = ''; }
+  }
+  range.addEventListener('input', () => { stopRun(); goTo(+range.value); });
+  function stopRun() { if (anim) anim.stop(); runDir = 0; }
+  $('#scRun').addEventListener('click', () => {
+    stopRun(); runDir = 1;
+    if (reduced) { goTo(240); setTimeout(() => goTo(0), 900); range.value = 0; return; }
+    anim = animator(dt => {
+      runT += dt * 0.08; let n = Math.floor(runT); runT -= n;
+      while (n-- > 0 && runDir) { if (runDir > 0) { B.step(true); if (B.gen >= 240) runDir = -1; } else { B.step(false); if (B.gen <= 0) { runDir = 0; } } }
+      range.value = B.gen; draw(); if (!runDir) anim.stop();
+    });
+    anim.start();
+  });
+  $('#scNew').addEventListener('click', () => { stopRun(); newPatch(); });
+  onResize(cv.closest('.panel'), layout);
+  newPatch(); layout();
+  return { state: () => ({ gen: B.gen, hash: B.hash(), hash0, live: B.liveDisplay() }) };
+})();
+
+/* =============================== Fig. 5 · still life vs oscillator =============================== */
+function cellWin(parent, x, y, rows, cols, cs, live, o) {
+  o = o || {};
+  const g = S('g', { transform: `translate(${x},${y})`, 'shape-rendering': 'crispEdges' }, parent);
+  S('rect', { x: 0, y: 0, width: cols * cs, height: rows * cs, fill: C.paper }, g);
+  if (o.under) o.under(g);
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (live(r, c)) S('rect', { x: c * cs + 1, y: r * cs + 1, width: cs - 1, height: cs - 1, fill: o.ink || C.ink }, g);
+  for (let c = 0; c <= cols; c++) S('line', { x1: c * cs + 0.5, y1: 0, x2: c * cs + 0.5, y2: rows * cs, stroke: (o.major && (c + (o.ox || 0)) % o.major === 0) ? '#cfc6f5' : C.g1 }, g);
+  for (let r = 0; r <= rows; r++) S('line', { x1: 0, y1: r * cs + 0.5, x2: cols * cs, y2: r * cs + 0.5, stroke: (o.major && (r + (o.oy || 0)) % o.major === 0) ? '#cfc6f5' : C.g1 }, g);
+  if (o.cut !== undefined) {
+    const p = o.cut, col = p ? C.teal : C.eth;
+    for (let a = 0; a <= cols; a++) if (((a + (o.ox || 0)) & 1) === p) S('line', { x1: a * cs + 0.5, y1: 0, x2: a * cs + 0.5, y2: rows * cs, stroke: col, 'stroke-width': 2 }, g);
+    for (let a = 0; a <= rows; a++) if (((a + (o.oy || 0)) & 1) === p) S('line', { x1: 0, y1: a * cs + 0.5, x2: cols * cs, y2: a * cs + 0.5, stroke: col, 'stroke-width': 2 }, g);
+  }
+  S('rect', { x: 0.5, y: 0.5, width: cols * cs, height: rows * cs, fill: 'none', stroke: C.rule2 }, g);
+  if (o.over) o.over(g);
+  return g;
+}
+function buildStill() {
+  const svg = $('#stillSvg'); clear(svg);
+  const W = Math.max(280, contentWidth(svg.parentNode)), F = 5, win = 6;
+  const narrow = W < 520;
+  const labW = narrow ? 0 : 128;
+  const gap = narrow ? 8 : 14;
+  const cs = Math.max(8, Math.min(16, Math.floor((W - labW - (F - 1) * gap) / (F * win))));
+  const fw = cs * win;
+  const rowsSpec = [
+    { ay: 3, ax: 3, oy: 1, ox: 1, t1: ('odd corner (3, 3)'), t2: ('still life') },
+    { ay: 4, ax: 4, oy: 2, ox: 2, t1: ('even corner (4, 4)'), t2: ('period 4') },
+  ];
+  let y = 22;
+  const startX = labW;
+  for (let t = 0; t < F; t++) T(svg, startX + t * (fw + gap) + fw / 2, 12, `t = ${t}`, { class: 'sv-m', 'text-anchor': 'middle' });
+  for (const spec of rowsSpec) {
+    if (narrow) { T(svg, 0, y + 12, `${spec.t1} · ${spec.t2}`, { class: 'sv-t' }); y += 20; }
+    else { T(svg, 0, y + fw / 2 - 2, spec.t1, { class: 'sv-t' }); T(svg, 0, y + fw / 2 + 14, spec.t2, { class: 'sv-l' }); }
+    const B = new Board(8, 8); B.stamp('BLOCK', spec.ay, spec.ax);
+    for (let t = 0; t < F; t++) {
+      const snap = []; for (let r = 0; r < win; r++) for (let c = 0; c < win; c++) snap.push(B.shown(spec.oy + r, spec.ox + c));
+      cellWin(svg, startX + t * (fw + gap), y, win, win, cs, (r, c) => snap[r * win + c], { cut: B.gen & 1, oy: spec.oy, ox: spec.ox });
+      B.step(true);
+    }
+    y += fw + (narrow ? 18 : 22);
+  }
+  const H = y - 4;
+  svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+}
+buildStill(); onResize($('#stillSvg').parentNode, buildStill);
+
+/* =============================== Fig. 6 · plate of pieces =============================== */
+function anchorMark(g, c, r, cs) { // a small pink tick at the top-left corner of cell (r, c)
+  const x = c * cs + 0.5, y = r * cs + 0.5;
+  S('path', { d: `M${x - 5} ${y} H${x + 6} M${x} ${y - 5} V${y + 6}`, stroke: C.rose, 'stroke-width': 1.6, fill: 'none' }, g);
+}
+function buildPlate() {
+  const host = $('#plate');
+  const colW = Math.max(240, contentWidth(host.children[0]));
+  // (a) glider: five phases
+  {
+    const svg = $('#plGl'); clear(svg);
+    const B = new Board(16, 16); B.stamp('GN', 9, 5);
+    const win = 6, oy = 6, ox = 4, F = 5, gap = 8;
+    const cs = Math.max(7, Math.min(13, Math.floor((colW - (F - 1) * gap) / (F * win))));
+    const fw = win * cs, H = 18 + fw + 6;
+    for (let t = 0; t < F; t++) {
+      const snap = []; for (let r = 0; r < win; r++) for (let c = 0; c < win; c++) snap.push(B.shown(oy + r, ox + c));
+      const gx = t * (fw + gap);
+      T(svg, gx + fw / 2, 11, `t = ${t}`, { class: 'sv-m', 'text-anchor': 'middle' });
+      cellWin(svg, gx, 18, win, win, cs, (r, c) => snap[r * win + c], { over: g => {
+        S('line', { x1: 0, y1: 3 * cs + 0.5, x2: fw, y2: 3 * cs + 0.5, stroke: C.eth, 'stroke-dasharray': '3 3', 'stroke-width': 1 }, g);
+        if (t === 0) anchorMark(g, 1, 3, cs);
+      } });
+      B.step(true);
+    }
+    const Wa = F * fw + (F - 1) * gap + 2;
+    svg.setAttribute('width', Wa); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${Wa} ${H}`);
+    $('#plA').innerHTML = `<span class="pk">(a)</span>` + ('Glider · 4 cells');
+    $('#plAd').textContent = ('Period 4. In four generations it climbs 2 cells (dashed line: its starting row), so it covers 64 cells in a bell of 128 generations.');
+  }
+  // (b) four directions
+  {
+    const svg = $('#plDir'); clear(svg);
+    const cs = Math.max(7, Math.min(12, Math.floor((colW - 3 * 16) / (4 * 6)))), win = 6, gap = 16, fw = win * cs;
+    const defs = S('defs', null, svg); const m = S('marker', { id: 'pl-ar', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs); S('path', { d: 'M1 1 L9 5 L1 9', fill: 'none', stroke: C.eth, 'stroke-width': 1.6 }, m);
+    const dirs = [['GN', ('north'), [0, -1]], ['GS', ('south'), [0, 1]], ['GW', ('west'), [-1, 0]], ['GE', ('east'), [1, 0]]];
+    dirs.forEach(([k, name, [vx, vy]], i) => {
+      const rows = PIECE[k].length, cols = PIECE[k][0].length;
+      const r0 = Math.floor((win - rows) / 2) | 1, c0 = Math.floor((win - cols) / 2) | 1;
+      const set = new Set(PC[k].map(([dy, dx]) => (r0 + dy) * win + (c0 + dx)));
+      const gx = i * (fw + gap);
+      T(svg, gx + fw / 2, 11, name, { class: 'sv-t', 'text-anchor': 'middle' });
+      cellWin(svg, gx, 18, win, win, cs, (r, c) => set.has(r * win + c), { over: g => anchorMark(g, c0, r0, cs) });
+      const cx = gx + fw / 2, cy = 18 + fw + 16;
+      S('path', { d: `M${cx - vx * 12} ${cy - vy * 7} L${cx + vx * 12} ${cy + vy * 7}`, stroke: C.eth, 'stroke-width': 1.6, 'marker-end': 'url(#pl-ar)', fill: 'none' }, svg);
+      if (!vx && !vy) return;
+    });
+    const Wd = 4 * fw + 3 * gap + 2, H = 18 + fw + 30;
+    svg.setAttribute('width', Wd); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${Wd} ${H}`);
+    $('#plB').innerHTML = `<span class="pk">(b)</span>` + ('Four directions');
+    $('#plBd').textContent = ('The same glider in its four orientations. It flies along the axes, never diagonally, and is only a glider when its corner is at odd coordinates on an even generation.');
+  }
+  // (c) ram: five phases
+  {
+    const svg = $('#plRam'); clear(svg);
+    const B = new Board(20, 16); B.stamp('RN', 11, 5);
+    const win = 8, wcols = 6, oy = 8, ox = 4, F = 5, gap = 8;
+    const cs = Math.max(7, Math.min(13, Math.floor((colW - (F - 1) * gap) / (F * wcols))));
+    const fw = wcols * cs, fh = win * cs, H = 18 + fh + 6;
+    for (let t = 0; t < F; t++) {
+      const snap = []; for (let r = 0; r < win; r++) for (let c = 0; c < wcols; c++) snap.push(B.shown(oy + r, ox + c));
+      const gx = t * (fw + gap);
+      T(svg, gx + fw / 2, 11, `t = ${t}`, { class: 'sv-m', 'text-anchor': 'middle' });
+      cellWin(svg, gx, 18, win, wcols, cs, (r, c) => snap[r * wcols + c], { over: g => {
+        S('line', { x1: 0, y1: 3 * cs + 0.5, x2: fw, y2: 3 * cs + 0.5, stroke: C.eth, 'stroke-dasharray': '3 3', 'stroke-width': 1 }, g);
+        if (t === 0) anchorMark(g, 1, 3, cs);
+      } });
+      B.step(true);
+    }
+    const Wc = F * fw + (F - 1) * gap + 2;
+    svg.setAttribute('width', Wc); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${Wc} ${H}`);
+    $('#plC').innerHTML = `<span class="pk">(c)</span>` + ('Ram · 8 cells');
+    $('#plCd').textContent = ('Two gliders nose to tail, flying at the same speed. A lone glider bounces off a sigil; the pair cracks it.');
+  }
+  // (d) sigil and posts on the plot lattice
+  {
+    const svg = $('#plMap'); clear(svg);
+    const N = 24, cs = Math.max(7, Math.min(10, Math.floor((colW - 150) / N)));
+    const live = new Set();
+    const add = (y, x) => { for (const [dy, dx] of PC.BLOCK) live.add((y + dy) * N + (x + dx)); };
+    add(11, 11); [[3, 11], [11, 3], [11, 19], [19, 11]].forEach(([y, x]) => add(y, x));
+    const g = cellWin(svg, 0.5, 6.5, N, N, cs, (r, c) => live.has(r * N + c), { major: 8, under: gg => {
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (((i + j) & 1) === 0) S('rect', { x: j * 8 * cs, y: i * 8 * cs, width: 8 * cs, height: 8 * cs, fill: 'rgba(201,167,245,.16)' }, gg);
+    }, over: gg => {
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (((i + j) & 1) === 0 && !(i === 1 && j === 1)) S('circle', { cx: (j * 8 + 4) * cs, cy: (i * 8 + 4) * cs, r: 1.8, fill: C.lav }, gg);
+      anchorMark(gg, 11, 11, cs);
+      for (let k = 1; k < 3; k++) { S('line', { x1: k * 8 * cs + 0.5, y1: 0, x2: k * 8 * cs + 0.5, y2: N * cs, stroke: '#b9adf0', 'stroke-dasharray': '2 3' }, gg); S('line', { x1: 0, y1: k * 8 * cs + 0.5, x2: N * cs, y2: k * 8 * cs + 0.5, stroke: '#b9adf0', 'stroke-dasharray': '2 3' }, gg); }
+    } });
+    const lx = N * cs + 14;
+    T(svg, lx, 22, ('sigil'), { class: 'sv-t' }); T(svg, lx, 37, ('site plot, i + j even'), { class: 'sv-l' }); T(svg, lx, 52, '(8i + 3, 8j + 3)', { class: 'sv-m' });
+    T(svg, lx, 82, ('posts'), { class: 'sv-t' }); T(svg, lx, 97, ('open plot, i + j odd'), { class: 'sv-l' });
+    T(svg, lx, 127, ('plot = 8 × 8 cells'), { class: 'sv-l' });
+    const Wd = lx + 140, H = N * cs + 14;
+    svg.setAttribute('width', Math.min(Wd, colW)); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${Math.min(Wd, colW)} ${H}`);
+    $('#plD').innerHTML = `<span class="pk">(d)</span>` + ('Sigil and posts · 2 × 2 each');
+    $('#plDd').textContent = ('Three by three plots of the 32 × 32 lattice. A sigil sits at the center of a site plot; posts sit at the centers of the open plots around it. Both are still lifes by Theorem 3, because 8i + 3 is odd.');
+  }
+}
+buildPlate(); onResize($('#plate'), buildPlate);
+
+/* =============================== Fig. 7 · collisions =============================== */
+const Coll = (() => {
+  // Geometry checked against the engine: (a) broken t = 27..54, then whole; (b) broken from t = 27 on; (c) posts shaken t = 27..30, glider sent back south.
+  const specs = [
+    { H: 40, W: 20, setup: B => { B.stamp('BLOCK', 11, 9); B.stamp('GN', 27, 7); }, watch: [[11, 9]], kind: 'bounce' },
+    { H: 40, W: 20, setup: B => { B.stamp('BLOCK', 11, 9); B.stamp('RN', 27, 7); }, watch: [[11, 9]], kind: 'ram' },
+    { H: 40, W: 28, setup: B => { [5, 13, 21].forEach(x => B.stamp('BLOCK', 11, x)); B.stamp('GN', 27, 15); }, watch: [[11, 5], [11, 13], [11, 21]], kind: 'wall' },
+  ];
+  const TMAX = 112, GAP = 18;
+  let boards = [], trails = [], cs = 8, d = 1, playing = !reduced, visible = false, acc = 0, hold = 0, firstBad = [], lastBad = [], hatch = null;
+  const cvs = [0, 1, 2].map(i => $('#c' + i)), ctxs = cvs.map(c => c.getContext('2d'));
+  function reset() {
+    boards = specs.map(s => { const B = new Board(s.H, s.W, 2); s.setup(B); return B; });
+    trails = boards.map(B => { const t = new Float32Array(B.H * B.W); for (let i = 0; i < t.length; i++) t[i] = B.g[i] ^ (B.gen & 1); return t; });
+    firstBad = [null, null, null]; lastBad = [null, null, null]; acc = 0; hold = 0; draw();
+  }
+  function makeHatch() {
+    const c = document.createElement('canvas'), s = Math.max(4, Math.round(5 * d)); c.width = c.height = s;
+    const x = c.getContext('2d'); x.fillStyle = '#efebfd'; x.fillRect(0, 0, s, s);
+    x.strokeStyle = 'rgba(140,124,222,.55)'; x.lineWidth = Math.max(1, Math.round(d * 0.8));
+    x.beginPath(); x.moveTo(-1, s + 1); x.lineTo(s + 1, -1); x.moveTo(-1, 1); x.lineTo(1, -1); x.moveTo(s - 1, s + 1); x.lineTo(s + 1, s - 1); x.stroke();
+    return ctxs[0].createPattern(c, 'repeat');
+  }
+  function layout() {
+    const w = $('#coll').clientWidth, totalCols = specs.reduce((a, s) => a + s.W, 0);
+    cs = Math.max(3, Math.min(11, Math.floor((w - 2 * GAP - 3) / totalCols)));
+    specs.forEach((s, i) => { d = sizeCanvas(cvs[i], s.W * cs + 1, s.H * cs + 1); cvs[i].parentNode.style.width = (s.W * cs + 1) + 'px'; });
+    hatch = makeHatch(); draw();
+  }
+  function draw() {
+    boards.forEach((B, i) => {
+      const s = specs[i], tr8 = trails[i], W = B.W, H = B.H;
+      paint(ctxs[i], d, B, cs, { major: 8, under: (c, P) => {
+        c.fillStyle = hatch || 'rgba(214,207,247,.55)';
+        const F = 2; c.fillRect(0, 0, P(W * cs), P(F * cs)); c.fillRect(0, P((H - F) * cs), P(W * cs), P(F * cs)); c.fillRect(0, 0, P(F * cs), P(H * cs)); c.fillRect(P((W - F) * cs), 0, P(F * cs), P(H * cs));
+        const odd = B.gen & 1;
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const k = y * W + x, t = tr8[k]; if (t > 0.05 && !(B.g[k] ^ odd)) { c.fillStyle = `rgba(201,167,245,${(t * 0.6).toFixed(3)})`; const x0 = P(x * cs), y0 = P(y * cs); c.fillRect(x0, y0, P((x + 1) * cs) - x0, P((y + 1) * cs) - y0); } }
+      }, over: (c, P) => {
+        for (const [y, x] of s.watch) {
+          const ok = B.intact(y, x);
+          c.strokeStyle = ok ? C.eth : C.rose; c.lineWidth = Math.max(1.5, 1.5 * d);
+          if (!ok) c.setLineDash([3 * d, 2 * d]);
+          const m = Math.round(2 * d); c.strokeRect(P(x * cs) - m, P(y * cs) - m, P(2 * cs) + 2 * m, P(2 * cs) + 2 * m); c.setLineDash([]);
+        }
+      } });
+    });
+    status();
+  }
+  function status() {
+    // U+200C between the parentheses keeps fonts from fusing "(c)" into a copyright sign
+    const titles = [('(a) glider → sigil'), ('(b) ram → sigil'), ('(‌c‌) glider → gap between posts')];
+    boards.forEach((B, i) => {
+      $('#c' + i + 't').textContent = titles[i];
+      const s = specs[i], ok = s.watch.every(([y, x]) => B.intact(y, x));
+      let line = s.kind === 'wall' ? (ok ? ('posts intact') : ('posts shaken')) : (ok ? ('sigil intact') : ('sigil broken'));
+      let verdict = '';
+      if (B.gen >= TMAX) {
+        if (s.kind === 'bounce') verdict = (`bounced · broken for ${lastBad[i] - firstBad[i] + 1} generations`);
+        if (s.kind === 'ram') verdict = (`cracked from t = ${firstBad[i]}`);
+        if (s.kind === 'wall') verdict = ('reflected · posts intact');
+      }
+      const el = $('#c' + i + 's'); el.textContent = verdict || line; el.style.color = verdict ? (s.kind === 'ram' ? C.rose : C.ok) : (ok ? C.dim : C.rose);
+    });
+    $('#colT').textContent = `t = ${boards[0].gen}`;
+  }
+  function stepAll() {
+    boards.forEach((B, i) => {
+      B.step(true);
+      const odd = B.gen & 1, t = trails[i];
+      for (let k = 0; k < t.length; k++) t[k] = (B.g[k] ^ odd) ? 1 : t[k] * 0.955;
+      const ok = specs[i].watch.every(([y, x]) => B.intact(y, x));
+      if (!ok) { if (firstBad[i] === null) firstBad[i] = B.gen; lastBad[i] = B.gen; }
+    });
+  }
+  const anim = animator(dt => {
+    if (boards[0].gen >= TMAX) { hold += dt; if (hold > 2800) reset(); else draw(); return; }
+    acc += dt * 0.02; let n = Math.floor(acc); acc -= n;
+    while (n-- > 0 && boards[0].gen < TMAX) stepAll();
+    draw();
+  });
+  function sync() { if (playing && visible) anim.start(); else anim.stop(); status(); }
+  watchVisible($('#coll'), v => { visible = v; sync(); });
+  onResize($('#coll'), layout);
+  reset(); layout();
+  if (reduced) { while (boards[0].gen < TMAX) stepAll(); draw(); }
+  return { state: () => ({ gen: boards[0].gen, firstBad, lastBad, intact: boards.map((B, i) => specs[i].watch.every(([y, x]) => B.intact(y, x))) }), run: n => { for (let k = 0; k < n && boards[0].gen < TMAX; k++) stepAll(); draw(); } };
+})();
+
+/* =============================== Fig. 8 · census =============================== */
+const Census = (() => {
+  const svg = $('#censusSvg'), range = $('#cnRange');
+  let mode = 'bounce', a = 90;
+  const SAMPLES = [96, 104, 112, 120, 128];
+  function draw() {
+    clear(svg);
+    const W = Math.max(280, contentWidth(svg.parentNode)), H = 150, L = 16, R = 16;
+    const x = g => L + (g / 136) * (W - L - R);
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const yA = 92;
+    // window
+    const len = mode === 'bounce' ? 28 : 129 - a;
+    const x0 = x(a), x1 = x(a + len);
+    S('rect', { x: x0, y: yA - 26, width: Math.max(2, x1 - x0), height: 52, fill: 'rgba(247,168,208,.42)', stroke: C.rose, 'stroke-width': 1 }, svg);
+    const wl = T(svg, x0 + 4, yA - 31, mode === 'bounce' ? ('bounce: broken for 28 generations') : ('crack: broken until the bell'), { class: 'sv-l', style: `fill:${C.rose}` });
+    const wlen = wl.getComputedTextLength(); if (x0 + 4 + wlen > W - 2) wl.setAttribute('x', Math.max(2, W - 2 - wlen));
+    // axis
+    S('line', { x1: x(0), y1: yA, x2: x(128), y2: yA, stroke: C.ink, 'stroke-width': 1.2 }, svg);
+    for (let g = 0; g <= 128; g += 16) { S('line', { x1: x(g), y1: yA - 4, x2: x(g), y2: yA + 4, stroke: C.ink }, svg); if (W > 420 || g % 32 === 0) T(svg, x(g), yA + 22, String(g), { class: 'sv-m', 'text-anchor': 'middle' }); }
+    T(svg, x(0), yA + 40, ('generation within the bell'), { class: 'sv-l' });
+    // span bracket
+    S('path', { d: `M${x(96)} ${yA + 30} V${yA + 34} H${x(128)} V${yA + 30}`, stroke: C.eth2, fill: 'none' }, svg);
+    T(svg, (x(96) + x(128)) / 2, yA + 48, ('33 generations'), { class: 'sv-m', 'text-anchor': 'middle', style: `fill:${C.eth2}` });
+    // samples
+    let broken = 0;
+    for (const sg of SAMPLES) {
+      const hit = sg >= a && sg < a + len; if (hit) broken++;
+      S('circle', { cx: x(sg), cy: yA, r: 6.5, fill: hit ? C.paper : C.eth, stroke: hit ? C.rose : C.eth, 'stroke-width': 1.6 }, svg);
+      if (hit) S('path', { d: `M${x(sg) - 3} ${yA - 3} L${x(sg) + 3} ${yA + 3} M${x(sg) + 3} ${yA - 3} L${x(sg) - 3} ${yA + 3}`, stroke: C.rose, 'stroke-width': 1.4 }, svg);
+    }
+    const intact = 5 - broken, alive = intact > 0;
+    T(svg, L, 18, alive ? (`${intact} of 5 samples intact → alive`) : ('0 of 5 samples intact → cracked'), { class: 'sv-t', style: `fill:${alive ? C.ok : C.rose};font-size:13px` });
+    $('#cnA').textContent = String(a);
+  }
+  function setMode(m) { mode = m; $('#cnBounce').setAttribute('aria-pressed', String(m === 'bounce')); $('#cnCrack').setAttribute('aria-pressed', String(m === 'crack')); range.max = m === 'bounce' ? 120 : 128; if (a > +range.max) a = +range.max; range.value = a; draw(); }
+  $('#cnBounce').addEventListener('click', () => setMode('bounce'));
+  $('#cnCrack').addEventListener('click', () => setMode('crack'));
+  range.addEventListener('input', () => { a = +range.value; draw(); });
+  onResize(svg.parentNode, draw);
+  draw();
+})();
+
+/* =============================== chart helpers =============================== */
+function niceTicks(lo, hi, n) { const span = hi - lo, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0))), r = step0 / mag; const step = (r < 1.5 ? 1 : r < 3 ? 2 : r < 7 ? 5 : 10) * mag; const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-12; v += step) out.push(+v.toFixed(10)); return { ticks: out, step }; }
+
+/* =============================== Fig. 9 · price =============================== */
+const Price = (() => {
+  const svg = $('#priceSvg'), range = $('#prRange');
+  const p0 = 0.03, rc = 1 / (6 * Math.log2(1.003));
+  function series(r) {
+    let ps = p0, ts = 0; const pts = [[0, p0]]; let max = p0;
+    const pAt = t => p0 + (ps - p0) * Math.pow(2, -(t - ts) / 6);
+    if (r > 0) {
+      const dt = 1 / r;
+      for (let k = 0; k * dt < 36 - 1e-9; k++) {
+        const t = k * dt, p = pAt(t);
+        if (k > 0 && dt > 0.2) for (let u = (k - 1) * dt + 0.2; u < t; u += 0.2) pts.push([u, pAt(u)]);
+        pts.push([t, p]); ps = 1.003 * p; ts = t; pts.push([t, ps]); if (ps > max) max = ps;
+      }
+    }
+    for (let u = 36; u <= 48 + 1e-9; u += 0.2) pts.push([u, pAt(u)]);
+    return { pts, max };
+  }
+  function pstar(r) { if (r <= 0) return null; const a = Math.pow(2, -1 / (6 * r)); if (1.003 * a >= 1) return null; return p0 * (1 + 0.003 * a / (1 - 1.003 * a)); }
+  function draw() {
+    clear(svg);
+    const r = +range.value, W = Math.max(280, contentWidth(svg.parentNode)), H = 250, L = 58, R = 14, Tp = 16, Bt = 34;
+    const { pts, max } = series(r), ps = pstar(r);
+    const top = Math.max(0.062, max * 1.06, ps ? Math.min(ps * 1.08, 0.5) : 0);
+    const y0v = 0.0255, x = t => L + (t / 48) * (W - L - R), y = v => Tp + (1 - (v - y0v) / (top - y0v)) * (H - Tp - Bt);
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const { ticks } = niceTicks(0.03, top, 4);
+    for (const v of ticks) { S('line', { x1: L, y1: y(v), x2: W - R, y2: y(v), stroke: C.g1 }, svg); T(svg, L - 8, y(v) + 4, v.toFixed(v < 0.1 ? 3 : 2), { class: 'sv-m', 'text-anchor': 'end' }); }
+    for (let h = 0; h <= 48; h += 6) { S('line', { x1: x(h), y1: H - Bt, x2: x(h), y2: H - Bt + 4, stroke: C.ink }, svg); if (W > 420 || h % 12 === 0) T(svg, x(h), H - Bt + 18, h + ' h', { class: 'sv-m', 'text-anchor': 'middle' }); }
+    S('line', { x1: L, y1: H - Bt, x2: W - R, y2: H - Bt, stroke: C.ink, 'stroke-width': 1.2 }, svg);
+    S('rect', { x: x(36), y: Tp, width: x(48) - x(36), height: H - Tp - Bt, fill: 'rgba(204,238,255,.35)' }, svg);
+    T(svg, x(42), Tp + 14, ('no sales'), { class: 'sv-l', 'text-anchor': 'middle' });
+    S('line', { x1: L, y1: y(p0), x2: W - R, y2: y(p0), stroke: C.dim, 'stroke-dasharray': '4 4' }, svg);
+    T(svg, W - R - 2, y(p0) + 15, ('floor p₀ = 0.03'), { class: 'sv-l', 'text-anchor': 'end' });
+    if (ps && ps < top) { S('line', { x1: L, y1: y(ps), x2: x(36), y2: y(ps), stroke: C.rose, 'stroke-dasharray': '5 4', 'stroke-width': 1.3 }, svg); T(svg, L + 6, y(ps) - 6, `p* = ${ps.toFixed(4)}`, { class: 'sv-m', style: `fill:${C.rose}` }); }
+    let d = ''; pts.forEach(([t, v], i) => { d += (i ? 'L' : 'M') + x(t).toFixed(1) + ' ' + y(v).toFixed(1); });
+    S('path', { d, fill: 'none', stroke: C.eth, 'stroke-width': 1.6, 'stroke-linejoin': 'round' }, svg);
+    T(svg, 4, 12, ('ETH'), { class: 'sv-l' });
+    $('#prR').textContent = 'r = ' + r;
+    let out;
+    if (r === 0) out = ('No sales: the price sits on the floor.');
+    else if (ps) out = (`Steady price <b>p* ≈ ${ps.toFixed(4)} ETH</b>, ${Math.round((ps / p0 - 1) * 100)}% above the floor. Critical rate r<sub>c</sub> ≈ ${rc.toFixed(1)} sales per hour.`);
+    else out = (`<b>r ≥ r<sub>c</sub> ≈ ${rc.toFixed(1)}</b> per hour: no steady price. It climbs while sales last, then the premium halves every 6 hours.`);
+    $('#prOut').innerHTML = out;
+  }
+  range.addEventListener('input', draw); onResize(svg.parentNode, draw);
+  draw();
+  return { pstar };
+})();
+
+/* =============================== Fig. 10 · split =============================== */
+function buildSplit() {
+  const svg = $('#splitSvg'); clear(svg);
+  const W = Math.max(280, contentWidth(svg.parentNode)), narrow = W < 640;
+  const nodeW = 10, top = 30, Hs = narrow ? 196 : 232, gapR = 12;
+  const xm = narrow ? Math.round(W * 0.42) : Math.round(W * 0.30);
+  const xr = narrow ? W - nodeW - 1 : Math.round(W * 0.56);
+  const defs = S('defs', null, svg);
+  const lg = S('linearGradient', { id: 'spTrib', x1: 0, y1: 0, x2: 1, y2: 0 }, defs); S('stop', { offset: 0, 'stop-color': C.pink }, lg); S('stop', { offset: 1, 'stop-color': C.lav }, lg);
+  // left node: tribute, chest, burn, ops (top to bottom)
+  const left = {}; let yy = top;
+  for (const [k, v] of [['trib', 45], ['chest', 42], ['burn', 8], ['ops', 5]]) { left[k] = [yy, yy + Hs * v / 100]; yy += Hs * v / 100; }
+  // right nodes: what returns to players, then what leaves, with a gap between the two groups
+  const RIGHT = [['trib', 45], ['settle', 37.8], ['carry', 4.2], ['burn', 8], ['ops', 5]];
+  const sc = (Hs - gapR) / 100, right = {}; yy = top;
+  RIGHT.forEach(([k, v], i) => { if (i === 2) yy += gapR; right[k] = [yy, yy + v * sc]; yy += v * sc; });
+  const mid = left.chest, settleH = (mid[1] - mid[0]) * 0.9;
+  const ribbon = (xa, ya0, ya1, xb, yb0, yb1, fill, op) => { const xc = (xa + xb) / 2; S('path', { d: `M${xa} ${ya0} C${xc} ${ya0}, ${xc} ${yb0}, ${xb} ${yb0} L${xb} ${yb1} C${xc} ${yb1}, ${xc} ${ya1}, ${xa} ${ya1} Z`, fill, 'fill-opacity': op }, svg); };
+  const COL = { trib: C.lav, settle: C.eth, carry: '#a9abf3', burn: C.aqua, ops: '#cfcbe6' };
+  ribbon(nodeW, left.trib[0], left.trib[1], xr, right.trib[0], right.trib[1], 'url(#spTrib)', 0.78);
+  ribbon(nodeW, mid[0], mid[1], xm, mid[0], mid[1], C.eth, 0.26);
+  ribbon(xm + nodeW, mid[0], mid[0] + settleH, xr, right.settle[0], right.settle[1], C.eth, 0.30);
+  ribbon(xm + nodeW, mid[0] + settleH, mid[1], xr, right.carry[0], right.carry[1], COL.carry, 0.5);
+  ribbon(nodeW, left.burn[0], left.burn[1], xr, right.burn[0], right.burn[1], C.aqua, 0.45);
+  ribbon(nodeW, left.ops[0], left.ops[1], xr, right.ops[0], right.ops[1], COL.ops, 0.65);
+  S('rect', { x: 0, y: top, width: nodeW, height: Hs, fill: C.deep }, svg);
+  S('rect', { x: xm, y: mid[0], width: nodeW, height: mid[1] - mid[0], fill: C.eth }, svg);
+  for (const [k] of RIGHT) S('rect', { x: xr, y: right[k][0], width: nodeW, height: right[k][1] - right[k][0], fill: COL[k] }, svg);
+  T(svg, 0, top - 12, ('1 ETH paid for a sigil'), { class: 'sv-t' });
+  T(svg, xm - 8, (mid[0] + mid[1]) / 2 + 4, ('war chest · 42%'), { class: 'sv-t', 'text-anchor': 'end' });
+  const NAME = { trib: ('tribute to standing sigils'), settle: ('war chest paid out at season end'), carry: ('carried to next season'), burn: ('buy and burn TAUFA'), ops: ('operations') };
+  const PCT = { trib: '45%', settle: '37.8%', carry: '4.2%', burn: '8%', ops: '5%' };
+  let H;
+  if (!narrow) {
+    const lx = xr + nodeW + 10;
+    for (const k of ['trib', 'settle']) { const c = (right[k][0] + right[k][1]) / 2; T(svg, lx, c - 2, NAME[k], { class: 'sv-l', style: `fill:${C.ink2}` }); T(svg, lx, c + 13, PCT[k], { class: 'sv-m', style: `fill:${C.deep};font-weight:600` }); }
+    // the three small destinations: spread labels at least 17 px apart, with leader lines
+    const small = ['carry', 'burn', 'ops'].map(k => ({ k, c: (right[k][0] + right[k][1]) / 2 }));
+    small.forEach((s, i) => { s.p = i ? Math.max(s.c, small[i - 1].p + 17) : s.c - 4; });
+    small.forEach(s => {
+      if (Math.abs(s.p - s.c) > 1.5) S('path', { d: `M${xr + nodeW + 1} ${s.c} L${lx - 3} ${s.p - 4}`, stroke: C.rule2, fill: 'none' }, svg);
+      T(svg, lx, s.p, `${NAME[s.k]} · ${PCT[s.k]}`, { class: 'sv-l', style: `fill:${C.ink2}` });
+    });
+    const bx = W - 6;
+    const bracket = (y0, y1, t1, t2, col) => {
+      S('path', { d: `M${bx - 6} ${y0 + 1} H${bx} V${y1 - 1} H${bx - 6}`, fill: 'none', stroke: col, 'stroke-width': 1.4 }, svg);
+      T(svg, bx - 12, (y0 + y1) / 2 - 3, t1, { class: 'sv-m', 'text-anchor': 'end', style: `fill:${col};font-weight:600;font-size:14px` });
+      T(svg, bx - 12, (y0 + y1) / 2 + 13, t2, { class: 'sv-l', 'text-anchor': 'end', style: `fill:${col}` });
+    };
+    bracket(right.trib[0], right.settle[1], '82.8%', ('back to this season’s players'), C.eth2);
+    bracket(right.carry[0], Math.max(right.ops[1], small[2].p + 4), '17.2%', ('leaves this season'), C.rose);
+    H = Math.max(top + Hs, small[2].p + 6) + 12;
+  } else {
+    // legend list under the diagram
+    let ly = top + Hs + 30;
+    for (const [k] of RIGHT) {
+      S('rect', { x: 0, y: ly - 9, width: 10, height: 10, rx: 2, fill: k === 'trib' ? 'url(#spTrib)' : COL[k], 'fill-opacity': k === 'settle' ? 0.55 : 1 }, svg);
+      T(svg, 18, ly, NAME[k], { class: 'sv-l', style: `fill:${C.ink2}` });
+      T(svg, W, ly, PCT[k], { class: 'sv-m', 'text-anchor': 'end', style: `fill:${C.deep};font-weight:600` });
+      if (k === 'settle') { ly += 8; S('line', { x1: 0, y1: ly, x2: W, y2: ly, stroke: C.rule2 }, svg); ly += 8; }
+      ly += 21;
+    }
+    ly += 6;
+    T(svg, 0, ly, ('back to this season’s players'), { class: 'sv-t', style: `fill:${C.eth2}` }); T(svg, W, ly, '82.8%', { class: 'sv-m', 'text-anchor': 'end', style: `fill:${C.eth2};font-weight:700` });
+    ly += 20;
+    T(svg, 0, ly, ('leaves this season'), { class: 'sv-t', style: `fill:${C.rose}` }); T(svg, W, ly, '17.2%', { class: 'sv-m', 'text-anchor': 'end', style: `fill:${C.rose};font-weight:700` });
+    H = ly + 8;
+  }
+  svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+}
+buildSplit(); onResize($('#splitSvg').parentNode, buildSplit);
+
+/* =============================== Fig. 11 · who loses =============================== */
+const Fees = (() => {
+  const svg = $('#feeSvg'), range = $('#feeRange');
+  // Integrated simulation, tuned parameters, arrival curves pooled; one value per crowd size N = 100, 300, 1,000.
+  const LV = [
+    { fee: '0.5', vol: '25', n: [33, 55, 58], lo: 33, hi: 58 },
+    { fee: '2', vol: '100', n: [2, 6, 9], lo: 2, hi: 9 },
+    { fee: '5', vol: '250', n: [0, 0, 0], lo: 0, hi: 1 },
+  ];
+  const NL = ['100', '300', '1,000'];
+  function draw() {
+    clear(svg);
+    const sel = +range.value, W = Math.max(280, contentWidth(svg.parentNode)), narrow = W < 520;
+    const H = 272, L = 46, R = 12, Tp = 16, Bt = 54;
+    const y = v => Tp + (1 - v / 100) * (H - Tp - Bt), colW = (W - L - R) / 3, cx = i => L + colW * (i + 0.5);
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    for (let v = 0; v <= 100; v += 25) { S('line', { x1: L, y1: y(v), x2: W - R, y2: y(v), stroke: v === 0 ? C.ink : C.g1, 'stroke-width': v === 0 ? 1.2 : 1 }, svg); T(svg, L - 8, y(v) + 4, v + '%', { class: 'sv-m', 'text-anchor': 'end' }); }
+    S('line', { x1: L, y1: y(50), x2: W - R, y2: y(50), stroke: C.rule2, 'stroke-dasharray': '3 4' }, svg);
+    T(svg, W - R - 2, y(50) - 6, ('half of all players'), { class: 'sv-l', 'text-anchor': 'end' });
+    const offs = [-8, 0, 8];
+    LV.forEach((lv, i) => {
+      const on = i === sel, col = on ? C.rose : C.stay;
+      if (on) S('rect', { x: cx(i) - colW / 2 + 4, y: Tp - 8, width: colW - 8, height: H - Tp - Bt + 8, fill: 'rgba(247,168,208,.16)' }, svg);
+      const yTop = y(lv.hi), yBot = y(lv.lo);
+      S('rect', { x: cx(i) - 13, y: Math.min(yTop, yBot - 3), width: 26, height: Math.max(3, yBot - yTop), rx: 3, fill: col, 'fill-opacity': on ? 0.18 : 0.12, stroke: col, 'stroke-opacity': 0.6 }, svg);
+      lv.n.forEach((v, j) => S('circle', { cx: cx(i) + offs[j], cy: y(v), r: 3.6, fill: on ? C.rose : C.paper, stroke: col, 'stroke-width': 1.4 }, svg));
+      if (on && lv.hi - lv.lo > 6) {
+        const labs = lv.n.map((v, j) => ({ y: y(v) + 4, t: narrow ? NL[j] : NL[j] + (' players') })).sort((a, b) => a.y - b.y);
+        for (let k = 1; k < labs.length; k++) if (labs[k].y - labs[k - 1].y < 13) labs[k].y = labs[k - 1].y + 13;
+        labs.forEach(l => T(svg, cx(i) + 18, l.y, l.t, { class: 'sv-m', style: `fill:${C.ink2}` }));
+      }
+      T(svg, cx(i), y(lv.hi) - 10, lv.lo === lv.hi ? lv.lo + '%' : `${lv.lo}–${lv.hi}%`, { class: 'sv-m', 'text-anchor': 'middle', style: `fill:${on ? C.rose : C.ink2};font-weight:600;font-size:12.5px` });
+      T(svg, cx(i), H - Bt + 20, `${lv.fee} ETH`, { class: 'sv-t', 'text-anchor': 'middle', style: on ? `fill:${C.deep}` : '' });
+      T(svg, cx(i), H - Bt + 36, narrow ? (`≈ ${lv.vol} ETH/day`) : (`≈ ${lv.vol} ETH traded a day`), { class: 'sv-l', 'text-anchor': 'middle' });
+    });
+    $('#feeV').textContent = `${LV[sel].fee} ETH`;
+    const outs = [
+      ('At <b>0.5 ETH</b> a day of creator fees (about 25 ETH of TAUFA trading a day), <span class="neg">33–58%</span> of players lost money, and the latest tenth of players had a median result of <span class="neg">−30% to −40%</span>.'),
+      ('At <b>2 ETH</b> a day (about 100 ETH of trading a day), <span class="neg">2–9%</span> of players lost money.'),
+      ('At <b>5 ETH</b> a day (about 250 ETH of trading a day), <span class="neg">0–1%</span> of players lost money. Treat this as optimistic: in the model, demand does not react to returns.'),
+    ];
+    $('#feeOut').innerHTML = outs[sel];
+  }
+  range.addEventListener('input', draw); onResize(svg.parentNode, draw);
+  draw();
+})();
+
+/* =============================== Fig. 12 · weather =============================== */
+const Weather = (() => {
+  const svg = $('#wxSvg'), range = $('#wxRange');
+  const kOf = s => Math.min(4, Math.floor(Math.log2(1 + s / 0.1) + 1e-12));
+  const ramSVG = (() => { let r = ''; for (const [dy, dx] of PC.RN) r += `<rect x="${dx}" y="${dy}" width="1" height="1"/>`; return `<svg width="16" height="16" viewBox="0 0 4 4" shape-rendering="crispEdges" style="display:inline-block;vertical-align:-3px;margin-left:4px;fill:${C.field}" aria-hidden="true">${r}</svg>`; })();
+  function draw() {
+    clear(svg);
+    const s = +range.value / 100, k = kOf(s), W = Math.max(280, contentWidth(svg.parentNode)), H = 226, L = 40, R = 14, Tp = 26, Bt = 34;
+    const x = v => L + (v / 2) * (W - L - R), y = v => Tp + (1 - v / 4.4) * (H - Tp - Bt);
+    svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    for (let j = 0; j <= 4; j++) { S('line', { x1: L, y1: y(j), x2: W - R, y2: y(j), stroke: j === 0 ? C.ink : C.g1, 'stroke-width': j === 0 ? 1.2 : 1 }, svg); T(svg, L - 10, y(j) + 4, String(j), { class: 'sv-m', 'text-anchor': 'end' }); }
+    T(svg, 0, 12, ('rams per bell, k'), { class: 'sv-l' });
+    const th = [0, 0.1, 0.3, 0.7, 1.5, 2];
+    let dd = '';
+    for (let j = 0; j < 5; j++) dd += (j ? `L${x(th[j])} ${y(j)}` : `M${x(th[j])} ${y(j)}`) + ` L${x(th[j + 1])} ${y(j)}`;
+    S('path', { d: dd, fill: 'none', stroke: C.eth, 'stroke-width': 2 }, svg);
+    for (let j = 1; j <= 4; j++) {
+      S('line', { x1: x(th[j]), y1: y(j - 1), x2: x(th[j]), y2: y(j), stroke: C.eth, 'stroke-dasharray': '2 3' }, svg);
+      S('circle', { cx: x(th[j]), cy: y(j), r: 3, fill: C.eth }, svg);
+      S('circle', { cx: x(th[j]), cy: y(j - 1), r: 3, fill: C.paper, stroke: C.eth, 'stroke-width': 1.3 }, svg);
+      S('line', { x1: x(th[j]), y1: H - Bt, x2: x(th[j]), y2: H - Bt + 4, stroke: C.ink }, svg);
+      T(svg, x(th[j]), H - Bt + 18, String(th[j]), { class: 'sv-m', 'text-anchor': 'middle' });
+    }
+    T(svg, x(0), H - Bt + 18, '0', { class: 'sv-m', 'text-anchor': 'middle' });
+    T(svg, W - R, H - Bt + 18, ('2 ETH'), { class: 'sv-m', 'text-anchor': 'end' });
+    S('line', { x1: x(s), y1: Tp - 6, x2: x(s), y2: H - Bt, stroke: C.rose, 'stroke-dasharray': '3 3' }, svg);
+    S('circle', { cx: x(s), cy: y(k), r: 5.5, fill: C.rose, stroke: C.paper, 'stroke-width': 1.5 }, svg);
+    $('#wxV').textContent = `s = ${s.toFixed(2)} ETH`;
+    const next = k < 4 ? 0.1 * (Math.pow(2, k + 1) - 1) : null;
+    const icons = ramSVG.repeat(k);
+    $('#wxOut').innerHTML = (k === 0 ? ('<b>k = 0</b>: no Arctic rams this bell.') : (`<b>k = ${k}</b>: ${k} Arctic ram${k > 1 ? 's' : ''} this bell`) + icons + '.') + (next !== null ? (` The next one needs s ≥ ${next.toFixed(1)} ETH.`) : (' Four is the cap.'));
+  }
+  range.addEventListener('input', draw); onResize(svg.parentNode, draw);
+  draw();
+})();
+
+/* =============================== book table labels and the book's figure =============================== */
+function provLabels() { $$('.prov-r .bk').forEach(e => e.setAttribute('data-l', ('In Snowmoon'))); $$('.prov-r .us').forEach(e => e.setAttribute('data-l', ('In this game'))); }
+provLabels();
+(() => { const b = $('#zeiGrid svg'); if (b && reduced && typeof b.pauseAnimations === 'function') b.pauseAnimations(); })();
+
+/* =============================== contents: scroll spy =============================== */
+(() => {
+  const links = $$('.toc a'); if (!links.length || !('IntersectionObserver' in window)) return;
+  const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { links.forEach(a => a.classList.remove('on')); const a = map.get(e.target.id); if (a) a.classList.add('on'); } }); }, { rootMargin: '-35% 0px -60% 0px' });
+  $$('.essay > section[id]').forEach(s => io.observe(s));
+})();
+
+/* =============================== math =============================== */
+function renderMath() {
+  if (typeof window.renderMathInElement !== 'function') return;
+  window.renderMathInElement(document.body, { delimiters: [{ left: '\\[', right: '\\]', display: true }, { left: '\\(', right: '\\)', display: false }], throwOnError: false, strict: false, ignoredClasses: ['ro'] });
+}
+document.addEventListener('DOMContentLoaded', renderMath);
+
+window.__math = { hero: Hero.state, scrub: Scrub.state, coll: Coll, pstar: Price.pstar, f: fEngine };
+})();
+</script>
+</body>
+</html>

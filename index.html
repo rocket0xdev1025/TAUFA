@@ -1,0 +1,2013 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minpentai · Play</title>
+<link rel="icon" href="/favicon.ico?v=1" sizes="16x16 32x32 48x48 64x64">
+<link rel="icon" href="/favicon-32x32.png?v=1" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon.svg?v=1" type="image/svg+xml" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=1" sizes="180x180">
+<meta name="description" content="Minpentai, the strategy game from the novel Snowmoon, on Ethereum. Plant a sigil, wall it, ram theirs, or play the free practice round first.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<style>
+/* Snowmoon x Ethereum x a mathematician's notebook (shared design system) */
+:root{
+  --page:#f6f4ff; --paper:#fdfcff; --ink:#1d1a3a; --dim:#6e6a8f; --rule:#e6e1fb; --rule2:#d6cff7;
+  --eth:#5b5ee8; --eth2:#4146c9; --deep:#272b6e; --field:#334488;
+  --cyan:#cceeff; --lav:#c9a7f5; --aqua:#33ddee; --lime:#a5ef7a; --pink:#f7a8d0; --peach:#ffcfae;
+  --prism:linear-gradient(90deg,#f7a8d0,#c9a7f5 30%,#8fb6ff 55%,#7fe3f0 78%,#a5ef7a);
+  --text2:#4b4770; --loss:#c2357a; --gain:#16845c;
+  --serif:"Newsreader","Iowan Old Style",Georgia,serif;
+  --ui:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --colL:clamp(220px,18vw,292px); --colR:clamp(340px,27.5vw,420px); --gap:28px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--ink);font:14px/1.5 var(--ui);-webkit-font-smoothing:antialiased;
+  background-color:var(--page);
+  background-image:linear-gradient(to right,#e0daf9 1px,transparent 1px),linear-gradient(to bottom,#e0daf9 1px,transparent 1px),linear-gradient(to right,#ece8fd 1px,transparent 1px),linear-gradient(to bottom,#ece8fd 1px,transparent 1px);
+  background-size:64px 64px,64px 64px,8px 8px,8px 8px}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--eth2)}
+:focus-visible{outline:2px solid var(--eth);outline-offset:2px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.defs{position:absolute;width:0;height:0}
+.num,.mono{font-family:var(--mono)}
+
+/* ---------- shared top nav ---------- */
+.mp-nav{position:relative;z-index:5;display:flex;align-items:center;gap:20px;height:56px;padding:0 24px;background:var(--paper);border-bottom:1px solid var(--rule)}
+.mp-nav::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--prism)}
+.mp-brand{display:flex;align-items:center;gap:11px;color:inherit;text-decoration:none;min-width:0}
+.mp-logo{width:30px;height:30px;flex:none}
+.mp-word{display:flex;flex-direction:column;min-width:0}
+.mp-word b{font:600 21px/1 var(--serif);letter-spacing:.005em;color:var(--deep)}
+.mp-word small{font:500 11.5px/1.25 var(--ui);color:var(--dim);margin-top:3px;white-space:nowrap}
+.mp-links{display:flex;align-items:center;gap:24px;margin-left:auto}
+.mp-links a{position:relative;padding:6px 0;font:600 13.5px/1 var(--ui);color:var(--dim);text-decoration:none;white-space:nowrap}
+.mp-links a:hover{color:var(--ink)}
+.mp-links a.on{color:var(--ink)}
+.mp-links a.on::after{content:"";position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--prism)}
+.mp-lang{display:inline-flex;align-items:center;gap:5px;margin-left:6px;padding:6px 11px;border:1px solid var(--rule2);border-radius:999px;background:var(--paper);font:600 12px/1 var(--ui);color:#a39fc2;white-space:nowrap}
+.mp-lang:hover{border-color:var(--eth)}
+.mp-lang .l-sep{color:var(--rule2)}
+.mp-lang[data-lang="en"] .l-en,.mp-lang[data-lang="zh"] .l-zh{color:var(--ink)}
+
+/* ---------- running tape (status register) ---------- */
+.tape{position:relative;height:26px;overflow:hidden;background:var(--paper);border-bottom:1px solid var(--rule)}
+.tape .rail{position:absolute;left:0;top:0;white-space:nowrap;font:500 10.5px/26px var(--mono);letter-spacing:.04em;color:var(--dim);will-change:transform}
+.tape .rail span{margin-right:44px}
+.tape .rail span::before{content:"\00a7";margin-right:9px;color:#b9b2e6}
+.tape .rail i{font-style:normal;font-weight:600;color:var(--eth2)}
+.tape .rail em{font-style:normal;color:var(--loss)}
+
+/* ---------- layout ---------- */
+.shell{display:flex;flex-direction:column;height:100vh;min-height:600px}
+.app{flex:1;min-height:0;width:100%;max-width:1720px;margin:0 auto;padding:18px 24px 0;display:grid;
+  grid-template-columns:var(--colL) minmax(0,1fr) var(--colR);grid-template-rows:minmax(0,1fr) auto;
+  grid-template-areas:"margin stage rail" "tl tl tl";column-gap:var(--gap)}
+.margin{grid-area:margin;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:22px;padding:0 4px 18px 0;scrollbar-width:thin;scrollbar-color:var(--rule2) transparent}
+.stage{grid-area:stage;min-height:0;min-width:0;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.rail2{grid-area:rail;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:0 2px 18px 0;scrollbar-width:thin;scrollbar-color:var(--rule2) transparent}
+.rail2>*{flex-shrink:0}
+
+/* ---------- figure conventions ---------- */
+.fignum{font:700 10.5px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--eth);margin-right:9px;white-space:nowrap}
+.caption{margin:0;font:italic 400 13.5px/1.45 var(--serif);color:var(--text2)}
+.caption.sm{font-size:12.5px}
+
+/* Fig. 1: the field */
+.fig1{position:relative;margin:0;width:560px;max-width:100%}
+.fighead{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 14px;padding:0 0 9px 30px}
+.figt{margin:0;display:flex;align-items:baseline;min-width:0;font:500 19px/1.15 var(--serif);color:var(--ink)}
+.figt #figTitle{white-space:nowrap}
+.bell{display:flex;align-items:center;gap:9px;flex:none}
+.ring{width:22px;height:22px;display:block}
+.call{font:600 13.5px/1 var(--mono);letter-spacing:.16em;color:var(--eth2);white-space:nowrap}
+.call.hot{color:var(--loss)}
+.plot{position:relative;width:590px;height:578px}
+.boardwrap{position:absolute;left:30px;top:18px;width:560px;height:560px;background:var(--field);box-shadow:0 0 0 1px var(--deep),0 22px 44px -32px rgba(39,43,110,.75)}
+.boardwrap canvas{position:absolute;left:0;top:0;width:100%;height:100%;display:block;image-rendering:pixelated}
+#cv{cursor:crosshair}
+#fx{pointer-events:none}
+.ruler{position:absolute;pointer-events:none;font:500 9.5px/1 var(--mono);color:var(--dim)}
+.ruler.rt{left:30px;top:0;right:0;height:18px}
+.ruler.rt i{position:absolute;bottom:0;width:1px;height:3px;background:#c4bcef}
+.ruler.rt i.mj{height:6px;background:#8d88b3}
+.ruler.rt b{position:absolute;bottom:8px;transform:translateX(-50%);font-weight:500}
+.ruler.rt b.end{transform:translateX(-100%)}
+.ruler.rl{left:0;top:18px;bottom:0;width:30px}
+.ruler.rl i{position:absolute;right:0;height:1px;width:3px;background:#c4bcef}
+.ruler.rl i.mj{width:6px;background:#8d88b3}
+.ruler.rl b{position:absolute;right:9px;transform:translateY(-50%);font-weight:500}
+.mk{position:absolute;display:none;pointer-events:none;z-index:2}
+.plot.hov .mk{display:block}
+.mk b{position:absolute;padding:2px 3px;border-radius:2px;background:var(--eth);color:#fff;font:600 9.5px/1 var(--mono);white-space:nowrap}
+.mkx{top:0;height:18px;width:1px;background:linear-gradient(var(--eth),var(--eth)) bottom/1px 7px no-repeat}
+.mkx b{bottom:7px;left:0;transform:translateX(-50%)}
+.mky{left:0;width:30px;height:1px;background:linear-gradient(90deg,var(--eth),var(--eth)) right/7px 1px no-repeat}
+.mky b{right:8px;top:0;transform:translateY(-50%)}
+.readout{display:flex;flex-wrap:wrap;gap:2px 0;padding:8px 0 0 30px;min-height:25px;font:500 11.5px/1.4 var(--mono);color:var(--ink);white-space:nowrap}
+.readout span{color:var(--dim)}
+.readout em{font-style:normal;color:var(--eth2)}
+.readout .sep{color:var(--rule2);padding:0 7px}
+.fig1 .caption{padding:5px 0 0 30px}
+.hint{position:absolute;left:50%;top:12px;transform:translateX(-50%);max-width:calc(100% - 24px);background:var(--paper);color:var(--deep);border:1px solid var(--rule2);padding:6px 11px;font:600 12.5px/1.35 var(--ui);border-radius:4px;pointer-events:none;opacity:0;transition:opacity .2s;box-shadow:0 10px 24px -16px rgba(39,43,110,.6);z-index:4;text-align:center}
+.hint.show{opacity:1}
+
+/* ---------- margin column: Fig. 2, key, four lines ---------- */
+.note h3,.panel h3{display:flex;align-items:baseline;gap:8px;margin:0 0 10px;padding-bottom:7px;border-bottom:1px solid var(--rule2);font:700 10.5px/1.2 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.ann{margin-left:auto;font:italic 400 12.5px/1 var(--serif);letter-spacing:0;text-transform:none;color:var(--dim);white-space:nowrap}
+.fig2{margin:0}
+.fig2 .fh{display:flex;align-items:baseline;margin:0 0 8px;font:500 15.5px/1.2 var(--serif);color:var(--ink)}
+.lpbox{width:100%}
+.lpbox canvas{display:block;image-rendering:pixelated;box-shadow:0 0 0 1px var(--rule2)}
+.lpmeta{display:flex;justify-content:space-between;gap:8px;margin:6px 0 5px;font:500 10.5px/1.35 var(--mono);color:var(--dim)}
+.lpmeta b{font-weight:500;color:var(--ink);white-space:nowrap}
+.keylist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.keylist li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:9px;align-items:center}
+.keylist svg{width:16px;height:16px;display:block}
+.keylist span{font:600 12px/1.3 var(--ui);color:var(--ink)}
+.keylist b{font-weight:600}
+.keylist small{font:400 11.5px/1.3 var(--ui);color:var(--dim)}
+.keylist small::before{content:"·";margin:0 5px 0 4px;color:#b9b2e6}
+.how4{list-style:none;margin:0;padding:0;counter-reset:h;display:grid;gap:7px}
+.how4 li{counter-increment:h;position:relative;padding-left:20px;font:400 14px/1.4 var(--serif);color:var(--ink)}
+.how4 li::before{content:counter(h);position:absolute;left:0;top:1px;font:600 11px/1.6 var(--mono);color:var(--eth)}
+.howlinks{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 0 0 20px;font:600 12.5px/1.3 var(--ui)}
+.howlinks a{text-decoration:none;border-bottom:1px solid var(--rule2)}
+.howlinks a:hover{border-bottom-color:var(--eth)}
+.fig5{margin:0}
+.fig5 .fh{display:flex;align-items:baseline;margin:0 0 9px;font:500 15.5px/1.2 var(--serif);color:var(--ink)}
+.rulesvg{display:block;width:100%;max-width:252px;height:auto;margin-bottom:7px}
+.rulesvg text{font:500 10px var(--mono);fill:var(--dim)}
+.mq{margin:0;padding:2px 0 2px 14px;border-left:1px solid var(--rule2)}
+.mq p{margin:0;font:italic 400 14.5px/1.45 var(--serif);color:var(--text2)}
+.mq a{display:inline-block;margin-top:5px;font:600 10.5px/1.2 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-decoration:none}
+.mq a:hover{color:var(--eth2)}
+
+/* ---------- right rail: notebook panels ---------- */
+.panel{position:relative;background:var(--paper);border:1px solid var(--rule);border-radius:3px;padding:13px 16px 15px}
+.you::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:2px;background:var(--prism)}
+.big{display:flex;align-items:baseline;gap:8px;margin:2px 0 2px}
+.big #earned{font:500 31px/1.05 var(--mono);letter-spacing:-.03em}
+.big small{font:500 12.5px var(--ui);color:var(--dim)}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) auto;margin:8px 0 0;font:500 12px/1.3 var(--ui)}
+.kv dt,.kv dd{padding:5px 0;border-bottom:1px solid var(--rule)}
+.kv dt{color:var(--dim);padding-right:10px}
+.kv dd{margin:0;text-align:right;font:500 11.5px/1.3 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.kv dt:nth-last-child(2),.kv dd:last-child{border-bottom:0}
+.gold{color:var(--eth2)} .red{color:var(--loss)} .moss{color:var(--gain)}
+.plant{display:flex;gap:8px;margin-top:12px}
+.btn{flex:1;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:42px;padding:10px 13px;border:1px solid var(--eth2);border-radius:6px;background:var(--eth);color:#fff;font:700 14px/1.1 var(--ui);box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 10px 22px -16px rgba(65,70,201,.9)}
+.btn:hover{background:var(--eth2)}
+.btn span{white-space:nowrap}
+.btn b{padding-left:9px;border-left:1px solid rgba(255,255,255,.35);font:500 12px var(--mono);white-space:nowrap}
+.btn b:empty{display:none}
+.btn.ghost{flex:0 0 90px;justify-content:center;background:var(--paper);border-color:var(--rule2);color:var(--deep);box-shadow:none}
+.btn.ghost:hover{border-color:var(--eth);background:#f3f1ff}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.disc{margin:10px 0 0;padding:1px 0 1px 10px;border-left:2px solid var(--pink);font:400 13px/1.45 var(--serif);color:var(--text2)}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:12px;border:1px solid var(--rule2);border-radius:5px;overflow:hidden}
+.tool{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 7px;border:0;border-right:1px solid var(--rule2);background:var(--paper);font:600 12px/1.15 var(--ui);color:var(--deep)}
+.tool:last-child{border-right:0}
+.tool svg{width:16px;height:16px;display:block;shape-rendering:crispEdges}
+.tool small{font:500 10px/1 var(--mono);color:#9a96b8}
+.tool:hover{background:#f3f1ff}
+.tool.on{background:#ecebff;color:var(--eth2);box-shadow:inset 0 -2px 0 var(--eth)}
+.tools.dirs{margin-top:6px}
+.tools.dirs .tool{font:600 14px/1 var(--mono);padding:7px 2px}
+.fig3 .fh{display:flex;align-items:baseline;margin:0 0 6px;font:500 15px/1.25 var(--serif);color:var(--ink)}
+.splitfig svg{display:block;width:100%;height:auto;overflow:visible}
+.splitfig .sft{font:500 10.5px var(--mono);fill:var(--dim)}
+.splitfig .sft tspan.v{fill:var(--ink)}
+.sfk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:5px}
+.sfk div{padding:0 4px 0 5px;min-width:0}
+.sfk b{display:block;font:600 12.5px/1.2 var(--mono);color:var(--ink)}
+.sfk span{display:block;margin-top:2px;font:500 11px/1.25 var(--ui);color:var(--dim)}
+.sfk em{display:block;margin-top:3px;font:500 10.5px/1.2 var(--mono);font-style:normal;color:var(--ink)}
+.eq{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 0;padding-top:10px;border-top:1px solid var(--rule)}
+.tex{font:italic 400 17px/1.2 var(--serif);color:var(--ink)}
+.tex .katex{font-size:1.08em}
+.eqn{font:500 11.5px var(--mono);color:var(--dim)}
+.eqnote{margin:6px 0 0;font:italic 400 12.5px/1.45 var(--serif);color:var(--text2)}
+.eqnote .live{font:normal 500 11px var(--mono);color:var(--dim);white-space:nowrap}
+.eqnote .live b{font-weight:500;color:var(--ink)}
+.meter{height:3px;background:#ecebff;margin:9px 0 0;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--prism);width:0;transition:width .4s}
+.fig4{margin:12px 0 0}
+#spark{width:100%;height:96px;display:block}
+.fig4 figcaption{margin-top:4px}
+.feed{flex:1 0 auto;min-height:200px}
+#evs{margin-top:-4px}
+.ev{display:grid;grid-template-columns:54px minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px solid var(--rule);font:500 12px/1.42 var(--ui);color:var(--dim)}
+.ev:first-child{animation:in .35s ease}
+.ev time{font:500 10px/1.75 var(--mono);color:#9a96b8;white-space:nowrap}
+.ev b{color:var(--deep);font-family:var(--mono);font-weight:600}
+.ev i{font-style:normal;color:var(--eth2);font-family:var(--mono)}
+.ev em{font-style:normal;color:var(--loss)}
+.ev u{text-decoration:none;color:var(--ink)}
+.ev u::before{content:"";display:inline-block;width:6px;height:6px;margin:0 6px 1px 0;background:var(--aqua)}
+.ev.me{color:var(--eth2);font-weight:600}
+.ev.bad{color:var(--loss)}
+.ev.bell{padding:5px 0;border-bottom:1px solid var(--rule2);color:var(--eth);font:600 10.5px/1.6 var(--mono);letter-spacing:.1em}
+.ev.bell time{color:var(--eth)}
+@keyframes in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+
+/* ---------- season timeline + time controls ---------- */
+.tl{grid-area:tl;display:grid;grid-template-columns:var(--colL) minmax(0,1fr) auto;column-gap:var(--gap);align-items:center;margin-top:10px;padding:10px 0 12px;border-top:1px solid var(--rule2)}
+.tlctl{display:flex;align-items:center;gap:10px}
+.tlctl .lbl{font:700 10.5px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.ctl{display:flex;gap:5px}
+.chip{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:28px;min-width:32px;padding:0 10px;border:1px solid var(--rule2);border-radius:4px;background:var(--paper);font:600 12px/1 var(--ui);color:var(--deep);white-space:nowrap}
+.chip[data-speed]{font-family:var(--mono);font-weight:500}
+.chip:hover{border-color:var(--eth)}
+.chip.on{background:var(--deep);border-color:var(--deep);color:#fff}
+.chip svg{width:10px;height:10px;display:block}
+#pause .i-play{display:none}
+#pause.on .i-pause{display:none}
+#pause.on .i-play{display:block}
+.tlmain{position:relative;min-width:0}
+.tlbar{position:relative;display:flex;height:22px;border:1px solid var(--rule2);background:var(--paper)}
+.tlbar div{position:relative;height:100%;padding:0 0 0 7px;border-right:1px solid var(--rule2);font:700 9.5px/20px var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+.tlbar div:nth-child(1){background:#efecff}.tlbar div:nth-child(2){background:#f5f3ff}.tlbar div:nth-child(3){background:#e8f3ff}.tlbar div:nth-child(4){background:#f5f3ff}.tlbar div:nth-child(5){background:#eef9f0}
+.tlbar div.siege{border-right:0;background:repeating-linear-gradient(135deg,rgba(247,168,208,.55) 0 1px,#fdf4f9 1px 6px);color:var(--loss)}
+.tlbar div.narrow span{display:none}
+.tlnow{position:absolute;top:-6px;bottom:-6px;width:2px;margin-left:-1px;background:var(--ink);z-index:2}
+.tlnow::before{content:"";position:absolute;top:-1px;left:-3px;border:4px solid transparent;border-top:5px solid var(--ink)}
+.tlaxis{position:absolute;left:1px;right:1px;bottom:0;height:4px;pointer-events:none}
+.tlaxis i{position:absolute;bottom:0;width:1px;height:4px;background:#b9b2e6}
+.tlmeta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:224px;font:500 11px/1.3 var(--mono);color:var(--dim);white-space:nowrap}
+.tlmeta #phase{font:700 10.5px/1.3 var(--ui);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+
+/* ---------- shared footer ---------- */
+.mp-foot{padding:22px 24px 30px;border-top:1px solid var(--rule);background:var(--paper);font:400 12px/1.6 var(--ui);color:var(--dim)}
+.mp-foot .in{max-width:1720px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 28px}
+.mp-foot p{margin:0;max-width:880px}
+.mp-foot a{color:var(--dim)}
+.mp-foot nav{font:600 12px/1.6 var(--ui);white-space:nowrap}
+.mp-foot nav a{color:var(--deep);text-decoration:none}
+.mp-foot nav a:hover{color:var(--eth2)}
+
+/* ---------- tutorial, modal, toast ---------- */
+.spot{position:fixed;border-radius:4px;box-shadow:0 0 0 9999px rgba(29,26,58,.5);outline:1px solid #fff;outline-offset:0;transition:all .35s;z-index:41;pointer-events:none}
+.tip{position:fixed;z-index:42;background:var(--paper);border:1px solid var(--rule2);border-radius:6px;padding:17px 22px 15px;box-shadow:0 28px 56px -24px rgba(29,26,58,.55)}
+.tip::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:2px;background:var(--prism);border-radius:6px 6px 0 0}
+.tip .n{font:600 11px/1 var(--mono);letter-spacing:.06em;color:var(--eth)}
+.tip h4{margin:7px 0 6px;font:500 25px/1.15 var(--serif);color:var(--ink)}
+.tip p{margin:0 0 14px;font:400 16px/1.5 var(--serif);color:var(--text2)}
+.tip .row{display:flex;justify-content:space-between;align-items:center}
+.tip button{border:1px solid var(--eth2);background:var(--eth);color:#fff;padding:9px 18px;font:700 13.5px var(--ui);border-radius:5px}
+.tip button:hover{background:var(--eth2)}
+.tip .skip{border:0;background:transparent;color:var(--dim);font:600 12px var(--ui);padding:0}
+.tip .skip:hover{background:transparent;color:var(--ink)}
+.modal{position:fixed;inset:0;background:rgba(29,26,58,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.show{display:flex}
+.sheet{position:relative;width:min(520px,100%);background:var(--paper);border:1px solid var(--rule2);border-radius:6px;padding:26px 28px 24px;box-shadow:0 30px 60px -24px rgba(29,26,58,.6)}
+.sheet::before{content:"";position:absolute;left:-1px;right:-1px;top:-1px;height:2px;background:var(--prism)}
+.sheet h2{margin:0 0 6px;font:500 32px/1.1 var(--serif);color:var(--ink)}
+.sheet p{margin:0 0 6px;font:400 16px/1.5 var(--serif);color:var(--text2)}
+.sheet .kv{margin-top:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:calc(100vw - 32px);background:var(--ink);color:#fff;padding:9px 16px;font:600 13px/1.35 var(--ui);border-radius:5px;opacity:0;transition:opacity .25s;z-index:60;pointer-events:none;text-align:center}
+.toast.show{opacity:1}
+
+/* ---------- narrow screens: one column ---------- */
+/* ---------- mid widths: field + rail on top, the notes as a row below ---------- */
+@media (min-width: 980px) and (max-width: 1199px){
+  .shell{height:auto;min-height:0}
+  .app{grid-template-columns:minmax(0,1fr) var(--colR);grid-template-rows:calc(100vh - 176px) auto auto;grid-template-areas:"stage rail" "tl tl" "margin margin";min-height:0}
+  .stage,.rail2{min-height:440px}
+  .tl{grid-template-columns:auto minmax(0,1fr) auto}
+  .margin{flex-direction:row;flex-wrap:wrap;align-items:flex-start;overflow:visible;gap:24px 32px;padding:22px 0 28px}
+  .margin>*{flex:1 1 260px}
+}
+@media (max-width: 979px){
+  .shell{height:auto;min-height:0}
+  .app{display:flex;flex-direction:column;gap:18px;padding:16px 12px 0}
+  .stage{order:1;overflow:visible;display:block}
+  .tl{order:2;grid-template-columns:minmax(0,1fr);row-gap:10px;margin-top:0;padding:12px 0 2px}
+  .tlmeta{flex-direction:row;justify-content:space-between;min-width:0}
+  /* one column: interleave the panels so the four lines come right after your panel */
+  .rail2,.margin{display:contents}
+  #youCard{order:3} #how{order:4} #moneyCard{order:5} #seasonCard{order:6} #feed{order:7} #loupe{order:8} .keynote{order:9} #ruleFig{order:10} .mq{order:11;margin-bottom:8px}
+  .feed .ev:nth-child(n+9){display:none}
+  .fig1{width:100%}
+  .fighead{flex-wrap:wrap;row-gap:6px}
+  .figt{font-size:17px}
+  .readout{font-size:10.5px;white-space:normal}
+  .caption{font-size:13px}
+  .tlbar{height:30px}
+  .tlbar div{font-size:8.5px;line-height:1.1;padding:0 3px 0 5px;white-space:normal;display:flex;align-items:center}
+  .feed{min-height:0}
+  .mp-foot{padding:20px 14px 28px}
+}
+@media (max-width: 560px){
+  .mp-nav{gap:10px;height:52px;padding:0 12px}
+  .mp-logo{width:24px;height:24px}
+  .mp-brand{gap:8px}
+  .mp-word b{font-size:18px}
+  .mp-word small{display:none}
+  .mp-links{gap:13px}
+  .mp-links a{font-size:12.5px}
+  .mp-lang{margin-left:0;padding:5px 8px;font-size:11px;gap:3px}
+  .tape .rail{font-size:10px}
+  .panel{padding:12px 13px 14px}
+  .tlctl{flex-wrap:wrap}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
+
+/* ---------- game look ---------- */
+.stage{background:radial-gradient(closest-side at 50% 52%,rgba(91,94,232,.18),rgba(91,94,232,0))}
+.boardwrap{container-type:size;border-radius:14px;overflow:hidden;background:#1a2156;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 0 0 4px #272b6e,0 0 0 5px rgba(201,167,245,.65),0 28px 64px -22px rgba(39,43,110,.75),0 0 96px -14px rgba(127,227,240,.45)}
+.ruler i{display:none}
+.ruler b{opacity:.55}
+.fignum{display:none}
+#cap1,#ruleFig,.mq{display:none}
+.figt{font:800 21px/1.1 var(--ui);letter-spacing:-.015em;color:var(--deep)}
+.ring{width:34px;height:34px}
+.call{font:700 15px/1 var(--mono);letter-spacing:.18em}
+.chant{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:3;opacity:0}
+.chant b{font:800 6.6cqw/1 var(--ui);letter-spacing:.12em;color:#fff;text-shadow:0 0 18px rgba(201,167,245,.95),0 0 48px rgba(127,227,240,.6);white-space:nowrap}
+.chant small{margin-top:1.6cqw;font:700 max(10px,1.7cqw)/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:rgba(230,240,255,.92);text-shadow:0 0 10px rgba(39,43,110,.9)}
+.chant.on{animation:chant 1.5s ease-out both}
+.chant.tick b{font-size:15cqw}
+.chant.tick.on{animation:chantq .5s ease-out both}
+.chant.go b{font-size:16cqw;background:linear-gradient(90deg,#ffd1ea,#e2d1ff 30%,#c8dcff 55%,#c6f6fb 78%,#d6ffbf);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 16px rgba(255,255,255,.75)) drop-shadow(0 0 36px rgba(201,167,245,.85))}
+.chant.go.on{animation:chantgo 1.7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes chant{0%{opacity:0;transform:scale(1.16)}14%{opacity:.95;transform:scale(1)}72%{opacity:.85}100%{opacity:0;transform:scale(.98)}}
+@keyframes chantq{0%{opacity:0;transform:scale(1.4)}22%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.92)}}
+@keyframes chantgo{0%{opacity:0;transform:scale(.55)}16%{opacity:1;transform:scale(1.08)}32%{transform:scale(1)}78%{opacity:1}100%{opacity:0;transform:scale(1.12)}}
+.shock{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:3px solid rgba(255,255,255,.95);box-shadow:0 0 34px rgba(127,227,240,.9),inset 0 0 22px rgba(201,167,245,.7);opacity:0;pointer-events:none;z-index:2}
+.shock.on{animation:shock 1.15s ease-out both}
+@keyframes shock{0%{opacity:.95;transform:scale(.2)}100%{opacity:0;transform:scale(24)}}
+.tape{background:linear-gradient(90deg,#20245e,#2d3283 50%,#20245e);border-bottom:0}
+.tape .rail{color:#c9c6f2}
+.tape .rail span::before{content:"\25C6";color:#7fe3f0}
+.tape .rail i{color:#fff}
+.tape .rail em{color:#f7a8d0}
+.panel{border-radius:16px;border:1px solid rgba(201,167,245,.5);background:linear-gradient(180deg,#fff,#fbfaff);box-shadow:0 16px 36px -24px rgba(39,43,110,.5);padding:15px 17px 16px}
+.you{overflow:hidden}
+.you::before{height:4px}
+.note h3,.panel h3{border-bottom:0;padding-bottom:0;margin-bottom:12px;color:#7b76a6}
+.big #earned{font:700 36px/1.05 var(--mono);letter-spacing:-.04em}
+.kv dt,.kv dd{border-bottom:1px dashed #ece8fd}
+.btn{border:0;border-radius:12px;min-height:48px;background:linear-gradient(180deg,#7477f6,#4f53dd);box-shadow:0 4px 0 #3337ad,0 14px 26px -12px rgba(91,94,232,.85);transition:transform .08s,box-shadow .08s,filter .15s}
+.btn:hover{background:linear-gradient(180deg,#7a7df8,#5559e2);filter:brightness(1.05)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #3337ad,0 6px 14px -10px rgba(91,94,232,.85)}
+.btn.ghost{border:1px solid var(--rule2);background:#fff;box-shadow:0 4px 0 #e0daf9;color:var(--deep)}
+.btn.ghost:hover{background:#f6f4ff}
+.btn.ghost:active{box-shadow:0 1px 0 #e0daf9}
+.tools{gap:8px;border:0;overflow:visible;margin-top:14px}
+.tool{border:1px solid var(--rule2) !important;border-radius:12px;background:#fff;box-shadow:0 3px 0 #e6e1fb;padding:10px 2px 8px;transition:transform .08s,box-shadow .08s}
+.tool:hover{background:#f7f5ff;transform:translateY(-1px)}
+.tool:active{transform:translateY(2px);box-shadow:0 1px 0 #e6e1fb}
+.tool svg{width:20px;height:20px}
+.tool.on{background:linear-gradient(180deg,#f3f1ff,#e8e5ff);border-color:var(--eth) !important;box-shadow:0 3px 0 var(--eth),0 0 0 3px rgba(91,94,232,.12)}
+.chip{border-radius:10px;height:32px;box-shadow:0 2px 0 #e6e1fb}
+.chip.on{box-shadow:0 2px 0 #14173f}
+.tip{border-radius:16px;border:0;box-shadow:0 30px 70px -20px rgba(29,26,58,.6),0 0 0 1px rgba(201,167,245,.6)}
+.tip::before{height:4px}
+.tip h4{font:800 23px/1.15 var(--ui);letter-spacing:-.01em}
+.tip p{font:500 15px/1.55 var(--ui)}
+.tip button{border:0;border-radius:11px;background:linear-gradient(180deg,#7477f6,#4f53dd);box-shadow:0 3px 0 #3337ad;padding:10px 20px}
+.tip .skip{box-shadow:none;background:transparent}
+.spot{border-radius:14px}
+
+/* left column and money card: game panels, not paper */
+.margin{gap:14px}
+.note,.fig2{position:relative;background:linear-gradient(180deg,#fff,#fbfaff);border:1px solid rgba(201,167,245,.5);border-radius:16px;box-shadow:0 16px 36px -24px rgba(39,43,110,.5);padding:15px 16px 14px}
+.how4{counter-reset:h;padding:0;margin:0;list-style:none}
+.how4 li{position:relative;padding:0 0 10px 30px;font:500 13px/1.45 var(--ui);color:var(--ink)}
+.how4 li::before{content:counter(h);position:absolute;left:0;top:-1px;width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#7477f6,#4f53dd);color:#fff;font:800 11px/20px var(--ui);text-align:center;box-shadow:0 2px 0 #3337ad}
+.how4 li::marker{content:none}
+.howlinks a{font:700 12.5px/1.6 var(--ui)}
+.fig2 .fh{font:800 14px/1.2 var(--ui) !important;color:var(--deep)}
+.fig2 .caption{display:none}
+.fig3 .fh,#moneyCard .fh{font:800 15px/1.2 var(--ui) !important;color:var(--deep)}
+.eqnote,.caption{font-family:var(--ui) !important;font-style:normal !important;font-size:12px !important}
+.keylist small{font-family:var(--ui)}
+
+/* wallet button and the On Ethereum panel (chain.js) */
+.mp-wallet{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border:0;border-radius:10px;background:linear-gradient(180deg,#7477f6,#4f53dd);color:#fff;font:700 12.5px/1 var(--ui);box-shadow:0 3px 0 #3337ad;white-space:nowrap;flex:none}
+.mp-wallet:hover{filter:brightness(1.06)}
+.mp-wallet:active{transform:translateY(2px);box-shadow:0 1px 0 #3337ad}
+.mp-wallet.on{background:#fff;color:var(--deep);box-shadow:0 0 0 1px var(--rule2),0 3px 0 #e0daf9;font:600 12px/1 var(--mono)}
+.mp-wallet .wdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.75)}
+.mp-wallet.on .wdot{background:var(--gain)}
+.mp-wallet .ws{display:none}
+.chain .ann::before{content:"";display:inline-block;width:6px;height:6px;margin:0 6px 1px 0;border-radius:50%;background:#c4bcef}
+.chain.ok .ann::before{background:var(--gain)}
+.chstate{margin:0;font:500 12.5px/1.45 var(--ui);color:var(--text2)}
+.ca{margin:0 0 12px;padding:11px 12px 10px;border-radius:12px;background:linear-gradient(180deg,#f6f4ff,#efecff);box-shadow:inset 0 0 0 1px rgba(201,167,245,.55)}
+.cahead{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.cahead b{font:800 15px/1 var(--ui);color:var(--deep)}
+.cahead span{font:500 11.5px/1 var(--ui);color:var(--dim)}
+.carow{display:flex;align-items:center;gap:8px}
+.carow code{flex:1;min-width:0;font:600 11.5px/1.35 var(--mono);color:var(--ink);word-break:break-all;user-select:all}
+.cacopy{flex:none;height:28px;padding:0 11px;border:0;border-radius:8px;background:linear-gradient(180deg,#7477f6,#4f53dd);color:#fff;font:700 12px/1 var(--ui);box-shadow:0 2px 0 #3337ad}
+.cacopy:hover{filter:brightness(1.06)}
+.cacopy:active{transform:translateY(1px);box-shadow:0 1px 0 #3337ad}
+.calinks{display:flex;gap:14px;margin-top:7px;font:700 12px/1.2 var(--ui)}
+.calinks a{color:var(--eth2);text-decoration:none}
+.calinks a:hover{text-decoration:underline}
+.notice{position:relative;background:linear-gradient(90deg,#fdf0f8,#f1ecff 40%,#e9f7ff);border-bottom:1px solid rgba(201,167,245,.55)}
+.notice[hidden]{display:none}
+.notice .nin{max-width:1720px;margin:0 auto;padding:9px 52px 9px 24px;display:flex;align-items:baseline;gap:12px;font:500 13px/1.5 var(--ui);color:var(--text2)}
+.ntag{flex:none;padding:3px 10px;border-radius:999px;background:linear-gradient(180deg,#7477f6,#4f53dd);box-shadow:0 2px 0 #3337ad;color:#fff;font:800 11px/1.3 var(--ui);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.notice a{color:var(--eth2);font-weight:700;text-decoration:none}
+.notice a:hover{text-decoration:underline}
+.notice b[data-fees-in]{font:700 12.5px var(--mono);color:var(--deep);white-space:nowrap}
+.nx{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--dim);font:600 19px/1 var(--ui)}
+.nx:hover{background:rgba(201,167,245,.25);color:var(--ink)}
+@media (max-width: 560px){ .notice .nin{flex-direction:column;align-items:flex-start;gap:6px;padding:10px 44px 11px 12px;font-size:12.5px} .nx{top:8px;transform:none;right:6px} }
+.fca{display:block;margin-top:6px}
+.fca code{font:600 11.5px var(--mono);color:var(--ink);word-break:break-all}
+.chain .kv a{color:var(--eth2);text-decoration:none}
+.chain .kv a:hover{text-decoration:underline}
+.chain .plant{margin-top:10px}
+.chain .btn.ghost{flex:1;min-height:40px}
+.wlist{display:grid;gap:8px;margin:14px 0 12px}
+.wopt{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1px solid var(--rule2);border-radius:12px;background:#fff;box-shadow:0 3px 0 #e6e1fb;font:700 14px/1.2 var(--ui);color:var(--deep);text-align:left}
+.wopt:hover{border-color:var(--eth);background:#f7f5ff}
+.wopt img{width:26px;height:26px;border-radius:6px}
+.wgo{margin:14px 0 10px;text-decoration:none;justify-content:center}
+.wclose{display:block;margin-top:6px;border:0;background:transparent;padding:4px 0;color:var(--dim);font:600 12.5px var(--ui)}
+.wclose:hover{color:var(--ink)}
+@media (max-width: 979px){ #chainCard{order:3} }
+/* live season: time is the chain's, so the practice clock controls go away */
+body.live .tlctl .ctl{display:none}
+.keylist .liveonly{display:none} body.live .keylist .liveonly{display:grid}
+.chalt{margin:10px 0 0;font:700 12.5px/1.3 var(--ui);text-align:center}
+.chalt a{color:var(--eth2);text-decoration:none}
+.chalt a:hover{text-decoration:underline}
+body.live #youCard .ann{color:var(--gain);font-style:normal;font-weight:700;font-family:var(--ui);font-size:11.5px}
+@media (max-width: 560px){
+  .mp-wallet{height:30px;padding:0 10px;font-size:11.5px;gap:6px}
+  .mp-wallet .wl{display:none} .mp-wallet .ws{display:inline}
+}
+@media (max-width: 420px){ .mp-links a[href*="x.com"]{display:none} }
+</style>
+</head>
+<body>
+<svg class="defs" aria-hidden="true" focusable="false"><defs>
+  <linearGradient id="gPrism" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7a8d0"/><stop offset=".3" stop-color="#c9a7f5"/><stop offset=".55" stop-color="#8fb6ff"/><stop offset=".78" stop-color="#7fe3f0"/><stop offset="1" stop-color="#a5ef7a"/></linearGradient>
+</defs></svg>
+<div class="shell">
+  <header class="mp-nav">
+    <a class="mp-brand" href="index.html">
+      <svg class="mp-logo" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="pz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7a8d0"/><stop offset=".45" stop-color="#c9a7f5"/><stop offset="1" stop-color="#7fe3f0"/></linearGradient></defs><path d="M32 3 L53 32 L32 61 L11 32 Z" fill="#272b6e"/><path d="M32 3 L53 32 L32 40 Z" fill="url(#pz)"/><path d="M32 3 L11 32 L32 40 Z" fill="#5b5ee8"/><path d="M11 32 L32 40 L32 61 Z" fill="#334488"/><path d="M53 32 L32 40 L32 61 Z" fill="#8a6cf0"/><rect x="28" y="18" width="8" height="8" fill="#fff"/></svg>
+      <span class="mp-word"><b>Minpentai</b><small data-t="navCaption">a game from the novel Snowmoon, on Ethereum</small></span>
+    </a>
+    <nav class="mp-links" aria-label="Pages">
+      <a href="index.html" class="on" aria-current="page" data-t="navPlay">Play</a>
+      <a href="story.html" data-t="navStory">Story</a>
+      <a href="math.html" data-t="navMath">Math</a>
+      <a href="https://x.com/MinpentaiFi" target="_blank" rel="noopener noreferrer" aria-label="Minpentai on X (opens in a new tab)">X ↗</a>
+    </nav>
+    <button class="mp-wallet" id="walletNav" type="button"><i class="wdot" aria-hidden="true"></i><span class="wl">Connect wallet</span><span class="ws">Connect</span></button>
+  </header>
+  <div class="tape" aria-hidden="true"><div class="rail" id="tick"></div></div>
+  <div class="notice" id="notice" role="status">
+    <div class="nin">
+      <b class="ntag">Phase 1 is live</b>
+      <span>$TAUFA trades on <a href="https://stockereum.com/t/0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee" target="_blank" rel="noopener">Stockereum</a>, and its creator fees go into the game contract: <b data-fees-in>0.5579 WETH</b> so far (<a href="https://etherscan.io/address/0x54Be0f71ABCdCac8C321F60C4c1A754059d7616C#tokentxns" target="_blank" rel="noopener">verify ↗</a>), a pool that pays standing sigils about 7.5% a day. Season 1, with real-ETH sigils, opens once the season contract is deployed. We’ll post the open time here and on X at least 24 hours ahead. Until then, the board is a practice round.</span>
+    </div>
+    <button class="nx" type="button" aria-label="Dismiss">×</button>
+  </div>
+
+  <main class="app">
+    <h1 class="vh" data-t="pageH1">Play Minpentai</h1>
+
+    <aside class="margin" id="margin">
+      <section class="note" id="how">
+        <h3 data-t="howTitle">How it works, in four lines</h3>
+        <ol class="how4">
+          <li data-t="how1">Plant a sigil on a lit plot. Each sale lifts the price 0.3%; the part above 0.03 ETH halves every 6 hours.</li>
+          <li data-t="how2">45% of every later sigil is split evenly among the sigils standing. TAUFA trading fees fill a pool that pays them about 7.5% a day.</li>
+          <li data-t="how3">Rams crack sigils; posts stop rams. A cracked sigil stops earning and falls at the next bell unless repaired.</li>
+          <li data-t="how4">After the siege weekend, 90% of the war chest is paid to what still stands. Fallen sigils keep half a share.</li>
+        </ol>
+        <p class="howlinks"><a href="story.html" data-t="howStory">The story behind it →</a><a href="math.html" data-t="howMath">Every number, worked out →</a></p>
+      </section>
+
+      <figure class="fig2" id="loupe">
+        <figcaption class="fh"><span class="fignum" data-t="fig2">Fig. 2</span><span data-t="loupe">Zei's grid (ch. 4)</span></figcaption>
+        <div class="lpbox" id="lpbox"><canvas id="lp" width="199" height="199" role="img" aria-label="Close-up of 33 by 33 cells"></canvas></div>
+        <div class="lpmeta"><span id="lpWhere">board center</span><b id="lpXY"></b></div>
+        <p class="caption sm" data-t="cap2">Black cells on squared paper, as the book draws a close-up (ch. 4), following your cursor. t counts generations since the last bell.</p>
+      </figure>
+
+      <section class="note keynote">
+        <h3 data-t="keyTitle">Key</h3>
+        <ul class="keylist">
+          <li><svg viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" fill="#334488"/><circle cx="9" cy="9" r="7.3" fill="none" stroke="url(#gPrism)" stroke-width=".9"/><path d="M9 3.6 L12.8 9 L9 14.4 L5.2 9 Z" fill="#fff"/><path d="M9 3.6 L12.8 9 L9 9.8 Z" fill="#c9a7f5"/><path d="M9 14.4 L5.2 9 L9 9.8 Z" fill="#7fe3f0"/></svg><span><b data-t="lgYou">Your sigils</b><small data-t="lgYouN">2 × 2 block</small></span></li>
+          <li><svg viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" fill="#334488"/><circle cx="5" cy="5" r="2.3" fill="#cceeff"/><rect x="11" y="3" width="4" height="4" fill="#c9a7f5" shape-rendering="crispEdges"/><path d="M5 10.6 L7.4 14.6 L2.6 14.6 Z" fill="#33ddee"/><path d="M12.2 10h1.6v1.6h1.6v1.6h-1.6v1.6h-1.6v-1.6h-1.6v-1.6h1.6z" fill="#a5ef7a"/></svg><span><b data-t="lgOthers">Other players</b><small data-t="lgOthersN">the book’s symbols</small></span></li>
+          <li><svg viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" fill="#334488"/><circle cx="9" cy="9" r="4.6" fill="none" stroke="#cceeff" stroke-width="1" stroke-dasharray="1.6 1.6"/></svg><span><b data-t="lgCracked">Cracked, needs repair</b><small data-t="lgCrackedN">dashed outline</small></span></li>
+          <li><svg viewBox="0 0 18 18" aria-hidden="true" shape-rendering="crispEdges"><rect width="18" height="18" fill="#334488"/><rect x="5" y="5" width="8" height="8" fill="none" stroke="rgba(201,167,245,.6)" stroke-width="1"/><rect x="7" y="7" width="4" height="4" fill="#c9a7f5"/></svg><span><b data-t="lgPost">Post (wall)</b><small data-t="lgPostN">2 × 2 block, open plot</small></span></li>
+          <li><svg viewBox="0 0 18 18" aria-hidden="true" shape-rendering="crispEdges"><rect width="18" height="18" fill="#334488"/><path d="M7 4h4v2h-4z M5 6h2v2h-2z M11 6h2v2h-2z M7 8h4v2h-4z M5 10h2v2h-2z M11 10h2v2h-2z" fill="#e6f6ff"/><path d="M5 12h2v2h-2z M11 12h2v2h-2z" fill="rgba(127,227,240,.45)"/></svg><span><b data-t="lgArctic">Arctic rams</b><small data-t="lgArcticN">from the edge, 0–4 a bell</small></span></li>
+          <li><svg viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" fill="#334488"/><path d="M3 14 C5 4, 12 3, 15 6" fill="none" stroke="url(#gPrism)" stroke-width="1.1" stroke-linecap="round"/><circle cx="15" cy="6" r="1.4" fill="#a5ef7a"/></svg><span><b data-t="lgTribute">Tribute in flight</b><small data-t="lgTributeN">45% of a new sigil</small></span></li>
+          <li class="liveonly"><svg viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" fill="#334488"/><path d="M3 9h10" stroke="#7fe3f0" stroke-width="1.2" stroke-dasharray="2 2"/><path d="M12 6l3.5 3-3.5 3z" fill="#7fe3f0"/><rect x="2" y="12" width="2" height="2" fill="#c9a7f5"/><rect x="4" y="14" width="2" height="2" fill="#c9a7f5"/></svg><span><b>Next bell</b><small>Arctic lanes, rocks and queued moves, announced a bell ahead</small></span></li>
+        </ul>
+      </section>
+
+
+      <figure class="fig5" id="ruleFig">
+        <figcaption class="fh"><span class="fignum" data-t="fig5">Fig. 5</span><span data-t="ruleTitle">The rule, one block at a time</span></figcaption>
+        <svg class="rulesvg" viewBox="0 0 252 84" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="2" width="20" height="20" fill="#fff"/><path d="M0.5 2.5h19v19h-19z M10.5 2v20 M0 12.5h20" fill="none" stroke="#dcdcdc"/><rect x="1" y="3" width="9" height="9" fill="#1e1e1e"/><rect x="11" y="13" width="9" height="9" fill="#1e1e1e"/><path d="M26 12.5h16 M39 9.5l3 3-3 3" fill="none" stroke="#8d88b3" shape-rendering="auto"/><rect x="48" y="2" width="20" height="20" fill="#fff"/><path d="M48.5 2.5h19v19h-19z M58.5 2v20 M48 12.5h20" fill="none" stroke="#dcdcdc"/><rect x="49" y="3" width="9" height="9" fill="#1e1e1e"/><rect x="59" y="13" width="9" height="9" fill="#1e1e1e"/><text x="78" y="16" data-t="rule2">2 live: unchanged</text><rect x="0" y="30" width="20" height="20" fill="#fff"/><path d="M0.5 30.5h19v19h-19z M10.5 30v20 M0 40.5h20" fill="none" stroke="#dcdcdc"/><rect x="1" y="31" width="9" height="9" fill="#1e1e1e"/><rect x="11" y="31" width="9" height="9" fill="#1e1e1e"/><rect x="1" y="41" width="9" height="9" fill="#1e1e1e"/><path d="M26 40.5h16 M39 37.5l3 3-3 3" fill="none" stroke="#8d88b3" shape-rendering="auto"/><rect x="48" y="30" width="20" height="20" fill="#fff"/><path d="M48.5 30.5h19v19h-19z M58.5 30v20 M48 40.5h20" fill="none" stroke="#dcdcdc"/><rect x="49" y="31" width="9" height="9" fill="#1e1e1e"/><text x="78" y="44" data-t="rule3">3 live: invert, turn 180°</text><rect x="0" y="58" width="20" height="20" fill="#fff"/><path d="M0.5 58.5h19v19h-19z M10.5 58v20 M0 68.5h20" fill="none" stroke="#dcdcdc"/><rect x="1" y="59" width="9" height="9" fill="#1e1e1e"/><path d="M26 68.5h16 M39 65.5l3 3-3 3" fill="none" stroke="#8d88b3" shape-rendering="auto"/><rect x="48" y="58" width="20" height="20" fill="#fff"/><path d="M48.5 58.5h19v19h-19z M58.5 58v20 M48 68.5h20" fill="none" stroke="#dcdcdc"/><rect x="59" y="59" width="9" height="9" fill="#1e1e1e"/><rect x="49" y="69" width="9" height="9" fill="#1e1e1e"/><rect x="59" y="69" width="9" height="9" fill="#1e1e1e"/><text x="78" y="72" data-t="ruleX">0, 1 or 4: invert</text></svg>
+        <p class="caption sm" data-t="cap5">The book’s “rotate one eighty if three” (ch. 4), applied to every 2 × 2 block; the blocks shift by one cell each generation. Every case can be undone, so the field can also run backward.</p>
+      </figure>
+
+      <blockquote class="mq">
+        <p data-t="q1">“Well, remember, the rules are time-reversible. So any wall that can be created in some way can be destroyed in some way.”</p>
+        <a href="https://vitalik.eth.limo/snowmoon/html/chapter-4.html" target="_blank" rel="noopener" data-t="q1c">Zei, Snowmoon ch. 4</a>
+      </blockquote>
+    </aside>
+
+    <section class="stage" id="stage">
+      <figure class="fig1" id="fig1">
+        <div class="fighead" id="fig1head">
+          <h2 class="figt"><span class="fignum" data-t="fig1">Fig. 1</span><span id="figTitle">The field at bell 0</span></h2>
+          <div class="bell" id="bellbox">
+            <svg class="ring" viewBox="0 0 42 42" aria-hidden="true"><circle cx="21" cy="21" r="17" fill="none" stroke="#e6e1fb" stroke-width="3.4"/><circle id="ringp" cx="21" cy="21" r="17" fill="none" stroke="#5b5ee8" stroke-width="3.4" stroke-dasharray="106.8" stroke-dashoffset="0" transform="rotate(-90 21 21)"/></svg>
+            <div class="call" id="call">MU GU GEI FA</div>
+          </div>
+        </div>
+        <div class="plot" id="plot">
+          <div class="ruler rt" id="rulerTop"></div>
+          <div class="ruler rl" id="rulerLeft"></div>
+          <div class="boardwrap" id="bw">
+            <canvas id="cv" width="1024" height="1024" role="img" aria-label="The field: 256 by 256 cells. Click a plot to act with the selected tool."></canvas>
+            <canvas id="fx" width="1024" height="1024" aria-hidden="true"></canvas>
+            <div class="hint" id="hint"></div>
+            <div class="chant" id="chant" aria-hidden="true"><b id="chantW"></b><small id="chantG"></small></div>
+            <div class="shock" id="shock" aria-hidden="true"></div>
+          </div>
+          <i class="mk mkx" id="mkx"><b id="mkxv">0</b></i>
+          <i class="mk mky" id="mky"><b id="mkyv">0</b></i>
+        </div>
+        <div class="readout" id="readout"></div>
+        <figcaption class="caption" id="cap1"><span data-t="cap1">256 × 256 cells under the book’s reversible rule, “rotate one eighty if three” (ch. 4); 128 generations per bell. Drawn like the book’s device view; yours is the white diamond.</span></figcaption>
+      </figure>
+    </section>
+
+    <aside class="rail2" id="rail">
+      <section class="panel chain" id="chainCard">
+        <h3><span>On Ethereum</span><span class="ann" id="chBlock">connecting…</span></h3>
+        <div class="ca">
+          <div class="cahead"><b>$TAUFA</b><span>token contract (CA)</span></div>
+          <div class="carow"><code>0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee</code><button class="cacopy" type="button" data-copy="0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee">Copy</button></div>
+          <div class="calinks"><a href="https://stockereum.com/t/0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee" target="_blank" rel="noopener">Stockereum ↗</a><a href="https://etherscan.io/token/0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee" target="_blank" rel="noopener">Etherscan ↗</a></div>
+        </div>
+        <p class="chstate" id="chState">Reading Ethereum…</p>
+        <dl class="kv">
+          <dt>Game contract</dt><dd><a id="chGame" href="https://etherscan.io/address/0x54Be0f71ABCdCac8C321F60C4c1A754059d7616C" target="_blank" rel="noopener">0x54Be…616C ↗</a></dd>
+          <dt>Code</dt><dd><a id="chCode" target="_blank" rel="noopener">–</a></dd>
+          <dt>Upgradeable by</dt><dd><a id="chOwner" target="_blank" rel="noopener">–</a></dd>
+          <dt>Fees in the game</dt><dd><a id="chFeesIn" href="https://etherscan.io/address/0x54Be0f71ABCdCac8C321F60C4c1A754059d7616C#tokentxns" target="_blank" rel="noopener">…</a></dd>
+          <dt>Fees not yet forwarded</dt><dd id="chFeesWait">…</dd>
+          <dt>Your wallet</dt><dd id="chWallet">not connected</dd>
+          <dt>Your TAUFA</dt><dd id="chTaufa">–</dd>
+        </dl>
+        <div class="plant"><button class="btn ghost" id="walletBtn" type="button"><span>Connect wallet</span></button></div>
+        <p class="chalt" id="chAlt" hidden></p>
+      </section>
+
+      <section class="panel you" id="youCard">
+        <h3><span data-t="you">You</span><span class="ann" data-t="demoTag">demo · fake ETH</span></h3>
+        <div class="big"><span id="earned" class="gold">0.000000</span><small>ETH <span data-t="earned">earned</span></small></div>
+        <dl class="kv">
+          <dt data-t="paid">Paid for sigils</dt><dd id="paid">0</dd>
+          <dt data-t="chestShare">Your war chest share</dt><dd id="share">0</dd>
+          <dt data-t="standing">Standing / cracked / ruins</dt><dd id="mine">0 / 0 / 0</dd>
+          <dt data-t="wallet">Wallet</dt><dd id="wallet">10.0000 ETH · 20,000 TAUFA</dd>
+          <dt data-t="net">Net so far</dt><dd id="net">0</dd>
+        </dl>
+        <div class="plant">
+          <button class="btn" id="plantBtn"><span data-t="plant">Plant a sigil</span><b id="price">0.0300 ETH</b></button>
+          <button class="btn ghost" id="claimBtn"><span data-t="claim">Claim</span></button>
+        </div>
+        <p class="disc" data-t="disc">Later sigils pay earlier ones. If new sigils stop, tribute stops. You can lose what you pay.</p>
+        <div class="tools" id="tools">
+          <button class="tool on" data-tool="plant"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M0 0h8v1h-8z M0 7h8v1h-8z M0 1h1v6h-1z M7 1h1v6h-1z" fill="currentColor" opacity=".35"/><rect x="3" y="3" width="2" height="2" fill="currentColor"/></svg><span data-t="tPlant">Plant</span><small data-t="cPlant">ETH</small></button>
+          <button class="tool" data-tool="post"><svg viewBox="0 0 8 8" aria-hidden="true"><rect x="2" y="2" width="4" height="4" fill="currentColor" opacity=".3"/><rect x="3" y="3" width="2" height="2" fill="currentColor"/></svg><span data-t="tPost">Post</span><small data-t="cPost">4 cells</small></button>
+          <button class="tool" data-tool="ram"><svg viewBox="0 0 6 6" aria-hidden="true"><path d="M2 1h2v1h-2z M1 2h1v1h-1z M4 2h1v1h-1z M2 3h2v1h-2z M1 4h1v1h-1z M4 4h1v1h-1z" fill="currentColor"/></svg><span data-t="tRam">Ram</span><small data-t="cRam">8 cells</small></button>
+          <button class="tool" data-tool="repair"><svg viewBox="0 0 8 8" aria-hidden="true"><path d="M3 3h2v1h-2z M3 4h1v1h-1z" fill="currentColor"/><path d="M4 4h1v1h-1z" fill="currentColor" opacity=".35"/><path d="M6 0h1v3h-1z M5 1h3v1h-3z" fill="currentColor" opacity=".6"/></svg><span data-t="tRepair">Repair</span><small data-t="cRepair">cells</small></button>
+        </div>
+        <div class="tools dirs" id="dirs" style="display:none">
+          <button class="tool on" data-dir="N">↑</button><button class="tool" data-dir="S">↓</button><button class="tool" data-dir="W">←</button><button class="tool" data-dir="E">→</button>
+        </div>
+      </section>
+
+      <section class="panel fig3" id="moneyCard">
+        <div class="fh"><span class="fignum" data-t="fig3">Fig. 3</span><span data-t="where">Where each sigil's ETH goes</span></div>
+        <div class="splitfig" id="splitfig"></div>
+        <div class="sfk">
+          <div><b>45%</b><span data-t="sTrib">to standing sigils</span><em id="sfA0">0.01350</em></div>
+          <div><b>42%</b><span data-t="sChest">war chest</span><em id="sfA1">0.01260</em></div>
+          <div><b>8%</b><span data-t="sBurn">burn TAUFA</span><em id="sfA2">0.00240</em></div>
+          <div><b>5%</b><span data-t="sOps">ops</span><em id="sfA3">0.00150</em></div>
+        </div>
+        <div class="eq"><span class="tex" data-tex="\Delta = \dfrac{0.45\,p}{n}"><i>Δ</i> = 0.45 <i>p</i> / <i>n</i></span><span class="eqn">(1)</span></div>
+        <p class="eqnote"><span data-t="eqNote">What each standing sigil gets from one new sigil: p is its price, n the sigils standing, not counting the buyer's own.</span> <span class="live">p = <b id="eqP">0.0300</b> · n = <b id="eqN">0</b></span></p>
+      </section>
+
+      <section class="panel" id="seasonCard">
+        <h3><span data-t="season">Season 1</span><span class="ann" id="dayOf">day 1 of 14</span></h3>
+        <dl class="kv" style="margin-top:0">
+          <dt data-t="chest">War chest</dt><dd id="chest" class="gold">0</dd>
+          <dt data-t="trib24">Tribute paid, last 24h</dt><dd id="trib24">0</dd>
+          <dt data-t="sigils">Sigils standing</dt><dd id="living">0 / 512</dd>
+          <dt data-t="burned">TAUFA burned</dt><dd id="burned">0</dd>
+          <dt data-t="wind">Arctic rams next bell</dt><dd id="wind">2</dd>
+        </dl>
+        <div class="meter"><i id="chestBar"></i></div>
+        <figure class="fig4">
+          <canvas id="spark" width="760" height="192" role="img" aria-label="Sigil price at each bell"></canvas>
+          <figcaption class="caption sm"><span class="fignum" data-t="fig4">Fig. 4</span><span data-t="fig4cap">Sigil price at each bell, in ETH. Dashed: the 0.03 floor.</span></figcaption>
+        </figure>
+      </section>
+
+      <section class="panel feed" id="feed"><h3 data-t="feed">Live feed</h3><div id="evs"></div></section>
+    </aside>
+
+    <section class="tl" id="tl">
+      <div class="tlctl">
+        <span class="lbl" data-t="timeLbl">Time</span>
+        <div class="ctl">
+          <button class="chip" id="pause" aria-label="Pause"><svg class="i-pause" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1h2v8h-2z M6 1h2v8h-2z" fill="currentColor"/></svg><svg class="i-play" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1 L9 5 L2 9 Z" fill="currentColor"/></svg></button>
+          <button class="chip on" data-speed="1">1×</button>
+          <button class="chip" data-speed="4">4×</button>
+          <button class="chip" id="next" data-t="nextBell">Next bell</button>
+        </div>
+      </div>
+      <div class="tlmain">
+        <div class="tlbar" id="tlbar"></div>
+        <div class="tlaxis" id="tlaxis"></div>
+      </div>
+      <div class="tlmeta"><span id="clock">Day 1 · 12:00</span><span id="phase">Batch</span></div>
+    </section>
+  </main>
+</div>
+
+<footer class="mp-foot">
+  <div class="in">
+    <p><span data-t="foot1">Fan-made game based on the novel Snowmoon by Vitalik Buterin (GPL v3, </span><a href="https://vitalik.eth.limo/snowmoon/" target="_blank" rel="noopener">vitalik.eth.limo/snowmoon</a><span data-t="foot2">). Quotes and illustrations from the novel are used under the GPL. Not affiliated with Vitalik Buterin, the Ethereum Foundation or Stockereum. Demo with simulated players and fake ETH.</span>
+      <span class="fca">$TAUFA contract: <code>0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee</code> · <a href="https://stockereum.com/t/0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee" target="_blank" rel="noopener">Stockereum</a> · <a href="https://etherscan.io/token/0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee" target="_blank" rel="noopener">Etherscan</a></span></p>
+    <nav aria-label="Pages"><a href="index.html" data-t="navPlay">Play</a> · <a href="story.html" data-t="navStory">Story</a> · <a href="math.html" data-t="navMath">Math</a> · <a href="https://x.com/MinpentaiFi" target="_blank" rel="noopener noreferrer" aria-label="Minpentai on X (opens in a new tab)">X ↗</a></nav>
+  </div>
+</footer>
+
+<div class="spot" id="spot" style="display:none"></div>
+<div class="tip" id="tip" style="display:none"></div>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+(() => {
+/* ================= i18n ================= */
+const T = {
+  en: {
+    tagline:'The game from Snowmoon, live on Ethereum', nextBell:'Next bell', you:'You', earned:'earned', paid:'Paid for sigils',
+    chestShare:'Your war chest share', standing:'Standing / cracked / ruins', wallet:'Wallet', net:'Net so far', plant:'Plant a sigil', claim:'Claim',
+    disc:'Later sigils pay earlier ones. If new sigils stop, tribute stops. You can lose what you pay.',
+    tPlant:'Plant', tPost:'Post', tRam:'Ram', tRepair:'Repair', where:"Where each sigil's ETH goes", sTrib:'to standing sigils', sChest:'war chest', sBurn:'burn TAUFA', sOps:'ops',
+    season:'Season 1', chest:'War chest', trib24:'Tribute paid, last 24h', sigils:'Sigils standing', burned:'TAUFA burned', wind:'Arctic rams next bell', feed:'Live feed',
+    lgYou:'Your sigils', lgOthers:'Other players', lgCracked:'Cracked, needs repair', lgPost:'Post (wall)', lgArctic:'Arctic rams', lgTribute:'Tribute in flight', loupe:"Zei's grid (ch. 4)",
+    foot:'Fan-made game based on the novel Snowmoon by Vitalik Buterin (GPL v3, vitalik.eth.limo/snowmoon). Quotes and illustrations from the novel are used under the GPL. Not affiliated with Vitalik Buterin, the Ethereum Foundation or Stockereum. Demo with simulated players and fake ETH.',
+    phases:['Batch','Open','Shields down','Floor rises','Open','Doors close','Siege','Settled'],
+    tl:['Batch','Open',"Shields down",'Open','Floor rises · day 8','Doors close','Siege weekend'],
+    hintPlant:'Click a lit plot to plant your sigil', hintPost:'Click an open plot next to your sigil to build a post', hintRam:'Click open ground near your sigil. The ram flies the way you picked',
+    hintRepair:'Click your cracked sigil to repair it', soldOut:'Sold out', planted:'You planted a sigil', noFunds:'Not enough ETH', notSite:'Pick a lit plot (sigils go on the checkerboard)',
+    taken:'That plot is taken', tooFar:'Must be within 16 cells of one of your sigils', claimed:'Claimed', nothing:'Nothing to claim yet', noRepair:'No repairs during the siege',
+    repaired:'Repaired', notCracked:'That sigil is not cracked', closed:'Doors are closed. Siege weekend', ramAway:'Ram launched', postUp:'Post built',
+    strikeTaken:'This bell\'s strike is already taken. One ram per bell for the whole board',
+    ev_plant:(w,p,price,n)=>`<b>${w}</b> planted at ${p} for <i>${price} ETH</i> · 45% shared by ${n} sigils`,
+    ev_you:(n,amt)=>`Your ${n} sigil${n>1?'s':''} got <i>+${amt} ETH</i>`,
+    ev_crack:(w,p)=>`<em>${w}'s sigil at ${p} cracked</em>`,
+    ev_ruin:(w,p)=>`<em>${w}'s sigil at ${p} fell</em>`,
+    ev_repair:(w,p)=>`<b>${w}</b> repaired ${p}`,
+    ev_ram:(w,d)=>`<b>${w}</b> launched a ram ${d}`,
+    ev_arctic:k=>`<u>The Arctic sends ${k} rams</u>`,
+    ev_fees:amt=>`Trading fees paid <i>${amt} ETH</i> to standing sigils`,
+    ev_bell:n=>`TAU FA · bell ${n}`,
+    tick:(p,c,l)=>[`$TAUFA CA <i>0x44E8e5d61E27e51CD18FF068661A80F8cdedf3Ee</i>`,`NEXT SIGIL <i>${p} ETH</i>`,`WAR CHEST <i>${c} ETH</i>`,`${l} SIGILS STANDING`,`45% OF EVERY NEW SIGIL GOES TO THE ONES STANDING`,`RAMS CRACK SIGILS · POSTS STOP RAMS · REPAIR BEFORE THE BELL`],
+    tut:[
+      ['The field','This is the Minpentai board from Snowmoon, running on the real rule. Every emblem is a sigil: one player\'s stake in this season.'],
+      ['Plant a sigil','You pay ETH. The price rises with every sale and cools off over time. Your ETH splits four ways: 45% to every sigil already standing, 42% to the war chest, 8% burns TAUFA, 5% ops.'],
+      ['Now someone plants after you','Watch the colored threads. 45% of their price is split among all standing sigils, yours included. That is your tribute. It keeps coming while new sigils keep coming.'],
+      ['Rams crack sigils','A single glider bounces off a sigil. A ram (two gliders in a row) cracks it. A cracked sigil stops earning. Repair it before the next bell, or it falls. Posts in front of your sigil stop rams.'],
+      ['Siege weekend','The last two days: no new sigils, no repairs, no shields. When it ends, 90% of the war chest is split among the sigils still standing. Fallen sigils keep half a share.'],
+    ],
+    next:'Next', start:'Start playing', skip:'Skip tutorial',
+    endTitle:'Season settled', endBody:(you,paid,chest)=>`War chest paid out: ${chest} ETH. You paid ${paid} ETH and collected ${you} ETH in total.`, again:'Play again',
+    dir:{N:'north',S:'south',W:'west',E:'east'},
+    /* v2: shared nav, figures and notes */
+    pageH1:'Play Minpentai', navCaption:'a game from the novel Snowmoon, on Ethereum', navPlay:'Play', navStory:'Story', navMath:'Math',
+    fig1:'Fig. 1', fig2:'Fig. 2', fig3:'Fig. 3', fig4:'Fig. 4', figTitle:n=>`Bell ${n} of 84`,
+    cap1:'256 × 256 cells under the book’s reversible rule, “rotate one eighty if three” (ch. 4); 128 generations per bell. Drawn like the book’s device view; yours is the white diamond.',
+    cap2:'Black cells on squared paper, as the book draws a close-up (ch. 4), following your cursor. t counts generations since the last bell.',
+    lpCursor:'under the cursor', lpMine:'your newest sigil', lpCenter:'board center',
+    keyTitle:'Key', lgYouN:'2 × 2 block', lgOthersN:'the book’s symbols', lgCrackedN:'dashed outline',
+    lgPostN:'2 × 2 block, open plot', lgArcticN:'from the edge, 0–4 a bell', lgTributeN:'45% of a new sigil',
+    howTitle:'How it works, in four lines',
+    how1:'Plant a sigil on a lit plot. Each sale lifts the price 0.3%; the part above 0.03 ETH halves every 6 hours.',
+    how2:'45% of every later sigil is split evenly among the sigils standing. TAUFA trading fees fill a pool that pays them about 7.5% a day.',
+    how3:'Rams crack sigils; posts stop rams. A cracked sigil stops earning and falls at the next bell unless repaired.',
+    how4:'After the siege weekend, 90% of the war chest is paid to what still stands. Fallen sigils keep half a share.',
+    howStory:'The story behind it →', howMath:'Every number, worked out →',
+    q1:'“Well, remember, the rules are time-reversible. So any wall that can be created in some way can be destroyed in some way.”', q1c:'Zei, Snowmoon ch. 4',
+    fig5:'Fig. 5', ruleTitle:'The rule, one block at a time', rule2:'2 live: unchanged', rule3:'3 live: invert, turn 180°', ruleX:'0, 1 or 4: invert',
+    cap5:'The book’s “rotate one eighty if three” (ch. 4), applied to every 2 × 2 block; the blocks shift by one cell each generation. Every case can be undone, so the field can also run backward.',
+    demoTag:'demo · fake ETH', liveTag:'live · Ethereum mainnet',
+    foot2Live:'). Quotes and illustrations from the novel are used under the GPL. Not affiliated with Vitalik Buterin, the Ethereum Foundation or Stockereum. Later sigils pay earlier sigils, and most late players lose money. Nothing here is a promise of profit. The game contract is upgradeable by its owner.', cPlant:'ETH', cPost:'4 cells', cRam:'8 cells', cRepair:'cells', timeLbl:'Time',
+    eqNote:'What each standing sigil gets from one new sigil: p is its price, n the sigils standing, not counting the buyer’s own.',
+    fig4cap:'Sigil price at each bell, in ETH. Dashed: the 0.03 floor.', dayOf:d=>`day ${d} of 14`, days:'days',
+    rdPlot:'plot (i, j)', rdGen:'generation', kSite:'sigil site, free', kOpen:'open plot', kMine:'your sigil', kTaken:w=>`${w}’s sigil`, kPost:'post',
+    foot1:'Fan-made game based on the novel Snowmoon by Vitalik Buterin (GPL v3, ',
+    foot2:'). Quotes and illustrations from the novel are used under the GPL. Not affiliated with Vitalik Buterin, the Ethereum Foundation or Stockereum. Demo with simulated players and fake ETH.',
+  },
+};
+const lang = 'en';
+const L = () => T[lang];
+function applyLang(){
+  document.querySelectorAll('[data-t]').forEach(el => { const v = L()[el.dataset.t]; if (typeof v === 'string') el.textContent = v; });
+  buildTimeline(); renderTicker(true);
+}
+
+/* ================= engine (v1.0 physics, same as prototype) ================= */
+const N = 256, TURN = 128, PLOT = 8, FRAME = 2;
+let g = new Uint8Array(N*N), tmp = new Uint8Array(N*N), trail = new Float32Array(N*N);
+let gen = 0;
+const idx = (y,x) => (((y%N)+N)%N)*N + (((x%N)+N)%N);
+const PIECE = {
+  GN:['.##.','#..#'], GS:['#..#','.##.'], GW:['.#','#.','#.','.#'], GE:['#.','.#','.#','#.'],
+  RN:['.##.','#..#','.##.','#..#'], RS:['#..#','.##.','#..#','.##.'], RW:['.#.#','#.#.','#.#.','.#.#'], RE:['#.#.','.#.#','.#.#','#.#.'],
+  BLOCK:['##','##'],
+};
+const cells = rows => rows.flatMap((r,dy)=>[...r].map((c,dx)=>c==='#'?[dy,dx]:null).filter(Boolean));
+const PC = Object.fromEntries(Object.entries(PIECE).map(([k,v])=>[k,cells(v)]));
+const isSite = (i,j) => ((i+j)&1)===0;
+const center = (i,j) => [i*PLOT+3, j*PLOT+3];
+function step(){
+  const p = gen & 1;
+  for (let by=0; by<N; by+=2) for (let bx=0; bx<N; bx+=2){
+    const y0=by+p, x0=bx+p;
+    const ia=idx(y0,x0), ib=idx(y0,x0+1), ic=idx(y0+1,x0), id=idx(y0+1,x0+1);
+    const a=g[ia], b=g[ib], c=g[ic], d=g[id], s=a+b+c+d;
+    if (s===2){ tmp[ia]=a; tmp[ib]=b; tmp[ic]=c; tmp[id]=d; }
+    else if (s===3){ tmp[ia]=1-d; tmp[ib]=1-c; tmp[ic]=1-b; tmp[id]=1-a; }
+    else { tmp[ia]=1-a; tmp[ib]=1-b; tmp[ic]=1-c; tmp[id]=1-d; }
+  }
+  const t=g; g=tmp; tmp=t; gen++;
+  const bg = gen & 1;
+  for (let k=0;k<FRAME;k++) for (let i=0;i<N;i++){ g[idx(k,i)]=bg; g[idx(N-1-k,i)]=bg; g[idx(i,k)]=bg; g[idx(i,N-1-k)]=bg; }
+}
+const shown = i => (gen&1) ? 1-g[i] : g[i];
+function stamp(key,y,x){ for (const [dy,dx] of PC[key]) g[idx(y+dy,x+dx)] = 1; }
+function clearPlot(i,j){ for (let y=i*PLOT;y<i*PLOT+PLOT;y++) for (let x=j*PLOT;x<j*PLOT+PLOT;x++) g[idx(y,x)] = 0; }
+const intactAt = (i,j) => { const [y,x]=center(i,j); return shown(idx(y,x))&&shown(idx(y,x+1))&&shown(idx(y+1,x))&&shown(idx(y+1,x+1)); };
+
+/* ================= world ================= */
+let seed = 7;
+const rnd = () => { seed = (seed*1103515245+12345) & 0x7fffffff; return seed/0x7fffffff; };
+const HOURS_PER_TURN = 4, TURNS = 84;
+const FLOOR = 0.03; // sigil floor price, ETH (the contract's FLOOR)
+const ME = 0;
+let players, sigils, posts, plotOwner, econ, events, priceHist, cellPrice, pendingEdits, tutorialStep, endShown, trib24;
+let LIVE = null; // the season on Ethereum while one is scheduled or running (chain.js); null = the practice round
+const NAMES = ['you'];
+for (let k=1;k<600;k++) NAMES.push('0x'+((k*2654435761)>>>0).toString(16).slice(0,4));
+const OTHER = ['#cdbfa7','#a9bb9c','#c4a29a','#a7b3c2','#cbb47e','#b9a0bd','#9cb8b1','#d0ab8a'];
+
+function reset(){
+  g.fill(0); trail.fill(0); gen = 0; seed = 7;
+  players = [{ id:0, name:'you', eth:10.0, taufa:20000, paid:0, earnedClaimed:0, active:true, attentive:true, bot:false }];
+  sigils = []; posts = []; plotOwner = new Int16Array(32*32).fill(-1);
+  econ = { heat:FLOOR, pool:0, lastSaleH:0, sold:0, chest:0, burnEth:0, ops:0, acc:0, tribPaid:0, feesTotal:0, batchBuys:[], carry:0 };
+  events = []; priceHist = []; cellPrice = 1; pendingEdits = []; endShown = false; trib24 = [];
+  renderEvents();
+}
+const hoursNow = () => gen / TURN * HOURS_PER_TURN;
+const dayNow = () => hoursNow()/24;
+const phaseIdx = () => { const h=hoursNow(); if (h<2) return 0; if (dayNow()<2) return 1; if (dayNow()<2.6) return 2; if (dayNow()<8) return 1; if (dayNow()<12) return 3; if (dayNow()<14) return 6; return 7; };
+const isSiege = () => dayNow() >= 12 && dayNow() < 14;
+const isOver = () => gen >= TURNS*TURN;
+
+/* price: floor + premium, premium halves every 6h; floor rises from day 8 */
+function price(){
+  if (LIVE) return LIVE.g.price > 0n ? Number(LIVE.g.price) / 1e18 : FLOOR;
+  const h = hoursNow();
+  const prem = Math.max(0, econ.heat - FLOOR) * Math.pow(0.5, (h - econ.lastSaleH)/6);
+  let p = FLOOR + prem;
+  const live = sigils.filter(s=>s.state==='alive').length;
+  if (dayNow() >= 8 && live > 0) p = Math.max(p, 0.8 * 0.9 * econ.chest / live);
+  return p;
+}
+function earningSigils(){ return sigils.filter(s => s.state === 'alive'); }
+
+/* tribute accumulator: per-sigil index; buyer's own sigils excluded */
+function distribute(amount, excludeOwner, fromSigil){
+  const elig = earningSigils().filter(s => s.owner !== excludeOwner);
+  if (elig.length === 0){ econ.chest += amount; return 0; }
+  const each = amount / elig.length;
+  let mine = 0;
+  for (const s of elig){ s.earned += each; if (s.owner===ME) mine += each; }
+  econ.tribPaid += amount; trib24.push([hoursNow(), amount]);
+  if (fromSigil) flowFx(fromSigil, elig, each);
+  return mine;
+}
+
+function plantSigil(owner, i, j, quiet){
+  if (!isSite(i,j) || plotOwner[i*32+j] !== -1) return false;
+  if (dayNow() >= 12 || isOver()) return false;
+  if (sigils.filter(s=>s.state!=='ruin').length >= 512) return false;
+  const p = price(); const pl = players[owner];
+  if (pl.eth < p) return false;
+  pl.eth -= p; pl.paid += p;
+  econ.heat = FLOOR + (Math.max(0, econ.heat-FLOOR) * Math.pow(0.5,(hoursNow()-econ.lastSaleH)/6) + FLOOR) * 1.003 - FLOOR;
+  econ.lastSaleH = hoursNow(); econ.sold++;
+  const [cy,cx] = center(i,j);
+  queueEdit(()=>{ clearPlot(i,j); stamp('BLOCK',cy,cx); });
+  const s = { i, j, owner, state:'alive', born:gen, earned:0, weight:1, samples:0, shieldUntil: gen + 12*TURN };
+  plotOwner[i*32+j] = owner;
+  const batch = hoursNow() < 2;
+  const mine = batch ? (econ.chest += 0.45*p, 0) : distribute(0.45*p, owner, s);
+  sigils.push(s);
+  econ.chest += 0.42*p; econ.burnEth += 0.08*p; econ.ops += 0.05*p;
+  if (!quiet){
+    pushEv(L().ev_plant(NAMES[owner], coord(i,j), p.toFixed(4), Math.max(0, earningSigils().length-1)), owner===ME?'me':'');
+    if (mine > 0) { pushEv(L().ev_you(sigils.filter(x=>x.owner===ME&&x.state==='alive').length, mine.toFixed(6)), 'me'); popMine(mine); }
+  }
+  return true;
+}
+const coord = (i,j) => `${String(i).padStart(2,'0')}·${String(j).padStart(2,'0')}`;
+function nearOwn(owner,y,x,r=16){ return sigils.some(s=>s.owner===owner&&s.state!=='ruin'&&Math.max(Math.abs(center(s.i,s.j)[0]-y),Math.abs(center(s.i,s.j)[1]-x))<=r) || posts.some(p=>p.owner===owner&&Math.max(Math.abs(center(p.i,p.j)[0]-y),Math.abs(center(p.i,p.j)[1]-x))<=r); }
+function buildPost(owner,i,j){
+  if (isSite(i,j) || plotOwner[i*32+j] !== -1) return false;
+  const [cy,cx]=center(i,j); if (!nearOwn(owner,cy,cx,20)) return false;
+  const cost = 4*cellPrice*100; if (players[owner].taufa < cost) return false;
+  players[owner].taufa -= cost; burnCells(4);
+  queueEdit(()=>{ clearPlot(i,j); stamp('BLOCK',cy,cx); });
+  posts.push({i,j,owner}); plotOwner[i*32+j] = 1000+owner; return true;
+}
+function launchRam(owner,y,x,dir){
+  if (ramsThisBell >= 1) return false; // one strike per bell for the whole board
+  const [i,j]=[Math.floor(y/PLOT),Math.floor(x/PLOT)];
+  const o = plotOwner[i*32+j]; if (o!==-1 && o!==owner) return false;
+  if (!nearOwn(owner,y,x,16)) return false;
+  const cost = 8*cellPrice*100; if (players[owner].taufa < cost) return false;
+  players[owner].taufa -= cost; burnCells(8); ramsThisBell++;
+  const k = 'R'+dir; queueEdit(()=>stamp(k, y|1, x|1));
+  return true;
+}
+function repair(owner,s){
+  if (s.state!=='cracked' || isSiege()) return false;
+  const cost = 10*cellPrice*100; if (players[owner].taufa < cost) return false;
+  players[owner].taufa -= cost; burnCells(10);
+  queueEdit(()=>{ clearPlot(s.i,s.j); const [cy,cx]=center(s.i,s.j); stamp('BLOCK',cy,cx); s.state='alive'; s.samples=1; });
+  pushEv(L().ev_repair(NAMES[owner], coord(s.i,s.j)), owner===ME?'me':'');
+  return true;
+}
+let cellsThisTurn = 0;
+function burnCells(n){ cellsThisTurn += n; }
+function queueEdit(fn){ if ((gen&1)===0) fn(); else pendingEdits.push(fn); }
+
+/* ================= bots ================= */
+function arrivals(day){ // players arriving per turn: rush, then decay
+  const base = day < 0.1 ? 10 : 4.2 * Math.exp(-day/3.2) + 0.25;
+  return base;
+}
+function botTurn(){
+  const day = dayNow();
+  // new players
+  if (day < 12 && players.length < 160){
+    let n = arrivals(day) * (0.6 + rnd()*0.8);
+    while (n-- > 0.5){
+      const whale = rnd() < 0.1;
+      players.push({ id:players.length, name:NAMES[players.length], eth: whale ? 2.5+rnd()*3 : 0.2+rnd()*0.5, taufa: 6000+rnd()*14000, paid:0, earnedClaimed:0, active:true, attentive: rnd()<0.55, bot:true, want: whale ? 6+Math.floor(rnd()*6) : 1+Math.floor(rnd()*3) });
+    }
+  }
+  for (const pl of players){
+    if (!pl.bot || !pl.active) continue;
+    // planting
+    if (day < 12 && pl.want > 0 && rnd() < 0.55){
+      const site = pickSite(pl.id);
+      if (site && price() < pl.eth && price() < 0.2 + (pl.want>4?0.2:0)) { if (plantSigil(pl.id, site[0], site[1])) pl.want--; }
+    }
+    const mine = sigils.filter(s=>s.owner===pl.id && s.state!=='ruin');
+    // repairs
+    for (const s of mine) if (s.state==='cracked' && pl.attentive && rnd()<0.9) repair(pl.id, s);
+    // posts
+    if (mine.length && rnd() < 0.05){
+      const s = mine[Math.floor(rnd()*mine.length)];
+      const opts = [[s.i-1,s.j],[s.i+1,s.j],[s.i,s.j-1],[s.i,s.j+1]].filter(([a,b])=>a>0&&b>0&&a<31&&b<31);
+      const [a,b] = opts[Math.floor(rnd()*opts.length)]; buildPost(pl.id,a,b);
+    }
+    // go idle sometimes
+    if (rnd() < 0.006) pl.active = false;
+  }
+}
+// One strike per bell for the whole board: a bot takes it about half the time, so the player often gets the chance.
+function botStrike(){
+  if (rnd() > (isSiege() ? 0.8 : 0.5)) return;
+  const attackers = players.filter(p => p.bot && p.active && sigils.some(s=>s.owner===p.id && s.state!=='ruin'));
+  for (let tries=0; tries<6 && attackers.length && ramsThisBell===0; tries++){
+    const pl = attackers[Math.floor(rnd()*attackers.length)];
+    botRam(pl, sigils.filter(s=>s.owner===pl.id && s.state!=='ruin'));
+  }
+}
+function pickSite(owner){
+  const mine = sigils.filter(s=>s.owner===owner && s.state!=='ruin');
+  for (let tries=0; tries<40; tries++){
+    let i, j;
+    if (mine.length && rnd()<0.7){ const s=mine[Math.floor(rnd()*mine.length)]; i=s.i+Math.floor(rnd()*5)-2; j=s.j+Math.floor(rnd()*5)-2; }
+    else { i=2+Math.floor(rnd()*28); j=2+Math.floor(rnd()*28); }
+    if (i<1||j<1||i>30||j>30) continue;
+    if (isSite(i,j) && plotOwner[i*32+j]===-1) return [i,j];
+  }
+  return null;
+}
+function botRam(pl, mine){
+  const from = mine[Math.floor(rnd()*mine.length)];
+  // look for an enemy sigil in the same row or column within 6 plots
+  const targets = sigils.filter(s=>s.owner!==pl.id && s.state==='alive' && (s.i===from.i || s.j===from.j) && Math.abs(s.i-from.i)+Math.abs(s.j-from.j)<=6 && s.shieldUntil<gen);
+  if (!targets.length) return;
+  const t = targets[Math.floor(rnd()*targets.length)];
+  const [fy,fx]=center(from.i,from.j), [ty,tx]=center(t.i,t.j);
+  let dir, y, x;
+  if (t.i===from.i){ dir = tx>fx?'E':'W'; y=fy-1; x = dir==='E'? fx+6 : fx-9; }
+  else { dir = ty>fy?'S':'N'; x=fx-1; y = dir==='S'? fy+6 : fy-9; }
+  if (launchRam(pl.id, y, x, dir)) pushEv(L().ev_ram(NAMES[pl.id], L().dir[dir]));
+}
+
+/* ================= turn cycle ================= */
+let windK = 0, netSell = 0, ramsThisBell = 0;
+function onGen(){
+  const t = gen % TURN;
+  if (t===96||t===104||t===112||t===120||t===0){
+    for (const s of sigils) if (s.state!=='ruin' && intactAt(s.i,s.j)) s.samples++;
+  }
+  if ((gen&1)===0 && pendingEdits.length){ pendingEdits.forEach(f=>f()); pendingEdits=[]; }
+  if (t===0 && gen>0) bell();
+  if (t===TURN/2) hourly(); // mid-turn: fees for the half turn
+}
+function bell(){
+  const n = gen/TURN;
+  // census
+  for (const s of sigils){
+    if (s.state==='ruin') continue;
+    if (gen < s.shieldUntil && !isSiege()){ clearPlot(s.i,s.j); const [cy,cx]=center(s.i,s.j); stamp('BLOCK',cy,cx); s.state='alive'; s.samples=0; continue; }
+    if (s.samples>0){ s.state='alive'; }
+    else if (s.state==='alive'){ s.state='cracked'; pushEv(L().ev_crack(NAMES[s.owner], coord(s.i,s.j)), s.owner===ME?'bad':''); impactFx(s); }
+    else if (s.state==='cracked'){ s.state='ruin'; ruin(s); }
+    s.samples=0;
+  }
+  hourly();
+  // weather
+  if (!isOver()){
+    netSell = Math.max(0, netSell*0.6 + (rnd()-0.35)*0.4);
+    windK = Math.min(4, Math.floor(Math.log2(1 + netSell/0.1)));
+    ramsThisBell = 0;
+    for (let r=0;r<windK;r++){
+      const e=Math.floor(rnd()*4), lane=(16+Math.floor(rnd()*(N-40)))|1;
+      if (e===0) stamp('RS',3,lane); else if (e===1) stamp('RN',N-7,lane); else if (e===2) stamp('RE',lane,3); else stamp('RW',lane,N-7);
+    }
+    for (let r=0;r<4;r++){
+      const i=1+Math.floor(rnd()*30), j=1+Math.floor(rnd()*30);
+      if (isSite(i,j) || plotOwner[i*32+j]!==-1) continue;
+      const y=i*PLOT+1+Math.floor(rnd()*5), x=j*PLOT+1+Math.floor(rnd()*5);
+      const L3=[[[0,0],[1,0],[1,1]],[[0,0],[0,1],[1,0]],[[0,1],[1,0],[1,1]],[[0,0],[0,1],[1,1]]][Math.floor(rnd()*4)];
+      for (const [dy,dx] of L3) g[idx(y+dy,x+dx)]=1;
+    }
+    pushEv(L().ev_arctic(windK));
+  }
+  // cell price 1559
+  cellPrice *= cellsThisTurn > 128 ? 1.125 : cellsThisTurn < 128 ? 0.95 : 1; cellPrice = Math.max(0.2, Math.min(5, cellPrice)); cellsThisTurn = 0;
+  priceHist.push([dayNow(), price()]);
+  pushEv(L().ev_bell(n), 'bell');
+  bellFlash = 1;
+  if (!isOver()) { botTurn(); botStrike(); }
+  if (isOver() && !endShown) settle();
+}
+function lostShare(){
+  let lost = 0, n = 0;
+  for (const p of players){ if (p.paid <= 0) continue; n++; const got = sigils.filter(s=>s.owner===p.id).reduce((a,s)=>a+s.earned,0) + p.earnedClaimed; if (got < p.paid) lost++; }
+  return n ? Math.round(lost/n*100) : 0;
+}
+function ruin(s){
+  pushEv(L().ev_ruin(NAMES[s.owner], coord(s.i,s.j)), s.owner===ME?'bad':'');
+  s.weight = 0.5;
+  // half the claim goes to the nearest older living sigil
+  let best=null, bd=1e9;
+  for (const o of sigils){ if (o===s || o.state!=='alive' || o.born>s.born) continue; const d=Math.abs(o.i-s.i)+Math.abs(o.j-s.j); if (d<bd){bd=d;best=o;} }
+  if (best) best.weight += 0.5;
+  clearPlot(s.i,s.j); plotOwner[s.i*32+s.j] = -1;
+}
+function hourly(){
+  // trading fees: volume decays from ~20 ETH/day; creator share 2% of volume, 100% to tribute
+  const day = dayNow();
+  const vol = (180*Math.exp(-day/4) + 15) * (HOURS_PER_TURN/2) / 24;
+  const fee = vol * 0.02;
+  econ.feesTotal += fee;
+  // as on chain: fees fill a pool that pays standing sigils 1/308 of it an hour (this runs every 2 game hours)
+  econ.pool += fee;
+  const out = econ.pool * (1 - Math.pow(1 - 1/308, 2));
+  econ.pool -= out;
+  const mine = distribute(out, -1, null);
+  if (mine > 0) popMine(mine, true);
+  if (rnd()<0.25) pushEv(L().ev_fees(out.toFixed(5)));
+}
+function settle(){
+  endShown = true;
+  const pool = econ.chest * 0.9; econ.carry = econ.chest*0.1;
+  const live = sigils.filter(s=>s.state!=='cracked');
+  const wsum = sigils.reduce((a,s)=> a + (s.state==='alive' ? s.weight : s.state==='ruin' ? s.weight : 0), 0);
+  let myPay = 0;
+  for (const s of sigils){ const w = s.state==='alive'||s.state==='ruin' ? s.weight : 0; const pay = wsum ? pool*w/wsum : 0; s.earned += pay; if (s.owner===ME) myPay += pay; }
+  econ.chest = 0;
+  const me = players[ME];
+  const tot = sigils.filter(s=>s.owner===ME).reduce((a,s)=>a+s.earned,0) + me.earnedClaimed;
+  const zh = lang==='zh', row = (k,v,c) => `<dt>${k}</dt><dd class="${c||''}">${v}</dd>`;
+  const net = tot - me.paid;
+  showModal(`<h2>${L().endTitle}</h2><p>${L().endBody(tot.toFixed(4), me.paid.toFixed(4), pool.toFixed(3))}</p>
+    <dl class="kv">${row('Tribute from later sigils', (tot-myPay).toFixed(4)+' ETH','gold')}${row('War chest payout', myPay.toFixed(4)+' ETH','gold')}${row('Paid for sigils', me.paid.toFixed(4)+' ETH')}${row('Net', (net>=0?'+':'')+net.toFixed(4)+' ETH', net>=0?'moss':'red')}${row('Players who lost money', lostShare()+'%')}</dl>
+    <div class="plant"><button class="btn" id="again">${L().again}</button></div>`);
+  document.getElementById('again').onclick = () => { hideModal(); reset(); };
+}
+
+/* ================= rendering ================= */
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const fx = document.getElementById('fx'), fctx = fx.getContext('2d');
+const S = cv.width / N; // 4 logical px per cell; layout() maps this 1024-px logical square onto the screen's device pixels
+let particles = [], pops = [], bellFlash = 0, shakes = [];
+let hover = null;
+// v2: canvases are sized in device pixels and cells are scaled without smoothing, so every cell edge is sharp.
+const RL = 30, RT = 18;            // ruler gutters around the field, CSS px (match .ruler / .boardwrap in the CSS)
+let DPR = 1, BS = 1024, KX = 1, LPX = 1, boardCss = 560, bgImg = null;
+const cellCv = document.createElement('canvas'); cellCv.width = cellCv.height = N;
+const cellCx = cellCv.getContext('2d'), cellImg = cellCx.createImageData(N, N), cellPx = new Uint32Array(cellImg.data.buffer);
+const LIVE_PX = ((242 << 24) | (255 << 16) | (246 << 8) | 230) >>> 0;   // #e6f6ff at 95%
+const TRAIL_PX = new Uint32Array(256);
+for (let a = 0; a < 256; a++) TRAIL_PX[a] = ((a << 24) | (240 << 16) | (227 << 8) | 127) >>> 0; // #7fe3f0 trail
+// ---------- game renderer: a night field with lit plots, faceted gems, territory, comets, aurora and snow ----------
+const hexRgb = h => { const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; };
+const mix = (h, f) => { const [r, g, b] = hexRgb(h), t = f < 0 ? 0 : 255, k = Math.abs(f); return `rgb(${Math.round(r + (t - r) * k)},${Math.round(g + (t - g) * k)},${Math.round(b + (t - b) * k)})`; };
+const rgba = (h, a) => { const [r, g, b] = hexRgb(h); return `rgba(${r},${g},${b},${a})`; };
+let seedR = 99; const srnd = () => { seedR = (seedR * 16807) % 2147483647; return seedR / 2147483647; };
+function roundRect(c, x, y, w, h, r){ c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+function buildBg(){ // the book's device view at night: indigo field, lit sigil plots, the absorbing frame
+  const c = document.createElement('canvas'); c.width = c.height = BS; const x = c.getContext('2d');
+  x.setTransform(KX, 0, 0, KX, 0, 0);
+  const g0 = x.createRadialGradient(512, 420, 40, 512, 512, 780);
+  g0.addColorStop(0, '#3a4ba1'); g0.addColorStop(0.5, '#2d3a85'); g0.addColorStop(1, '#181f52');
+  x.fillStyle = g0; x.fillRect(0, 0, 1024, 1024);
+  seedR = 99;
+  for (let k = 0; k < 460; k++){ const sx = srnd() * 1024, sy = srnd() * 1024, a = 0.05 + srnd() * 0.3, r = 0.35 + srnd() * 0.85; x.fillStyle = `rgba(214,236,255,${a.toFixed(3)})`; x.beginPath(); x.arc(sx, sy, r, 0, Math.PI * 2); x.fill(); }
+  const P = PLOT * S, hair = 1 / KX;
+  for (let k = 1; k < 32; k++){ x.fillStyle = k % 4 === 0 ? 'rgba(204,238,255,0.06)' : 'rgba(204,238,255,0.025)'; x.fillRect(k * P, 0, hair, 1024); x.fillRect(0, k * P, 1024, hair); }
+  for (let i = 0; i < 32; i++) for (let j = 0; j < 32; j++){
+    if (!isSite(i, j)) continue;
+    const x0 = j * P, y0 = i * P, gt = x.createLinearGradient(x0, y0, x0, y0 + P);
+    gt.addColorStop(0, 'rgba(204,238,255,0.085)'); gt.addColorStop(1, 'rgba(204,238,255,0.03)');
+    x.fillStyle = gt; roundRect(x, x0 + 2, y0 + 2, P - 4, P - 4, 4); x.fill();
+    x.strokeStyle = 'rgba(204,238,255,0.08)'; x.lineWidth = hair; x.stroke();
+    const cx = x0 + P / 2, cy = y0 + P / 2; x.strokeStyle = 'rgba(204,238,255,0.26)';
+    x.beginPath(); x.moveTo(cx, cy - 3.4); x.lineTo(cx + 2.5, cy); x.lineTo(cx, cy + 3.4); x.lineTo(cx - 2.5, cy); x.closePath(); x.stroke();
+  }
+  const f = FRAME * S;
+  x.fillStyle = 'rgba(9,12,40,0.62)'; x.fillRect(0, 0, 1024, f); x.fillRect(0, 1024 - f, 1024, f); x.fillRect(0, f, f, 1024 - 2 * f); x.fillRect(1024 - f, f, f, 1024 - 2 * f);
+  x.strokeStyle = 'rgba(127,227,240,0.3)'; x.lineWidth = hair; x.strokeRect(f, f, 1024 - 2 * f, 1024 - 2 * f);
+  const gv = x.createRadialGradient(512, 512, 320, 512, 512, 760); gv.addColorStop(0, 'rgba(8,10,34,0)'); gv.addColorStop(1, 'rgba(8,10,34,0.5)');
+  x.fillStyle = gv; x.fillRect(0, 0, 1024, 1024);
+  return c;
+}
+// Each player gets one of the book's symbol shapes and a pastel from the device view, cut as a gem.
+const SHAPES = ['circle','square','triangle','plus','ring','diamond2'];
+const PASTEL = ['#cceeff','#c9a7f5','#33ddee','#a5ef7a','#ffcfae','#f7a8d0','#8ff0c8','#b9c4ff'];
+const PRISM = ['#f7a8d0','#c9a7f5','#8fb6ff','#7fe3f0','#a5ef7a'];
+const PRISM_RGB = ['247,168,208','201,167,245','143,182,255','127,227,240','165,239,122'];
+const GEM_R = PLOT * S * 0.4;          // gem radius, logical px
+let sprites = new Map();
+function sprite(key, half, paint){      // pre-rendered at device resolution; half = logical half-size
+  let s = sprites.get(key); if (s) return s;
+  const D = Math.ceil(2 * half * KX) + 2, c = document.createElement('canvas'); c.width = c.height = D;
+  const x = c.getContext('2d'); x.translate(D / 2, D / 2); x.scale(KX, KX); paint(x);
+  s = { c, half: D / 2 / KX }; sprites.set(key, s); return s;
+}
+function blit(c2, s, cx, cy, scale = 1, alpha = 1){ const h = s.half * scale; c2.globalAlpha = alpha; c2.drawImage(s.c, cx - h, cy - h, 2 * h, 2 * h); c2.globalAlpha = 1; }
+function gemPath(x, shape, r){
+  x.beginPath();
+  if (shape === 'circle') x.arc(0, 0, r * 0.86, 0, Math.PI * 2);
+  else if (shape === 'square'){ const a = r * 0.8, c = r * 0.27; x.moveTo(-a + c, -a); x.lineTo(a - c, -a); x.lineTo(a, -a + c); x.lineTo(a, a - c); x.lineTo(a - c, a); x.lineTo(-a + c, a); x.lineTo(-a, a - c); x.lineTo(-a, -a + c); x.closePath(); }
+  else if (shape === 'triangle'){ x.moveTo(0, -r); x.lineTo(r * 0.94, r * 0.68); x.lineTo(-r * 0.94, r * 0.68); x.closePath(); }
+  else if (shape === 'plus'){ const w = r * 0.34, a = r * 0.92; x.moveTo(-w, -a); x.lineTo(w, -a); x.lineTo(w, -w); x.lineTo(a, -w); x.lineTo(a, w); x.lineTo(w, w); x.lineTo(w, a); x.lineTo(-w, a); x.lineTo(-w, w); x.lineTo(-a, w); x.lineTo(-a, -w); x.lineTo(-w, -w); x.closePath(); }
+  else if (shape === 'ring'){ x.arc(0, 0, r * 0.9, 0, Math.PI * 2); x.moveTo(r * 0.42, 0); x.arc(0, 0, r * 0.42, 0, Math.PI * 2, true); }
+  else { x.moveTo(0, -r); x.lineTo(r * 0.78, 0); x.lineTo(0, r); x.lineTo(-r * 0.78, 0); x.closePath(); }
+}
+function paintGem(x, shape, col, r){
+  const gh = x.createRadialGradient(0, 0, r * 0.2, 0, 0, r * 1.9);
+  gh.addColorStop(0, rgba(col, 0.42)); gh.addColorStop(0.45, rgba(col, 0.11)); gh.addColorStop(1, rgba(col, 0));
+  x.fillStyle = gh; x.beginPath(); x.arc(0, 0, r * 1.9, 0, Math.PI * 2); x.fill();
+  x.save(); x.translate(0, r * 0.2); x.fillStyle = 'rgba(6,8,30,0.4)'; gemPath(x, shape, r); x.fill('evenodd'); x.restore();
+  let gb;
+  if (shape === 'circle'){ gb = x.createRadialGradient(-r * 0.35, -r * 0.4, r * 0.05, 0, 0, r); gb.addColorStop(0, '#ffffff'); gb.addColorStop(0.35, mix(col, 0.35)); gb.addColorStop(0.8, col); gb.addColorStop(1, mix(col, -0.35)); }
+  else { gb = x.createLinearGradient(-r, -r, r, r); gb.addColorStop(0, mix(col, 0.7)); gb.addColorStop(0.45, col); gb.addColorStop(1, mix(col, -0.4)); }
+  x.fillStyle = gb; gemPath(x, shape, r); x.fill('evenodd');
+  if (shape !== 'circle'){
+    x.save(); gemPath(x, shape, r); x.clip('evenodd');
+    x.fillStyle = 'rgba(255,255,255,0.24)'; x.beginPath(); x.moveTo(-r * 1.3, -r * 1.3); x.lineTo(r * 1.3, -r * 1.3); x.lineTo(0, 0); x.closePath(); x.fill();
+    x.fillStyle = 'rgba(255,255,255,0.1)'; x.beginPath(); x.moveTo(-r * 1.3, -r * 1.3); x.lineTo(-r * 1.3, r * 1.3); x.lineTo(0, 0); x.closePath(); x.fill();
+    x.fillStyle = 'rgba(24,18,70,0.2)'; x.beginPath(); x.moveTo(-r * 1.3, r * 1.3); x.lineTo(r * 1.3, r * 1.3); x.lineTo(0, 0); x.closePath(); x.fill();
+    x.restore();
+    if (shape !== 'ring' && shape !== 'plus'){ x.save(); x.translate(0, -r * 0.06); x.scale(0.46, 0.46); gemPath(x, shape, r); x.restore(); x.fillStyle = 'rgba(255,255,255,0.3)'; x.fill(); x.strokeStyle = 'rgba(255,255,255,0.5)'; x.lineWidth = 0.55; x.stroke(); }
+  }
+  x.strokeStyle = 'rgba(255,255,255,0.6)'; x.lineWidth = 0.7; gemPath(x, shape, r); x.stroke();
+  x.fillStyle = 'rgba(255,255,255,0.9)'; x.beginPath(); x.ellipse(-r * 0.3, -r * 0.42, r * 0.2, r * 0.1, -0.6, 0, Math.PI * 2); x.fill();
+}
+function paintMine(x, r){ // your sigil: a white faceted octahedron, the shape of the Ethereum mark, in a prism ring
+  const gh = x.createRadialGradient(0, 0, r * 0.2, 0, 0, r * 2.3);
+  gh.addColorStop(0, 'rgba(255,255,255,0.6)'); gh.addColorStop(0.4, 'rgba(201,167,245,0.25)'); gh.addColorStop(1, 'rgba(127,227,240,0)');
+  x.fillStyle = gh; x.beginPath(); x.arc(0, 0, r * 2.3, 0, Math.PI * 2); x.fill();
+  if (x.createConicGradient){ const cg = x.createConicGradient(-Math.PI / 2, 0, 0); [...PRISM, PRISM[0]].forEach((c, k, a) => cg.addColorStop(k / (a.length - 1), c)); x.strokeStyle = cg; }
+  else x.strokeStyle = '#c9a7f5';
+  x.lineWidth = 1.3; x.beginPath(); x.arc(0, 0, r * 1.75, 0, Math.PI * 2); x.stroke();
+  const h = r * 1.32, w = r * 0.9;
+  x.fillStyle = 'rgba(6,8,30,0.35)'; x.beginPath(); x.ellipse(0, h * 1.02, w * 0.75, r * 0.18, 0, 0, Math.PI * 2); x.fill();
+  const face = (p, fill) => { x.beginPath(); x.moveTo(p[0], p[1]); for (let k = 2; k < p.length; k += 2) x.lineTo(p[k], p[k + 1]); x.closePath(); x.fillStyle = fill; x.fill(); };
+  face([0, -h, -w, h * 0.06, 0, h * 0.36], '#ffffff');
+  face([0, -h, w, h * 0.06, 0, h * 0.36], '#ddd2ff');
+  face([-w, h * 0.2, 0, h * 0.5, 0, h], '#b5f2fa');
+  face([w, h * 0.2, 0, h * 0.5, 0, h], '#c9a7f5');
+  x.strokeStyle = 'rgba(255,255,255,0.85)'; x.lineWidth = 0.6;
+  x.beginPath(); x.moveTo(0, -h); x.lineTo(-w, h * 0.06); x.lineTo(0, h * 0.36); x.lineTo(w, h * 0.06); x.closePath(); x.stroke();
+  x.beginPath(); x.moveTo(-w, h * 0.2); x.lineTo(0, h * 0.5); x.lineTo(w, h * 0.2); x.lineTo(0, h); x.closePath(); x.stroke();
+}
+function paintPost(x){ // a post: a block of ice
+  const a = 5.4;
+  const gh = x.createRadialGradient(0, 0, 1, 0, 0, a * 2.3); gh.addColorStop(0, 'rgba(204,238,255,0.38)'); gh.addColorStop(1, 'rgba(204,238,255,0)');
+  x.fillStyle = gh; x.beginPath(); x.arc(0, 0, a * 2.3, 0, Math.PI * 2); x.fill();
+  x.fillStyle = 'rgba(6,8,30,0.42)'; roundRect(x, -a + 0.8, -a + 2.2, 2 * a, 2 * a, 2.2); x.fill();
+  const gb = x.createLinearGradient(-a, -a, a, a); gb.addColorStop(0, '#f6f3ff'); gb.addColorStop(0.5, '#cfc2f8'); gb.addColorStop(1, '#8c7cd6');
+  x.fillStyle = gb; roundRect(x, -a, -a, 2 * a, 2 * a, 2.2); x.fill();
+  x.fillStyle = 'rgba(255,255,255,0.6)'; roundRect(x, -a + 1.5, -a + 1.4, 2 * a - 3, a * 0.62, 1.2); x.fill();
+  x.strokeStyle = 'rgba(255,255,255,0.75)'; x.lineWidth = 0.6; roundRect(x, -a, -a, 2 * a, 2 * a, 2.2); x.stroke();
+}
+function paintRuin(x, r){
+  x.fillStyle = 'rgba(8,10,34,0.38)'; x.beginPath(); x.ellipse(0, r * 0.28, r * 0.95, r * 0.42, 0, 0, Math.PI * 2); x.fill();
+  const sh = [[-0.6, 0.12, -0.18, -0.38, 0.04, 0.22], [0.12, -0.12, 0.62, -0.02, 0.3, 0.36], [-0.32, 0.36, 0.06, 0.24, -0.12, 0.62]];
+  for (const q of sh){ x.beginPath(); x.moveTo(q[0] * r, q[1] * r); x.lineTo(q[2] * r, q[3] * r); x.lineTo(q[4] * r, q[5] * r); x.closePath(); x.fillStyle = 'rgba(185,196,255,0.45)'; x.fill(); x.strokeStyle = 'rgba(230,236,255,0.4)'; x.lineWidth = 0.5; x.stroke(); }
+}
+const glowSprite = rgb => sprite('glow' + rgb, 16, x => { const g = x.createRadialGradient(0, 0, 0, 0, 0, 16); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.22, `rgba(${rgb},0.85)`); g.addColorStop(1, `rgba(${rgb},0)`); x.fillStyle = g; x.beginPath(); x.arc(0, 0, 16, 0, Math.PI * 2); x.fill(); });
+const auroraSprite = k => sprite('aur' + k, 256, x => { const g = x.createRadialGradient(0, 0, 0, 0, 0, 256), c = PRISM_RGB[k]; g.addColorStop(0, `rgba(${c},0.6)`); g.addColorStop(0.5, `rgba(${c},0.2)`); g.addColorStop(1, `rgba(${c},0)`); x.fillStyle = g; x.beginPath(); x.arc(0, 0, 256, 0, Math.PI * 2); x.fill(); });
+function drawCracks(cx, cy, seed){
+  let q = seed * 7919 % 2147483647 || 1; const r = () => { q = q * 16807 % 2147483647; return q / 2147483647; };
+  ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 0.9 * LPX; ctx.lineJoin = 'miter';
+  for (let k = 0; k < 2; k++){
+    let a = r() * Math.PI * 2, x = cx + Math.cos(a) * GEM_R * 0.15, y = cy + Math.sin(a) * GEM_R * 0.15;
+    ctx.beginPath(); ctx.moveTo(x, y);
+    for (let m = 0; m < 3; m++){ a += (r() - 0.5) * 1.4; x += Math.cos(a) * GEM_R * 0.32; y += Math.sin(a) * GEM_R * 0.32; ctx.lineTo(x, y); }
+    ctx.stroke();
+  }
+}
+const glowCv = document.createElement('canvas'); glowCv.width = glowCv.height = 128; const glowCx = glowCv.getContext('2d');
+const bits = [];
+let lastDrawGen = -1, shakeUntil = 0, shakeAmp = 0;
+function burst(cx, cy, col, n, speed, kind){
+  if (reduced || fastForward) return;
+  const t0 = performance.now();
+  for (let k = 0; k < n; k++){ const a = Math.random() * Math.PI * 2, v = speed * (0.4 + Math.random() * 0.8); bits.push({ x: cx, y: cy, vx: Math.cos(a) * v, vy: Math.sin(a) * v - speed * 0.35, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 0.02, t0, life: 600 + Math.random() * 500, col, size: 1.5 + Math.random() * 2.2, kind }); }
+  if (bits.length > 700) bits.splice(0, bits.length - 700);
+}
+function shake(amp, ms){ if (reduced) return; shakeAmp = Math.max(shakeAmp, amp); shakeUntil = Math.max(shakeUntil, performance.now() + ms); }
+function draw(){
+  const now = performance.now(), t = now / 1000, px = LPX;
+  const first = lastDrawGen < 0, jumped = !first && gen - lastDrawGen > 64; lastDrawGen = gen;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.drawImage(bgImg, 0, 0);
+  ctx.setTransform(KX,0,0,KX,0,0);
+  // territory: a standing sigil lights its plot in its owner's color
+  const P = PLOT * S;
+  for (const s of sigils){
+    if (s.state === 'ruin') continue;
+    const mine = s.owner === ME, col = mine ? '#ffffff' : PASTEL[s.owner % PASTEL.length];
+    ctx.fillStyle = rgba(col, s.state === 'alive' ? (mine ? 0.13 : 0.075) : 0.04);
+    roundRect(ctx, s.j * P + 2, s.i * P + 2, P - 4, P - 4, 4); ctx.fill();
+    if (mine){ ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = px; ctx.stroke(); }
+  }
+  // cells: a soft glow pass, then one crisp pixel per cell; anything that moves leaves a cyan trail
+  for (let i=0;i<N*N;i++){ const tt = trail[i] = shown(i) ? 1 : trail[i]*0.84; cellPx[i] = tt >= 0.999 ? LIVE_PX : tt < 0.06 ? 0 : TRAIL_PX[(tt*114.75)|0]; }
+  cellCx.putImageData(cellImg, 0, 0);
+  ctx.setTransform(1,0,0,1,0,0);
+  glowCx.clearRect(0, 0, 128, 128); glowCx.imageSmoothingEnabled = true; glowCx.drawImage(cellCv, 0, 0, 128, 128);
+  ctx.imageSmoothingEnabled = true; ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.6;
+  ctx.drawImage(glowCv, 0, 0, BS, BS);
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+  ctx.imageSmoothingEnabled = false; ctx.drawImage(cellCv, 0, 0, BS, BS);
+  ctx.imageSmoothingEnabled = true;
+  ctx.setTransform(KX,0,0,KX,0,0);
+  // posts: blocks of ice
+  const sp = sprite('post', 13, paintPost);
+  for (const p of posts){ const [y,x] = center(p.i,p.j); blit(ctx, sp, (x + 1) * S, (y + 1) * S); }
+  // sigils: gems; state changes turn into effects (not after a fast-forward)
+  for (let k = 0; k < sigils.length; k++){
+    const s = sigils[k], cx = (s.j*PLOT+4)*S, cy = (s.i*PLOT+4)*S, mine = s.owner === ME;
+    if (s._st !== s.state){
+      if (!first && !jumped && s._st){
+        const col = mine ? '#ffffff' : PASTEL[s.owner % PASTEL.length];
+        if (s.state === 'cracked'){ burst(cx, cy, '#f7a8d0', 14, 0.11, 'shard'); burst(cx, cy, col, 10, 0.08, 'shard'); shake(mine ? 4 : 1.2, mine ? 360 : 180); }
+        else if (s.state === 'ruin'){ burst(cx, cy, '#b9c4ff', 22, 0.13, 'shard'); shake(mine ? 5 : 1.5, 280); }
+        else if (s.state === 'alive' && s._st === 'cracked') burst(cx, cy, '#a5ef7a', 18, 0.06, 'spark');
+      }
+      s._st = s.state;
+    }
+    if (s._t0 === undefined) s._t0 = first ? now + 120 + k * 9 : jumped ? now - 5000 : now;
+    const age = now - s._t0; if (age < 0) continue;
+    let sc = 1; if (age < 480 && !reduced){ const q = age / 480; sc = q < 0.6 ? (q / 0.6) * 1.18 : 1.18 - 0.18 * ((q - 0.6) / 0.4); }
+    if (age < 900 && !reduced){ const q = age / 900, col = mine ? '255,255,255' : hexRgb(PASTEL[s.owner % PASTEL.length]).join(','); ctx.strokeStyle = `rgba(${col},${(0.7 * (1 - q)).toFixed(3)})`; ctx.lineWidth = 1.4 * px; ctx.beginPath(); ctx.arc(cx, cy, GEM_R * (0.8 + q * 2.2), 0, Math.PI * 2); ctx.stroke(); }
+    if (s.state === 'ruin'){ blit(ctx, sprite('ruin', GEM_R * 1.2, x => paintRuin(x, GEM_R)), cx, cy, sc, 0.9); continue; }
+    const spr = mine ? sprite('mine', GEM_R * 2.45, x => paintMine(x, GEM_R * 1.08))
+      : sprite('g' + (s.owner % SHAPES.length) + '-' + (s.owner % PASTEL.length), GEM_R * 1.95, x => paintGem(x, SHAPES[s.owner % SHAPES.length], PASTEL[s.owner % PASTEL.length], GEM_R));
+    if (s.state === 'alive'){
+      const by = mine && !reduced ? Math.sin(t * 2.2 + k) * 0.9 : 0;
+      blit(ctx, spr, cx, cy + by, sc);
+      if (gen < s.shieldUntil && !isSiege()){
+        ctx.strokeStyle = 'rgba(127,227,240,0.55)'; ctx.lineWidth = px; ctx.setLineDash([2 * px, 3 * px]); ctx.lineDashOffset = reduced ? 0 : -t * 6 * px;
+        ctx.beginPath(); ctx.arc(cx, cy, GEM_R * 1.5, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+      }
+    } else { // cracked: a dimmed stone, fracture lines, a pulsing warning ring and a badge
+      blit(ctx, spr, cx, cy, sc, 0.5);
+      drawCracks(cx, cy, s.i * 41 + s.j * 17 + 3);
+      const pulse = reduced ? 0.7 : 0.45 + 0.4 * Math.sin(t * 6);
+      ctx.strokeStyle = `rgba(247,168,208,${pulse.toFixed(3)})`; ctx.lineWidth = 1.6 * px; ctx.beginPath(); ctx.arc(cx, cy, GEM_R * 1.42, 0, Math.PI * 2); ctx.stroke();
+      const bx = cx + GEM_R * 0.95, by = cy - GEM_R * 0.95;
+      ctx.fillStyle = '#f7a8d0'; ctx.beginPath(); ctx.arc(bx, by, 4 * px, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#272b6e'; ctx.font = `800 ${6 * px}px Manrope, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('!', bx, by + 0.4 * px);
+    }
+  }
+  if (LIVE) drawForecast(px, t);
+  // hover preview: crosshair to the rulers, the plot, and the ram's path
+  if (hover){
+    const {i,j,ok,kind,y,x,dir} = hover;
+    ctx.setTransform(1,0,0,1,0,0);
+    const w1 = Math.max(1, Math.round(DPR)), hy = Math.floor((y+0.5)*S*KX), hx = Math.floor((x+0.5)*S*KX);
+    ctx.fillStyle='rgba(204,238,255,0.14)'; ctx.fillRect(0, hy, BS, w1); ctx.fillRect(hx, 0, w1, BS);
+    ctx.lineWidth = w1; ctx.strokeStyle = ok ? 'rgba(255,255,255,0.92)' : 'rgba(247,168,208,0.9)'; ctx.setLineDash([3*w1,3*w1]);
+    crispRect(ctx, j*PLOT*S, i*PLOT*S, (j+1)*PLOT*S, (i+1)*PLOT*S); ctx.setLineDash([]);
+    ctx.strokeStyle='rgba(255,255,255,0.75)'; crispRect(ctx, x*S, y*S, (x+1)*S, (y+1)*S);
+    ctx.setTransform(KX,0,0,KX,0,0);
+    if (kind==='ram' && ok){
+      const d={N:[-1,0],S:[1,0],W:[0,-1],E:[0,1]}[dir]; let yy=y, xx=x, hit=null;
+      ctx.strokeStyle='rgba(255,255,255,0.85)'; ctx.lineWidth=px; ctx.setLineDash([2*px,4*px]); ctx.beginPath(); ctx.moveTo((xx+2)*S,(yy+2)*S);
+      for (let k=0;k<64;k++){ yy+=d[0]*2; xx+=d[1]*2; const pi=Math.floor(yy/PLOT), pj=Math.floor(xx/PLOT); if (pi<0||pj<0||pi>31||pj>31) break; const o=plotOwner[pi*32+pj]; if (o!==-1 && !(pi===Math.floor(y/PLOT)&&pj===Math.floor(x/PLOT))){ hit=[pi,pj,o]; break; } }
+      ctx.lineTo((xx+2)*S,(yy+2)*S); ctx.stroke(); ctx.setLineDash([]);
+      if (hit){ ctx.strokeStyle = hit[2]>=1000?'#e7e3ff':(hit[2]===ME?'#f7a8d0':'#ffffff'); ctx.lineWidth=1.5*px; ctx.beginPath(); ctx.arc((hit[1]*PLOT+4)*S,(hit[0]*PLOT+4)*S,6*px,0,Math.PI*2); ctx.stroke(); }
+    }
+  }
+  drawFx();
+  drawLoupe();
+}
+/* The coming bell, announced a bell ahead (design 3.7): each Arctic ram as ghost cells at the edge with the 64 cells it
+   flies this bell, the rocks that will fall, and every move queued on chain. Patterns are 4x4, bit 4 dy + dx. */
+const PAT_DIR = { 0x0096:[-1,0], 0x9696:[-1,0], 0x0069:[1,0], 0x6969:[1,0], 0x2112:[0,-1], 0xa55a:[0,-1], 0x1221:[0,1], 0x5aa5:[0,1] };
+function ghostCells(y, x, pat, fill){
+  ctx.fillStyle = fill;
+  for (let b = 0; b < 16; b++) if ((pat >> b) & 1) ctx.fillRect((x + (b & 3)) * S, (y + (b >> 2)) * S, S, S);
+}
+function flightPath(y, x, pat, col, px, t){
+  const d = PAT_DIR[pat]; if (!d) return;
+  const cy = (y + 2) * S, cx = (x + 2) * S, len = 64 * S, ey = cy + d[0] * len, ex = cx + d[1] * len;
+  ctx.strokeStyle = col; ctx.lineWidth = 1.3 * px; ctx.setLineDash([3 * px, 4 * px]); ctx.lineDashOffset = reduced ? 0 : -t * 10 * px;
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke(); ctx.setLineDash([]); ctx.lineDashOffset = 0;
+  const a = Math.atan2(ey - cy, ex - cx), h = 5 * px; // arrowhead where this bell's flight ends
+  ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(ex, ey);
+  ctx.lineTo(ex - h * Math.cos(a - 0.5), ey - h * Math.sin(a - 0.5)); ctx.lineTo(ex - h * Math.cos(a + 0.5), ey - h * Math.sin(a + 0.5)); ctx.closePath(); ctx.fill();
+}
+function drawForecast(px, t){
+  const f = LIVE.forecast; if (!f) return;
+  const pulse = reduced ? 0.6 : 0.45 + 0.25 * Math.sin(t * 3);
+  for (const r of f.rams){ flightPath(r.y, r.x, r.pat, `rgba(127,227,240,${(pulse + 0.2).toFixed(2)})`, px, t); ghostCells(r.y, r.x, r.pat, `rgba(127,227,240,${pulse.toFixed(2)})`); }
+  for (const r of f.rocks){
+    ctx.fillStyle = `rgba(201,167,245,${pulse.toFixed(2)})`;
+    for (let c = 0; c < 4; c++) if (c !== r.missing) ctx.fillRect((r.x + (c & 1)) * S, (r.y + (c >> 1)) * S, S, S);
+  }
+  for (const r of f.stamps){
+    if (r.pat !== 0x0033) flightPath(r.y, r.x, r.pat, 'rgba(247,168,208,0.75)', px, t);
+    ghostCells(r.y, r.x, r.pat, 'rgba(255,255,255,0.55)');
+  }
+  ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = px;
+  for (const r of f.toggles){ const x0 = r.x * S, y0 = r.y * S; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0 + S, y0 + S); ctx.moveTo(x0 + S, y0); ctx.lineTo(x0, y0 + S); ctx.stroke(); }
+}
+function prismStroke(c, cx, cy){ // a thin rainbow ring, crisp at any size
+  if (!c.createConicGradient) return '#c9a7f5';
+  const gr = c.createConicGradient(-Math.PI/2, cx, cy);
+  [...PRISM, PRISM[0]].forEach((col,k,a)=>gr.addColorStop(k/(a.length-1), col));
+  return gr;
+}
+function crispRect(c, x0, y0, x1, y1){ // stroke a 1-device-px rectangle on whole pixels (identity transform)
+  const a = Math.round(x0*KX)+.5, b = Math.round(y0*KX)+.5, e = Math.round(x1*KX)-.5, f = Math.round(y1*KX)-.5;
+  c.strokeRect(a, b, e-a, f-b);
+}
+const flakes = Array.from({ length: 90 }, () => ({ x: Math.random() * 1024, y: Math.random() * 1024, r: 0.5 + Math.random() * 1.3, v: 7 + Math.random() * 15, ph: Math.random() * 6 }));
+let lastFx = performance.now();
+function drawFx(){
+  const now = performance.now(), dt = Math.min(0.1, (now - lastFx) / 1000), dms = dt * 1000, t = now / 1000, px = LPX; lastFx = now;
+  fctx.setTransform(1,0,0,1,0,0); fctx.clearRect(0,0,BS,BS); fctx.setTransform(KX,0,0,KX,0,0);
+  // aurora along the top edge, and slow snow
+  fctx.globalCompositeOperation = 'lighter';
+  for (let k = 0; k < 5; k++){
+    const s = auroraSprite(k), ph = (reduced ? 0 : t * 0.05) + k * 1.3, ax = 512 + Math.sin(ph) * 430, ay = 26 + Math.sin(ph * 1.7 + k) * 24;
+    fctx.globalAlpha = 0.2; fctx.drawImage(s.c, ax - 400, ay - 120, 800, 240);
+  }
+  fctx.globalAlpha = 1;
+  for (const f of flakes){
+    if (!reduced){ f.y += f.v * dt; f.x += Math.sin(t * 0.8 + f.ph) * 5 * dt; if (f.y > 1030){ f.y = -6; f.x = Math.random() * 1024; } }
+    fctx.fillStyle = `rgba(235,245,255,${(0.22 + f.r * 0.24).toFixed(3)})`; fctx.beginPath(); fctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); fctx.fill();
+  }
+  fctx.globalCompositeOperation = 'source-over';
+  if (bellFlash > 0){
+    const g = fctx.createRadialGradient(512, 512, 0, 512, 512, 720); g.addColorStop(0, `rgba(255,255,255,${(bellFlash * 0.32).toFixed(3)})`); g.addColorStop(1, 'rgba(201,167,245,0)');
+    fctx.fillStyle = g; fctx.fillRect(0, 0, 1024, 1024); bellFlash = Math.max(0, bellFlash - 0.03);
+  }
+  // tribute: glowing orbs on curves, each with a short fading tail
+  particles = particles.filter(p => now < p.t0 + p.dur);
+  fctx.lineCap = 'round'; fctx.lineJoin = 'round';
+  for (const p of particles){
+    const k = Math.min(1, Math.max(0, (now - p.t0) / p.dur)); if (k <= 0) continue;
+    const pos = q => { const e = 1 - Math.pow(1 - q, 3); return [p.x0 + (p.x1 - p.x0) * e, p.y0 + (p.y1 - p.y0) * e - Math.sin(e * Math.PI) * p.arc]; };
+    const rgb = p.mine ? '255,255,255' : PRISM_RGB[p.hue];
+    const q0 = Math.max(0, k - 0.3), [tx, ty] = pos(q0), [hx, hy] = pos(k);
+    const g2 = fctx.createLinearGradient(tx, ty, hx, hy); g2.addColorStop(0, `rgba(${rgb},0)`); g2.addColorStop(1, `rgba(${rgb},${p.mine ? 0.9 : 0.38})`);
+    fctx.strokeStyle = g2; fctx.lineWidth = (p.mine ? 1.8 : 0.9) * px;
+    fctx.beginPath(); fctx.moveTo(tx, ty); for (let s = 1; s <= 10; s++){ const [sx, sy] = pos(q0 + (k - q0) * s / 10); fctx.lineTo(sx, sy); } fctx.stroke();
+    const r = (p.mine ? 9 : 5.5) * px; fctx.globalCompositeOperation = 'lighter'; fctx.drawImage(glowSprite(rgb).c, hx - r, hy - r, 2 * r, 2 * r); fctx.globalCompositeOperation = 'source-over';
+  }
+  // shards and sparkles
+  for (let k = bits.length - 1; k >= 0; k--){
+    const b = bits[k], age = now - b.t0; if (age > b.life){ bits.splice(k, 1); continue; }
+    const q = age / b.life; b.x += b.vx * dms; b.y += b.vy * dms; b.vy += 0.00022 * dms; b.rot += b.vr * dms;
+    if (b.kind === 'spark'){ const r = b.size * 1.6 * px * (1 - q * 0.5); fctx.globalCompositeOperation = 'lighter'; fctx.globalAlpha = 1 - q; fctx.drawImage(glowSprite('165,239,122').c, b.x - r, b.y - r, 2 * r, 2 * r); fctx.globalCompositeOperation = 'source-over'; }
+    else { fctx.save(); fctx.translate(b.x, b.y); fctx.rotate(b.rot); fctx.globalAlpha = 1 - q; fctx.fillStyle = b.col; const z = b.size * px; fctx.beginPath(); fctx.moveTo(0, -z); fctx.lineTo(z * 0.8, z * 0.7); fctx.lineTo(-z * 0.7, z * 0.5); fctx.closePath(); fctx.fill(); fctx.restore(); }
+    fctx.globalAlpha = 1;
+  }
+  shakes = shakes.filter(s => now < s.t0 + 800);
+  for (const s of shakes){ const k = (now - s.t0) / 800; fctx.strokeStyle = `rgba(247,168,208,${(1 - k).toFixed(3)})`; fctx.lineWidth = 2 * px; fctx.beginPath(); fctx.arc(s.x, s.y, (8 + k * 30) * px, 0, Math.PI * 2); fctx.stroke(); }
+  // your earnings: ETH pills that rise from your gems
+  pops = pops.filter(p => now < p.t0 + 1600);
+  fctx.font = `700 ${10.5 * px}px "JetBrains Mono", monospace`; fctx.textAlign = 'center'; fctx.textBaseline = 'middle';
+  for (const p of pops){
+    const k = (now - p.t0) / 1600, a = k < 0.75 ? 1 : (1 - k) / 0.25, yy = p.y - k * 18 * px;
+    const w = fctx.measureText(p.text).width + 14 * px, h = 18 * px;
+    fctx.globalAlpha = a;
+    fctx.fillStyle = '#5b5ee8'; roundRect(fctx, p.x - w / 2, yy - h / 2, w, h, h / 2); fctx.fill();
+    fctx.strokeStyle = 'rgba(255,255,255,0.75)'; fctx.lineWidth = px; fctx.stroke();
+    fctx.fillStyle = '#ffffff'; fctx.fillText(p.text, p.x, yy + 0.5 * px);
+    fctx.globalAlpha = 1;
+  }
+  // screen shake when a sigil cracks
+  const bw = document.getElementById('bw');
+  if (now < shakeUntil){ const a = shakeAmp * (shakeUntil - now) / 360; bw.style.transform = `translate(${((Math.random() - 0.5) * 2 * a).toFixed(2)}px,${((Math.random() - 0.5) * 2 * a).toFixed(2)}px)`; }
+  else if (shakeAmp){ shakeAmp = 0; bw.style.transform = ''; }
+}
+// the countdown voice before a battle (ch. 12): 100, 50, then ten to one, then TAU FA
+const CHANT = { 100: ['FI LE GEI TAU FA', '100 to the bell'], 50: ['MU GU GEI TAU FA', '50 to the bell'], 10: ['PA GU', '10'], 9: ['SO', '9'], 8: ['BI', '8'], 7: ['ZE', '7'], 6: ['HA', '6'], 5: ['MU', '5'], 4: ['FO', '4'], 3: ['SHI', '3'], 2: ['LE', '2'], 1: ['PA', '1'] };
+function sayChant(word, gloss, kind){
+  const el = document.getElementById('chant'); if (!el || reduced) return;
+  document.getElementById('chantW').textContent = word; document.getElementById('chantG').textContent = gloss;
+  el.className = 'chant ' + kind; void el.offsetWidth; el.className = 'chant ' + kind + ' on';
+  if (kind === 'go'){ const s = document.getElementById('shock'); s.className = 'shock'; void s.offsetWidth; s.className = 'shock on'; }
+}
+function chant(){
+  if (fastForward) return;
+  const rem = gen % TURN, left = rem === 0 ? 0 : TURN - rem;
+  if (left === 0) sayChant('TAU FA', 'the bell', 'go');
+  else if (speed === 1 && CHANT[left]) sayChant(CHANT[left][0], CHANT[left][1], left <= 10 ? 'tick' : 'say');
+}
+// Fig. 2, Zei's grid (ch4): the close-up the book draws as black cells on squared paper
+const lp = document.getElementById('lp'), lpx = lp.getContext('2d'), loupe = document.getElementById('loupe');
+const LW = 33; let lpCell = 6;
+function layoutLoupe(){
+  const box = document.getElementById('lpbox'); const avail = Math.max(132, Math.min(box.clientWidth || 200, 200));
+  lpCell = Math.max(3, Math.floor(avail * DPR / LW));          // whole device pixels per cell
+  const side = lpCell * LW + 1;
+  lp.width = lp.height = side; lp.style.width = lp.style.height = (side / DPR) + 'px';
+}
+function loupeFocus(){
+  if (hover) return { y:hover.y, x:hover.x, why:'cursor' };
+  let s = null; for (const q of sigils) if (q.owner===ME && q.state!=='ruin') s = q;
+  if (s){ const [y,x] = center(s.i,s.j); return { y, x, why:'mine' }; }
+  return { y:128, x:128, why:'center' };
+}
+function drawLoupe(){
+  const f = loupeFocus(), c = lpCell, W = lp.width, y0 = f.y - 16, x0 = f.x - 16;
+  lpx.fillStyle = '#ffffff'; lpx.fillRect(0,0,W,W);
+  lpx.fillStyle = '#dcdcdc';
+  for (let k=0;k<=LW;k++){ lpx.fillRect(k*c,0,1,W); lpx.fillRect(0,k*c,W,1); }
+  lpx.fillStyle = '#1e1e1e';
+  for (let dy=0; dy<LW; dy++) for (let dx=0; dx<LW; dx++){
+    const y = y0+dy, x = x0+dx; if (y<0||x<0||y>=N||x>=N) continue;
+    if (shown(idx(y,x))) lpx.fillRect(dx*c+1, dy*c+1, c-1, c-1);
+  }
+  if (f.why === 'cursor'){ lpx.strokeStyle = '#5b5ee8'; lpx.lineWidth = 1; lpx.strokeRect(16*c+0.5, 16*c+0.5, c, c); }
+  // t = generations since the bell, in the corner, the way the book labels its close-up
+  const fs = Math.max(9, Math.round(10.5*DPR)), label = 't=' + (gen % TURN);
+  lpx.font = `500 ${fs}px "JetBrains Mono", monospace`; lpx.textBaseline = 'top';
+  const tw = lpx.measureText(label).width;
+  lpx.fillStyle = 'rgba(255,255,255,0.88)'; lpx.fillRect(1, 1, tw + 6*DPR, fs + 4*DPR);
+  lpx.fillStyle = '#bf2121'; lpx.fillText(label, 1 + 3*DPR, 1 + 2.5*DPR);
+  setText('lpWhere', f.why==='cursor' ? L().lpCursor : f.why==='mine' ? L().lpMine : L().lpCenter);
+  setText('lpXY', `y ${y0}–${y0+32}, x ${x0}–${x0+32}`);
+}
+let fastForward = false;
+function flowFx(from, targets, each){
+  if (reduced || fastForward || particles.length > 500) return;
+  const x0=(from.j*PLOT+4)*S, y0=(from.i*PLOT+4)*S, now=performance.now();
+  const list = targets.length > 90 ? targets.filter((t,k)=> t.owner===ME || k % Math.ceil(targets.length/90)===0) : targets;
+  for (const t of list){
+    const x1=(t.j*PLOT+4)*S, y1=(t.i*PLOT+4)*S, dist=Math.hypot(x1-x0,y1-y0);
+    const dur = 1100 + dist*1.2;
+    particles.push({x0,y0,x1,y1,t0:now+Math.random()*160,dur,arc:Math.min(90,dist*0.2),mine:t.owner===ME,hue:Math.floor(Math.random()*5)});
+    if (t.owner===ME) setTimeout(()=>{
+      // one pop per sigil: merge amounts that land close together
+      const key = t.i*32+t.j, nowp = performance.now();
+      const p = pops.find(q=>q.key===key && nowp - q.t0 < 900);
+      if (p){ p.amt += each; p.text = '+'+p.amt.toFixed(6)+' ETH'; p.t0 = nowp; }
+      else pops.push({key, amt:each, x:x1, y:y1-18, text:'+'+each.toFixed(6)+' ETH', t0:nowp});
+    }, dur);
+  }
+}
+function impactFx(s){ shakes.push({x:(s.j*PLOT+4)*S, y:(s.i*PLOT+4)*S, t0:performance.now()}); }
+function popMine(amount, quiet){
+  const el = document.getElementById('earned'); el.style.transition='none'; el.style.color='#d9448f'; setTimeout(()=>{ el.style.transition='color .6s'; el.style.color=''; }, 60);
+}
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* layout: the field takes whole device pixels and the largest size that fits; rulers every 32 cells */
+const bwEl = document.getElementById('bw');
+function buildRulers(){
+  const s = boardCss; let top = '', left = '';
+  for (let c = 0; c <= N; c += 8){
+    const p = Math.min(s - 1, Math.round(c / N * s)), major = c % 32 === 0;
+    top += `<i class="${major?'mj':''}" style="left:${p}px"></i>`; left += `<i class="${major?'mj':''}" style="top:${p}px"></i>`;
+    if (major){ top += `<b style="left:${Math.round(c/N*s)}px"${c===N?' class="end"':''}>${c}</b>`; left += `<b style="top:${Math.round(c/N*s)}px">${c}</b>`; }
+  }
+  document.getElementById('rulerTop').innerHTML = top; document.getElementById('rulerLeft').innerHTML = left;
+}
+function sizeBoard(size){
+  boardCss = size;
+  document.getElementById('fig1').style.width = (size + RL) + 'px';
+  const plot = document.getElementById('plot'); plot.style.width = (size + RL) + 'px'; plot.style.height = (size + RT) + 'px';
+  bwEl.style.width = bwEl.style.height = size + 'px';
+}
+function layout(){
+  DPR = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+  const stage = document.getElementById('stage'), mobile = innerWidth < 980;
+  const chrome = () => document.getElementById('fig1head').offsetHeight + document.getElementById('readout').offsetHeight + document.getElementById('cap1').offsetHeight + RT + 6;
+  const fit = v => Math.max(192, Math.floor(v / 8) * 8);
+  if (mobile) sizeBoard(fit(stage.clientWidth - RL - 1));
+  else {
+    sizeBoard(fit(Math.min(stage.clientWidth - RL - 6, stage.clientHeight - chrome())));
+    for (let k = 0; k < 3; k++){ const v = fit(stage.clientHeight - chrome()); if (v < boardCss) sizeBoard(v); else break; } // the caption rewraps at the new width
+  }
+  // put the field on whole device pixels: a fractional offset would resample every cell
+  const fig = document.getElementById('fig1'); fig.style.left = fig.style.top = '0px';
+  const rb = bwEl.getBoundingClientRect(), ax = (rb.left + scrollX) * DPR, ay = (rb.top + scrollY) * DPR;
+  fig.style.left = ((Math.round(ax) - ax) / DPR) + 'px'; fig.style.top = ((Math.round(ay) - ay) / DPR) + 'px';
+  BS = Math.round(boardCss * DPR); KX = BS / 1024; LPX = 1024 / boardCss;
+  cv.width = cv.height = fx.width = fx.height = BS;
+  sprites = new Map();
+  bgImg = buildBg();
+  buildRulers(); layoutLoupe(); layoutSpark(); buildSplitFig();
+}
+addEventListener('resize', () => layout());
+
+/* ================= UI ================= */
+const $ = id => document.getElementById(id);
+const _txt = {};
+function setText(id, v){ v = String(v); if (_txt[id] === v) return; _txt[id] = v; const el = $(id); if (el) el.textContent = v; }
+function setHTML(id, v){ if (_txt[id] === v) return; _txt[id] = v; const el = $(id); if (el) el.innerHTML = v; }
+function pushEv(html, cls){ events.unshift({html, cls, h: hoursNow()}); if (events.length > 60) events.pop(); renderEvents(); }
+const stampH = h => `d${Math.min(14, Math.floor(h/24)+1)} ${String(Math.floor((12+h)%24)).padStart(2,'0')}:00`;
+function renderEvents(){
+  const box = $('evs'); if (!box) return;
+  box.innerHTML = events.slice(0,22).map(e => `<div class="ev ${e.cls||''}"><time>${e.ts ? stampTs(e.ts) : stampH(e.h)}</time><span>${e.html}</span></div>`).join('');
+}
+// live events carry a block time: day of the season and UTC clock
+function stampTs(ts){
+  const t = new Date(ts * 1000), hm = `${String(t.getUTCHours()).padStart(2,'0')}:${String(t.getUTCMinutes()).padStart(2,'0')}`;
+  const open = LIVE ? Number(LIVE.g.openAt) : 0;
+  return open && ts >= open ? `d${Math.min(14, Math.floor((ts - open) / 86400) + 1)} ${hm}` : hm;
+}
+let tickX = 0, tickW = 0, lastTick = '';
+function renderTicker(force){
+  const live = sigils ? sigils.filter(s=>s.state==='alive').length : 0;
+  const items = L().tick(price().toFixed(4), (econ?econ.chest:0).toFixed(3), live);
+  const html = [...items, ...items].map(t=>`<span>${t}</span>`).join('');
+  if (force || html !== lastTick){ $('tick').innerHTML = html; lastTick = html; tickW = $('tick').scrollWidth/2; }
+}
+function buildTimeline(){
+  const segs = [[0,0.083,0],[0.083,2,1],[2,2.6,2],[2.6,8,3],[8,12,4],[12,14,6]];
+  const names = L().tl, lab = n => [names[0],names[1],names[2],names[3],names[4],names[6]][n];
+  $('tlbar').innerHTML = segs.map(([a,b,k],n)=>`<div class="${k===6?'siege':''} ${(b-a)/14<0.07?'narrow':''}" style="width:${(b-a)/14*100}%" title="${lab(n)}"><span>${lab(n)}</span></div>`).join('') + '<i class="tlnow" id="tlnow"></i>';
+  let ax = ''; for (let d=1; d<14; d++) ax += `<i style="left:${(d/14*100).toFixed(3)}%"></i>`;
+  $('tlaxis').innerHTML = ax;
+}
+function readoutHTML(){
+  const z = lang === 'zh', g0 = gen.toLocaleString('en-US'), sep = '<i class="sep">·</i>';
+  const genPart = `<span>${L().rdGen}&nbsp;</span>${g0}`;
+  if (!hover) return `<span>(y, x)&nbsp;</span>(–, –)${sep}<span>${L().rdPlot}&nbsp;</span>(–, –)${sep}${genPart}`;
+  const {i,j,y,x} = hover, o = plotOwner[i*32+j];
+  const kind = o === -1 ? (isSite(i,j) ? L().kSite : L().kOpen) : o >= 1000 ? L().kPost : o === ME ? L().kMine : L().kTaken(NAMES[o]);
+  return `<span>(y, x)&nbsp;</span>(${y}, ${x})${sep}<span>${L().rdPlot}&nbsp;</span>(${i}, ${j})&nbsp;<em>${kind}</em>${sep}${genPart}`;
+}
+function rulerMarks(){
+  const plot = $('plot');
+  if (!hover){ if (plot.classList.contains('hov')) plot.classList.remove('hov'); return; }
+  plot.classList.add('hov');
+  $('mkx').style.left = (RL + (hover.x + 0.5) * boardCss / N) + 'px'; setText('mkxv', hover.x);
+  $('mky').style.top = (RT + (hover.y + 0.5) * boardCss / N) + 'px'; setText('mkyv', hover.y);
+}
+function updateUI(){
+  if (LIVE) return liveUI();
+  const me = players[ME];
+  const mine = sigils.filter(s=>s.owner===ME);
+  const earned = mine.reduce((a,s)=>a+s.earned,0);
+  $('earned').textContent = (earned + me.earnedClaimed).toFixed(6);
+  $('paid').textContent = me.paid.toFixed(4)+' ETH';
+  const wsum = sigils.reduce((a,s)=>a+(s.state==='alive'||s.state==='ruin'?s.weight:0),0);
+  const myw = mine.reduce((a,s)=>a+(s.state==='alive'||s.state==='ruin'?s.weight:0),0);
+  $('share').textContent = wsum ? (econ.chest*0.9*myw/wsum).toFixed(4)+' ETH' : '0';
+  $('mine').textContent = `${mine.filter(s=>s.state==='alive').length} / ${mine.filter(s=>s.state==='cracked').length} / ${mine.filter(s=>s.state==='ruin').length}`;
+  $('wallet').textContent = `${me.eth.toFixed(4)} ETH · ${Math.floor(me.taufa).toLocaleString()} TAUFA`;
+  const net = earned + me.earnedClaimed + (wsum? econ.chest*0.9*myw/wsum : 0) - me.paid;
+  $('net').innerHTML = `<span class="${net>=0?'moss':'red'}">${net>=0?'+':''}${net.toFixed(4)} ETH</span>`;
+  const live = sigils.filter(s=>s.state!=='ruin').length;
+  const closed = dayNow()>=12 || isOver();
+  $('price').textContent = closed ? '' : (live>=512 ? L().soldOut : price().toFixed(4)+' ETH');
+  $('plantBtn').disabled = closed;
+  $('chest').textContent = econ.chest.toFixed(4)+' ETH';
+  const h = hoursNow(); trib24 = trib24.filter(([t])=>t>h-24);
+  $('trib24').textContent = trib24.reduce((a,[,v])=>a+v,0).toFixed(4)+' ETH';
+  $('living').textContent = `${sigils.filter(s=>s.state==='alive').length} / 512`;
+  $('burned').textContent = Math.floor(econ.burnEth/0.0000004 + 0).toLocaleString();
+  $('wind').textContent = windK;
+  $('chestBar').style.width = Math.min(100, econ.chest/12*100)+'%';
+  // clock + phase
+  const day = Math.floor(dayNow())+1, hr = Math.floor((12 + hoursNow())%24);
+  $('clock').textContent = `Day ${Math.min(14,day)} · ${String(hr).padStart(2,'0')}:00 UTC · bell ${Math.floor(gen/TURN)} of 84`;
+  $('phase').textContent = L().phases[phaseIdx()];
+  const now = $('tlnow'); if (now) now.style.left = Math.min(100, dayNow()/14*100)+'%';
+  // bell call
+  const left = TURN - (gen % TURN);
+  const call = left > 100 ? 'TAU FA' : left > 50 ? 'FI LE GEI TAU FA' : left > 10 ? 'MU GU GEI TAU FA' : CHANT[left] ? CHANT[left][0] : 'TAU FA';
+  $('call').textContent = call; $('call').classList.toggle('hot', left <= 10);
+  $('ringp').setAttribute('stroke-dashoffset', (106.8 * (gen % TURN)/TURN).toFixed(1));
+  // figures: title, cursor readout, ruler marks, the money split at today's price
+  setText('figTitle', L().figTitle(Math.floor(gen/TURN)));
+  setText('dayOf', L().dayOf(Math.min(14, day)));
+  setHTML('readout', readoutHTML());
+  rulerMarks();
+  const p = price();
+  setText('sfP', p.toFixed(4)); [0.45,0.42,0.08,0.05].forEach((f,k)=>setText('sfA'+k, (f*p).toFixed(5)));
+  setText('eqP', p.toFixed(4)); setText('eqN', earningSigils().length);
+  // spark
+  drawSpark();
+}
+// Fig. 3: one sigil's price fanning out into its four destinations
+function buildSplitFig(){
+  const box = $('splitfig'); if (!box) return;
+  const W = Math.max(220, Math.round(box.clientWidth || 300)), H = 62;
+  const shares = [45,42,8,5], fills = ['url(#sfPrism)','#5b5ee8','#33ddee','#d6cff7'];
+  const gap = 2, y0 = 17, bh = 6, y1 = y0 + bh, y2 = 49, colW = W / 4, unit = (colW - 12) / 45, ym = (y1 + y2) / 2;
+  const usable = W - gap * 3; let x = 0, out = '';
+  shares.forEach((s, k) => {
+    const sw = usable * s / 100, sx = x; x += sw + gap;
+    const dw = Math.max(2, s * unit), dx = k * colW + 5;
+    out += `<path d="M${sx.toFixed(1)} ${y1} C${sx.toFixed(1)} ${ym} ${dx.toFixed(1)} ${ym} ${dx.toFixed(1)} ${y2} L${(dx+dw).toFixed(1)} ${y2} C${(dx+dw).toFixed(1)} ${ym} ${(sx+sw).toFixed(1)} ${ym} ${(sx+sw).toFixed(1)} ${y1} Z" fill="${fills[k]}" opacity=".2"/>`;
+    out += `<rect x="${sx.toFixed(1)}" y="${y0}" width="${sw.toFixed(1)}" height="${bh}" fill="${fills[k]}"/><rect x="${dx.toFixed(1)}" y="${y2}" width="${dw.toFixed(1)}" height="${bh}" fill="${fills[k]}"/>`;
+  });
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true"><defs><linearGradient id="sfPrism" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f7a8d0"/><stop offset=".6" stop-color="#c9a7f5"/><stop offset="1" stop-color="#8fb6ff"/></linearGradient></defs><text x="0" y="10" class="sft">p = <tspan class="v" id="sfP">${price().toFixed(4)}</tspan> ETH</text><text x="${W}" y="10" class="sft" text-anchor="end">100%</text>${out}</svg>`;
+  delete _txt.sfP;
+}
+// Fig. 4: the price at each bell, with the floor as a dashed reference
+let sparkHover = null;
+function layoutSpark(){ const c = $('spark'), r = c.getBoundingClientRect(); if (r.width > 0){ c.width = Math.round(r.width * DPR); c.height = Math.round(r.height * DPR); } }
+function drawSpark(){
+  const c=$('spark'), x=c.getContext('2d'); const W = c.width / DPR, H = c.height / DPR;
+  x.setTransform(DPR,0,0,DPR,0,0); x.clearRect(0,0,W,H);
+  const Lp = 42, Rp = 10, Tp = 9, Bp = 17, pw = W - Lp - Rp, ph = H - Tp - Bp;
+  const peak = Math.max(FLOOR, ...priceHist.map(p=>p[1])), lo = FLOOR * 0.93, hi = Math.max(FLOOR * 1.17, peak) * 1.04;
+  const X = d => Lp + d/14*pw, Y = v => Tp + ph - (v - lo)/(hi - lo)*ph;
+  const base = Math.round(Tp + ph);
+  x.fillStyle = '#d6cff7'; x.fillRect(Lp, base, pw + 1, 1);
+  for (let d = 0; d <= 14; d++){ const xx = Math.round(X(d)); x.fillRect(xx, base, 1, d % 7 === 0 ? 4 : 2); }
+  x.font = '500 9.5px "JetBrains Mono", monospace'; x.fillStyle = '#6e6a8f'; x.textBaseline = 'top';
+  x.textAlign = 'left'; x.fillText('0', X(0) - 2, base + 5);
+  x.textAlign = 'center'; x.fillText('7', X(7), base + 5);
+  x.textAlign = 'right'; x.fillText('14 ' + L().days, X(14) + 2, base + 5);
+  const yF = Math.round(Y(FLOOR)) + 0.5;
+  x.strokeStyle = '#b9b2e6'; x.lineWidth = 1; x.setLineDash([2,3]); x.beginPath(); x.moveTo(Lp, yF); x.lineTo(Lp + pw, yF); x.stroke(); x.setLineDash([]);
+  x.textBaseline = 'middle'; x.textAlign = 'right'; x.fillText(String(FLOOR), Lp - 6, yF);
+  if (yF - Y(peak) > 12){ x.fillText(peak.toFixed(4), Lp - 6, Math.round(Y(peak))); x.fillStyle = '#d6cff7'; x.fillRect(Lp - 3, Math.round(Y(peak)), 3, 1); }
+  if (priceHist.length < 2) return;
+  const path = () => { x.beginPath(); priceHist.forEach(([d,v],k)=>{ k ? x.lineTo(X(d),Y(v)) : x.moveTo(X(d),Y(v)); }); };
+  const last = priceHist[priceHist.length-1];
+  path(); x.lineTo(X(last[0]), base); x.lineTo(X(priceHist[0][0]), base); x.closePath(); x.fillStyle = 'rgba(91,94,232,0.08)'; x.fill();
+  path(); x.strokeStyle = '#5b5ee8'; x.lineWidth = 1.75; x.lineJoin = 'round'; x.lineCap = 'round'; x.stroke();
+  const dot = (d, v) => { x.fillStyle = '#fdfcff'; x.beginPath(); x.arc(X(d), Y(v), 4.6, 0, Math.PI*2); x.fill(); x.fillStyle = '#5b5ee8'; x.beginPath(); x.arc(X(d), Y(v), 3, 0, Math.PI*2); x.fill(); };
+  if (sparkHover != null){
+    const dh = (sparkHover * W - Lp) / pw * 14; let best = priceHist[0];
+    for (const q of priceHist) if (Math.abs(q[0] - dh) < Math.abs(best[0] - dh)) best = q;
+    const xx = Math.round(X(best[0])) + 0.5;
+    x.strokeStyle = '#c9c2f0'; x.lineWidth = 1; x.beginPath(); x.moveTo(xx, Tp); x.lineTo(xx, base); x.stroke();
+    dot(best[0], best[1]);
+    const label = `day ${(best[0]+1).toFixed(1)} · ` + best[1].toFixed(4);
+    x.font = '500 10px "JetBrains Mono", monospace'; const tw = x.measureText(label).width + 10;
+    const bx = Math.min(Math.max(Lp, xx - tw/2), W - tw);
+    x.fillStyle = '#272b6e'; x.fillRect(bx, Tp - 8, tw, 15); x.fillStyle = '#fff'; x.textAlign = 'left'; x.fillText(label, bx + 5, Tp - 0.5);
+  } else dot(last[0], last[1]);
+}
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),1600); }
+function showModal(html){ $('sheet').innerHTML = html; $('modal').classList.add('show'); }
+function hideModal(){ $('modal').classList.remove('show'); }
+
+/* tools and board input */
+let tool = 'plant', dir = 'N';
+$('tools').addEventListener('click', e=>{ const b=e.target.closest('.tool'); if(!b) return; tool=b.dataset.tool; [...$('tools').children].forEach(c=>c.classList.toggle('on',c===b)); $('dirs').style.display = tool==='ram'?'grid':'none'; showHint(); });
+$('dirs').addEventListener('click', e=>{ const b=e.target.closest('.tool'); if(!b) return; dir=b.dataset.dir; [...$('dirs').children].forEach(c=>c.classList.toggle('on',c===b)); });
+function showHint(){ const h=$('hint'); h.textContent = {plant:L().hintPlant, post:L().hintPost, ram:L().hintRam, repair:L().hintRepair}[tool]; h.classList.add('show'); clearTimeout(showHint._t); showHint._t=setTimeout(()=>h.classList.remove('show'),2400); }
+function cellAt(e){ const r=cv.getBoundingClientRect(); const x=Math.floor((e.clientX-r.left)/r.width*N), y=Math.floor((e.clientY-r.top)/r.height*N); return [y,x]; }
+cv.addEventListener('mousemove', e=>{
+  const [y,x]=cellAt(e); const i=Math.floor(y/PLOT), j=Math.floor(x/PLOT);
+  let ok=false;
+  if (LIVE) ok = liveOk(tool, i, j, y, x);
+  else if (tool==='plant') ok = isSite(i,j) && plotOwner[i*32+j]===-1;
+  else if (tool==='post') ok = !isSite(i,j) && plotOwner[i*32+j]===-1 && nearOwn(ME,i*PLOT+3,j*PLOT+3,20);
+  else if (tool==='ram') ok = (plotOwner[i*32+j]===-1 || plotOwner[i*32+j]===ME) && nearOwn(ME,y,x,16);
+  else if (tool==='repair') { const s=sigils.find(s=>s.i===i&&s.j===j&&s.owner===ME); ok = !!(s && s.state==='cracked'); }
+  hover = {i,j,ok,kind:tool,y,x,dir};
+});
+cv.addEventListener('mouseleave', ()=> hover=null);
+cv.addEventListener('click', e=>{
+  const [y,x]=cellAt(e); const i=Math.floor(y/PLOT), j=Math.floor(x/PLOT);
+  act(tool, i, j, y, x);
+});
+$('spark').addEventListener('mousemove', e=>{ const r=e.currentTarget.getBoundingClientRect(); sparkHover = (e.clientX - r.left) / r.width; });
+$('spark').addEventListener('mouseleave', ()=>{ sparkHover = null; });
+function act(kind, i, j, y, x){
+  if (LIVE) return liveAct(kind, i, j, y, x);
+  if (kind==='plant'){
+    if (dayNow()>=12) return toast(L().closed);
+    if (!isSite(i,j)) return toast(L().notSite);
+    if (plotOwner[i*32+j]!==-1) return toast(L().taken);
+    if (players[ME].eth < price()) return toast(L().noFunds);
+    if ((gen&1)===1) step(), onGen();
+    if (plantSigil(ME,i,j)) { toast(L().planted); if (tutorialStep===1) tutNext(); }
+  } else if (kind==='post'){
+    if (buildPost(ME,i,j)) toast(L().postUp); else toast(L().tooFar);
+  } else if (kind==='ram'){
+    if (ramsThisBell >= 1) return toast(L().strikeTaken);
+    if (launchRam(ME,y,x,dir)){ toast(L().ramAway); pushEv(L().ev_ram('you', L().dir[dir]),'me'); } else toast(L().tooFar);
+  } else if (kind==='repair'){
+    const s=sigils.find(s=>s.i===i&&s.j===j&&s.owner===ME);
+    if (!s || s.state!=='cracked') return toast(isSiege()?L().noRepair:L().notCracked);
+    if (repair(ME,s)) toast(L().repaired); else toast(L().noRepair);
+  }
+}
+$('plantBtn').onclick = () => {
+  if (dayNow()>=12) return toast(L().closed);
+  // auto-pick the free site closest to the middle that has the fewest neighbors
+  let best=null, bs=1e9;
+  for (let i=2;i<30;i++) for (let j=2;j<30;j++){ if (!isSite(i,j)||plotOwner[i*32+j]!==-1) continue; let n=0; for (const s of sigils) if (s.state!=='ruin' && Math.abs(s.i-i)<=2 && Math.abs(s.j-j)<=2) n++; const sc=n*10+Math.abs(i-16)+Math.abs(j-16)+rnd()*3; if (sc<bs){bs=sc;best=[i,j];} }
+  if (best) act('plant', best[0], best[1]);
+};
+$('claimBtn').onclick = () => {
+  if (LIVE) return liveClaim();
+  const mine = sigils.filter(s=>s.owner===ME); const amt = mine.reduce((a,s)=>a+s.earned,0);
+  if (amt <= 0) return toast(L().nothing);
+  for (const s of mine) s.earned = 0;
+  players[ME].eth += amt; players[ME].earnedClaimed += amt; toast(`${L().claimed} ${amt.toFixed(6)} ETH`);
+};
+
+/* speed */
+let speed = 1, paused = false;
+document.querySelectorAll('[data-speed]').forEach(b=> b.onclick = () => { speed=+b.dataset.speed; paused=false; document.querySelectorAll('[data-speed]').forEach(c=>c.classList.toggle('on',c===b)); $('pause').classList.remove('on'); });
+$('pause').onclick = () => { paused=!paused; $('pause').classList.toggle('on',paused); };
+$('next').onclick = () => { const target = (Math.floor(gen/TURN)+1)*TURN; fastForward = true; while (gen < target && !isOver()){ step(); onGen(); } fastForward = false; sayChant('TAU FA', 'the bell', 'go'); };
+
+/* ================= tutorial ================= */
+tutorialStep = -1;
+const TUT_TARGET = ['#bw', '#youCard', '#bw', '#bw', '.tl'];
+function startTut(){ tutorialStep = 0; renderTut(); }
+function renderTut(){
+  const spot=$('spot'), tip=$('tip');
+  if (tutorialStep < 0 || tutorialStep >= 5){ spot.style.display='none'; tip.style.display='none'; return; }
+  const [title, body] = L().tut[tutorialStep];
+  const el = document.querySelector(TUT_TARGET[tutorialStep]);
+  if (innerWidth < 980) el.scrollIntoView({ block: 'center' });
+  const r = el.getBoundingClientRect();
+  spot.style.display='block'; spot.style.left=(r.left-6)+'px'; spot.style.top=(r.top-6)+'px'; spot.style.width=(r.width+12)+'px'; spot.style.height=(r.height+12)+'px';
+  tip.style.display='block';
+  tip.innerHTML = `<div class="n">${tutorialStep+1} / 5</div><h4>${title}</h4><p>${body}</p><div class="row"><button class="skip" id="tskip">${L().skip}</button><button id="tnext">${tutorialStep===4?L().start:(tutorialStep===1?L().plant:L().next)}</button></div>`;
+  // Dock the card at the bottom of the viewport so the board and the earnings stay visible.
+  const vw = innerWidth, vh = innerHeight, tw = Math.min(560, vw - 28);
+  tip.style.width = tw + 'px';
+  tip.style.left = Math.round((vw - tw) / 2) + 'px';
+  let top = Math.max(10, vh - tip.offsetHeight - 18);
+  if (r.top > vh * 0.55 && r.top - tip.offsetHeight - 24 > 10) top = r.top - tip.offsetHeight - 24; // keep a low target (the timeline) in view
+  tip.style.top = top + 'px';
+  $('tskip').onclick = () => { tutorialStep = -1; renderTut(); };
+  $('tnext').onclick = () => { if (tutorialStep===1){ $('plantBtn').click(); if (tutorialStep===1) tutNext(); } else tutNext(); };
+}
+function tutNext(){
+  tutorialStep++;
+  if (tutorialStep===2){ // someone plants after you: force a bot plant right now so the user sees tribute arrive
+    setTimeout(()=>{ for (let k=0;k<3;k++){ const pl = players.find(p=>p.bot && p.eth>0.01) || addBot(); const s = pickSite(pl.id); if (s) plantSigil(pl.id, s[0], s[1]); } }, 500);
+  }
+  if (tutorialStep===3){ // show a crack: ram the nearest unshielded bot sigil
+    const t = sigils.find(s=>s.owner!==ME && s.state==='alive');
+    if (t){
+      t.shieldUntil = 0; const [cy,cx]=center(t.i,t.j);
+      queueEdit(()=>stamp('RN', (cy+10)|1, (cx-1)|1));
+      // let the ram fly, then ring the bell so the crack shows up right away
+      setTimeout(()=>{ if (tutorialStep!==3) return; const target=(Math.floor(gen/TURN)+1)*TURN; while (gen<target){ step(); onGen(); } }, 2600);
+    }
+  }
+  renderTut();
+}
+function addBot(){ const p = { id:players.length, name:NAMES[players.length], eth:0.5, taufa:9000, paid:0, earnedClaimed:0, active:true, attentive:true, bot:true, want:2 }; players.push(p); return p; }
+addEventListener('resize', ()=>{ if (tutorialStep>=0) renderTut(); });
+
+/* ================= live: a season on Ethereum =================
+   chain.js reads the game contract and sends 'minpentai:chain' on every refresh. While a season is scheduled or
+   running, the practice round stops and the same field, panels and feed show the chain instead: the board as stored
+   at the last bell, sigils and posts from the site maps, money from globals(). Actions go to the contract through
+   MinpentaiChain.tx (approval, dry run, wallet, receipt). */
+const LIVE_DIRS = { N: 0, S: 1, W: 2, E: 3 };
+const LIVE_PHASES = ['Scheduled', 'Opening batch', 'Open', 'Siege weekend', 'Ended', 'Frozen'];
+const liveSig = new Map(); // site -> sigil, kept across refreshes so cracks and falls animate
+let liveSeason = 0, liveTurn = -1, liveMe = 0, liveView = null, liveAcct = null;
+const wei = v => Number(v) / 1e18;
+const siteIJ = s => { const i = s >> 4; return [i, ((s & 15) << 1) | (i & 1)]; };
+const openIJ = o => { const i = o >> 4; return [i, ((o & 15) << 1) | (1 - (i & 1))]; };
+const siteOf = (i, j) => (i << 4) | (j >> 1);
+const localOwner = idx => idx && idx === liveMe ? ME : idx;
+const liveNow = () => liveView ? liveView.now() : Date.now() / 1000;
+const liveWho = a => !a ? '' : liveView && liveView.account && a.toLowerCase() === liveView.account ? 'you' : a.slice(0, 6) + '…' + a.slice(-4);
+const pop2 = (a, b) => { let c = 0; for (let v of [BigInt(a), BigInt(b)]) while (v){ v &= v - 1n; c++; } return c; };
+const clockStr = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h >= 24 ? `${Math.floor(h / 24)}D ${h % 24}H` : `${h}:${String(m).padStart(2,'0')}:${String(s % 60).padStart(2,'0')}`; };
+
+function enterLive(){
+  tutorialStep = -1; renderTut();
+  document.body.classList.add('live');
+  g.fill(0); trail.fill(0); gen = 0; lastDrawGen = -1;
+  players = [{ id:0, name:'you', eth:0, taufa:0, paid:0, earnedClaimed:0, active:true, attentive:true, bot:false }];
+  sigils = []; posts = []; plotOwner.fill(-1); events = []; priceHist = []; trib24 = []; pendingEdits = [];
+  particles = []; pops = []; liveSig.clear(); liveTurn = -1;
+  econ.chest = 0; windK = 0;
+  // the practice wording gives way to the live wording
+  const tag = document.querySelector('#youCard [data-t="demoTag"]'); if (tag) tag.dataset.t = 'liveTag';
+  const f2 = document.querySelector('[data-t="foot2"]'); if (f2) f2.dataset.t = 'foot2Live';
+  applyLang(); renderEvents();
+}
+function applyLive(d){
+  const lv = d.live, gl = lv.g, sid = Number(gl.seasonId);
+  liveView = d; LIVE = lv;
+  if (sid !== liveSeason){ liveSeason = sid; liveSig.clear(); events = []; liveTurn = -1; }
+  liveMe = lv.me ? lv.me.idx : 0;
+  for (const [idx, a] of lv.names) NAMES[idx] = liveWho(a);
+  // the board as stored after the last census; a new bell rings in the chant
+  const turn = Number(gl.turn);
+  if (lv.board) g.set(lv.board);
+  if (turn !== liveTurn){
+    if (liveTurn >= 0 && turn > liveTurn){ bellFlash = 1; sayChant('TAU FA', 'the bell', 'go'); }
+    liveTurn = turn;
+  }
+  gen = turn * TURN; lastDrawGen = gen;
+  // sigils and posts from the site maps, owners from plotOwners()
+  const m = lv.maps, own = lv.owners, keep = new Set();
+  sigils = [];
+  for (let s = 0; s < 512; s++){
+    const st = m.healthy[s] ? 'alive' : m.cracked[s] ? 'cracked' : m.settleRuin[s] ? 'ruin' : null;
+    if (!st) continue;
+    const [i, j] = siteIJ(s), owner = localOwner(own[i * 32 + j]);
+    if (!NAMES[owner]) NAMES[owner] = '#' + owner;
+    let o = liveSig.get(s);
+    if (!o || o.owner !== owner) o = { i, j, owner, state: st, born: gen, earned: 0, weight: 1, samples: 0, shieldUntil: 0 };
+    o.state = st; o.shieldUntil = m.shielded[s] ? gen + 1 : 0;
+    liveSig.set(s, o); keep.add(s); sigils.push(o);
+  }
+  for (const s of [...liveSig.keys()]) if (!keep.has(s)) liveSig.delete(s);
+  posts = []; plotOwner.fill(-1);
+  for (const s of sigils) plotOwner[s.i * 32 + s.j] = s.owner;
+  for (let o = 0; o < 512; o++){
+    if (!m.posts[o]) continue;
+    const [i, j] = openIJ(o), owner = localOwner(own[i * 32 + j]);
+    posts.push({ i, j, owner }); plotOwner[i * 32 + j] = 1000 + owner;
+  }
+  econ.chest = wei(gl.warChest); windK = Number(gl.dronesNext);
+  priceHist = lv.priceHist;
+  // a new wallet changes who "you" is: rebuild the feed from the season's log, otherwise add what is new
+  if ((d.account || '') !== liveAcct){ liveAcct = d.account || ''; events = []; for (const e of lv.log) liveEvent(e, true); renderEvents(); }
+  else if (lv.fresh.length){ for (const e of lv.fresh) liveEvent(e, lv.initial); renderEvents(); }
+}
+/* the feed, from the contract's events; tribute threads fly only for sales seen as they happen */
+function liveEvent(e, initial){
+  const a = e.args, who = liveWho(a.player), cls = who === 'you' ? 'me' : '';
+  const push = (html, c) => { events.unshift({ html, cls: c || '', ts: e.ts }); if (events.length > 60) events.pop(); };
+  switch (e.name){
+    case 'SigilBought': {
+      const site = Number(a.site), [i, j] = siteIJ(site), p = wei(a.price);
+      push(`<b>${who}</b> planted at ${coord(i, j)} for <i>${p.toFixed(4)} ETH</i>${a.batch ? ' · opening batch' : ''}`, cls);
+      const from = liveSig.get(site);
+      if (!initial && !a.batch && from){ const to = sigils.filter(s => s.state === 'alive' && s.owner !== from.owner); if (to.length) flowFx(from, to, 0.45 * p / to.length); }
+      break;
+    }
+    case 'Placed': {
+      const k = Number(a.kind), d = L().dir[['N','S','W','E'][Number(a.dir)]] || '';
+      push(k === 1 ? `<b>${who}</b> launched a ram ${d}${a.free ? ' (free)' : ''}` : k === 0 ? `<b>${who}</b> launched a glider ${d}` : k === 2 ? `<b>${who}</b> built a post` : `<b>${who}</b> cleared a cell`, cls);
+      break;
+    }
+    case 'Repaired': { const [i, j] = siteIJ(Number(a.site)); push(L().ev_repair(who, coord(i, j)), cls); break; }
+    case 'TributeClaimed': push(`<b>${who}</b> claimed <i>${wei(a.amount).toFixed(6)} ETH</i> of tribute`, cls); break;
+    case 'SettlementClaimed': push(`<b>${who}</b> claimed <i>${wei(a.share + a.tribute).toFixed(6)} ETH</i> from season ${a.season}`, cls); break;
+    case 'Advanced': {
+      const cr = pop2(a.crack0, a.crack1), ru = pop2(a.ruin0, a.ruin1);
+      push(L().ev_bell(Number(a.bell)), 'bell');
+      if (Number(a.drones)) push(L().ev_arctic(Number(a.drones)));
+      if (cr) push(`<em>${cr} sigil${cr > 1 ? 's' : ''} cracked</em>`);
+      if (ru) push(`<em>${ru} sigil${ru > 1 ? 's' : ''} fell</em>`);
+      break;
+    }
+    case 'FeesHarvested':
+      // creator fees join a pool that pays standing sigils 1/308 of it an hour (about 7.5% a day)
+      if (a.toTribute >= 10n ** 13n) push(L().ev_fees(wei(a.toTribute).toFixed(5)));
+      if (a.toHeld >= 10n ** 13n) push(`Creator fees in: <i>${wei(a.toHeld).toFixed(5)} ETH</i>, paid out to standing sigils at about 7.5% a day`);
+      break;
+    case 'HeldReleased': if (a.amount >= 10n ** 13n) push(L().ev_fees(wei(a.amount).toFixed(5))); break; // below 0.00001 ETH would print as zero
+    case 'BuybackBurned': push(`Buyback burned <i>${Math.floor(wei(a.tokensBurned)).toLocaleString()} TAUFA</i>`); break;
+    case 'SeasonScheduled': push(`<u>Season ${a.season} scheduled</u>`); break;
+    case 'SeasonOpened': push(`<u>Season ${a.season} opened</u>`, 'bell'); break;
+    case 'SeasonEnded': push(`<u>Season ${a.season} ended: the war chest is paid out</u>`, 'bell'); break;
+    case 'SeasonFrozen': push(`<em>Season ${a.season} frozen: claims only</em>`); break;
+  }
+}
+function liveUI(){
+  const lv = LIVE, gl = lv.g, me = lv.me, v = liveView, t = liveNow(), ph = Number(gl.phase);
+  const mine = sigils.filter(s => s.owner === ME);
+  const pending = me ? wei(me.pending) : 0, claimed = wei(lv.claimed), paid = wei(lv.paid);
+  setText('earned', (pending + claimed).toFixed(6));
+  setText('paid', paid.toFixed(4) + ' ETH');
+  const tw = Number(gl.totalWeight), share = me && tw ? wei(gl.warChest) * 0.9 * me.weightHalves / tw : 0;
+  setText('share', share.toFixed(4) + ' ETH');
+  setText('mine', `${mine.filter(s => s.state === 'alive').length} / ${mine.filter(s => s.state === 'cracked').length} / ${mine.filter(s => s.state === 'ruin').length}`);
+  setText('wallet', !v.account ? 'not connected' : `${v.balance == null ? '…' : wei(v.balance).toFixed(4)} ETH · ${v.taufa == null ? '…' : Math.floor(wei(v.taufa)).toLocaleString()} TAUFA`);
+  const net = pending + claimed + share - paid;
+  setHTML('net', `<span class="${net >= 0 ? 'moss' : 'red'}">${net >= 0 ? '+' : ''}${net.toFixed(4)} ETH</span>`);
+  const canPlant = ph === 1 || ph === 2;
+  setText('price', canPlant ? (Number(gl.living) >= 512 ? L().soldOut : wei(gl.price).toFixed(4) + ' ETH') : '');
+  $('plantBtn').disabled = !canPlant;
+  setText('chest', wei(gl.warChest).toFixed(4) + ' ETH');
+  setText('trib24', wei(lv.trib24).toFixed(4) + ' ETH');
+  setText('living', `${Number(gl.living)} / 512`);
+  setText('burned', v.burned == null ? '…' : Math.floor(wei(v.burned)).toLocaleString());
+  setText('wind', String(Number(gl.dronesNext)));
+  $('chestBar').style.width = Math.min(100, wei(gl.warChest) / 12 * 100) + '%';
+  // clock, phase, the bell ring and its countdown (chain time, so a late keeper shows as "TAU FA")
+  const open = Number(gl.openAt), next = Number(gl.nextBellAt), left = next ? Math.max(0, next - t) : 0, turn = Number(gl.turn);
+  const day = open && t >= open ? Math.min(14, Math.floor((t - open) / 86400) + 1) : 0;
+  const hm = new Date(t * 1000).toISOString().slice(11, 16);
+  setText('clock', day ? `Day ${day} · ${hm} UTC · bell ${turn} of 84` : `${hm} UTC · opens ${new Date(open * 1000).toISOString().slice(5, 16).replace('T', ' ')} UTC`);
+  setText('phase', LIVE_PHASES[ph] || '');
+  const tl = $('tlnow'); if (tl) tl.style.left = (open ? Math.max(0, Math.min(100, (t - open) / (14 * 86400) * 100)) : 0) + '%';
+  setText('call', ph === 0 ? 'OPENS IN ' + clockStr(open - t) : next ? (left > 0 ? clockStr(left) : 'TAU FA') : '—');
+  $('call').classList.toggle('hot', !!next && left <= 60);
+  $('ringp').setAttribute('stroke-dashoffset', (next ? 106.8 * (1 - left / 14400) : 0).toFixed(1));
+  setText('figTitle', ph === 0 ? 'Before the first bell' : `Bell ${turn} of 84`);
+  setText('dayOf', day ? L().dayOf(day) : 'not open yet');
+  setHTML('readout', readoutHTML());
+  rulerMarks();
+  const p = canPlant ? wei(gl.price) : FLOOR;
+  setText('sfP', p.toFixed(4)); [0.45, 0.42, 0.08, 0.05].forEach((f, k) => setText('sfA' + k, (f * p).toFixed(5)));
+  setText('eqP', p.toFixed(4)); setText('eqN', Number(gl.earning));
+  drawSpark();
+}
+/* the nearest of your blocks within 16 cells (Chebyshev, from the block's top-left cell): a sigil site 0..511, or
+   512 + o for your post on open plot o; -1 when none reaches */
+function anchorFor(y, x){
+  let best = -1, bd = 99;
+  for (const s of sigils){
+    if (s.owner !== ME || (s.state !== 'alive' && s.state !== 'cracked')) continue;
+    const dd = Math.max(Math.abs(s.i * PLOT + 3 - y), Math.abs(s.j * PLOT + 3 - x));
+    if (dd <= 16 && dd < bd){ bd = dd; best = siteOf(s.i, s.j); }
+  }
+  for (const p of posts){
+    if (p.owner !== ME) continue;
+    const dd = Math.max(Math.abs(p.i * PLOT + 3 - y), Math.abs(p.j * PLOT + 3 - x));
+    if (dd <= 16 && dd < bd){ bd = dd; best = 512 + siteOf(p.i, p.j); }
+  }
+  return best;
+}
+function liveOk(kind, i, j, y, x){
+  const ph = Number(LIVE.g.phase), open = ph === 1 || ph === 2, playing = ph >= 1 && ph <= 3, o = plotOwner[i * 32 + j];
+  if (kind === 'plant') return open && isSite(i, j) && o === -1;
+  if (kind === 'post') return playing && !isSite(i, j) && o === -1 && anchorFor(i * PLOT + 3, j * PLOT + 3) >= 0;
+  if (kind === 'ram') return playing && (o === -1 || o === ME) && anchorFor(y | 1, x | 1) >= 0;
+  if (kind === 'repair'){ const s = sigils.find(q => q.i === i && q.j === j && q.owner === ME); return open && !!s && s.state === 'cracked'; }
+  return false;
+}
+async function liveAct(kind, i, j, y, x){
+  const C = window.MinpentaiChain; if (!C) return;
+  const ph = Number(LIVE.g.phase);
+  try {
+    if (kind === 'plant'){
+      if (ph === 0) return toast('The season has not opened yet');
+      if (ph !== 1 && ph !== 2) return toast(L().closed);
+      if (!isSite(i, j)) return toast(L().notSite);
+      if (plotOwner[i * 32 + j] !== -1) return toast(L().taken);
+      if (!(await C.ensureWallet()) || !(await C.confirmRisk())) return;
+      const p = LIVE.g.price, max = p + p / 50n + 1n; // 2% headroom for a sale just before yours; the contract refunds the rest
+      await C.tx('buySigil', [siteOf(i, j), max], max, `You planted a sigil at ${coord(i, j)}`);
+    } else if (kind === 'post'){
+      if (isSite(i, j) || plotOwner[i * 32 + j] !== -1) return toast(L().taken);
+      const cy = i * PLOT + 3, cx = j * PLOT + 3, a = anchorFor(cy, cx);
+      if (a < 0) return toast(L().tooFar);
+      await C.tx('place', [2, 0, cy, cx, a], 0n, L().postUp, 4n * LIVE.g.openCellPrice);
+    } else if (kind === 'ram'){
+      const yy = y | 1, xx = x | 1, a = anchorFor(yy, xx);
+      if (a < 0) return toast(L().tooFar);
+      if (Number(LIVE.g.attackCellsUsed) > 0) return toast(L().strikeTaken);
+      const me = LIVE.me, free = !!me && me.freeRams > 0; // freeRams counts the free RAMs usable right now
+      await C.tx('place', [1, LIVE_DIRS[dir], yy, xx, a], 0n, L().ramAway, free ? 0n : 8n * LIVE.g.cellPrice);
+    } else if (kind === 'repair'){
+      const s = sigils.find(q => q.i === i && q.j === j && q.owner === ME);
+      if (!s || s.state !== 'cracked') return toast(ph === 3 ? L().noRepair : L().notCracked);
+      const site = siteOf(i, j), cost = (await C.call('repairCost', [site]))[1];
+      await C.tx('repair', [site], 0n, L().repaired, cost);
+    }
+  } catch (e){ C.toast(C.reason(e), 5000); }
+}
+async function liveClaim(){
+  const C = window.MinpentaiChain; if (!C) return;
+  try {
+    if (!(await C.ensureWallet())) return;
+    const lv = LIVE;
+    if (lv.settle && lv.settle.amount > 0n) return void await C.tx('claimSettlement', [lv.settle.season], 0n, `Claimed ${wei(lv.settle.amount).toFixed(6)} ETH from season ${lv.settle.season}`);
+    if (lv.me && lv.me.pending > 0n) return void await C.tx('claimTribute', [], 0n, `${L().claimed} ${wei(lv.me.pending).toFixed(6)} ETH`);
+    toast(L().nothing);
+  } catch (e){ C.toast(C.reason(e), 5000); }
+}
+// index.html?practice keeps the practice round (simulated players, fake ETH) even while a season runs on chain
+const PRACTICE = new URLSearchParams(location.search).has('practice');
+addEventListener('minpentai:chain', e => {
+  const d = e.detail;
+  // a scheduled or running season takes over the field; once live, a failed read keeps the last state on screen
+  if (d.live && Number(d.live.g.seasonId) > 0 && !PRACTICE){ if (!LIVE) enterLive(); applyLive(d); }
+  else if (LIVE && liveView) liveView = { ...liveView, now: d.now };
+});
+
+/* ================= main loop ================= */
+let acc = 0, last = performance.now();
+function loop(now){
+  const dt = Math.min(100, now - last); last = now;
+  if (!LIVE && !paused && !isOver() && (tutorialStep<0 || tutorialStep===2 || tutorialStep===3)){
+    const slow = (!reduced && speed === 1 && tutorialStep < 0 && gen % TURN >= TURN - 11) ? 0.24 : 1; // the last ten before a bell, slowly
+    acc += dt * speed * (TURN / 7000) * slow; // 1 turn per 7 s at 1x
+    let n = Math.min(24, Math.floor(acc)); acc -= n;
+    while (n-- > 0){ step(); onGen(); chant(); }
+  }
+  draw();
+  updateUI();
+  // ticker (held still when the reader prefers reduced motion)
+  renderTicker(false);
+  if (!reduced){ tickX -= dt * 0.05; if (-tickX > tickW) tickX += tickW; }
+  $('tick').style.transform = `translateX(${tickX}px)`;
+  requestAnimationFrame(loop);
+}
+reset();
+// seed the opening: a batch of bot sigils so the field is alive from the first frame
+for (let k=0;k<60;k++){ const p = addBot(); p.eth=0.8; p.want = 1+Math.floor(rnd()*3); const s = pickSite(p.id); if (s) plantSigil(p.id, s[0], s[1], true); }
+for (let k=0;k<12;k++){ const p=players[1+Math.floor(rnd()*20)]; const m=sigils.filter(s=>s.owner===p.id); if (m.length){ const s=m[0]; buildPost(p.id, s.i-1, s.j); } }
+econ.lastSaleH = 0;
+// close the opening batch (first 2 game-hours) before the tutorial, so tribute flows when the player plants
+while (gen < TURN/2){ step(); onGen(); }
+buildTimeline(); applyLang();
+layout();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (tutorialStep>=0) renderTut(); });
+// equations: KaTeX when it loads; the plain-text fallback stays otherwise
+function renderTex(){ if (!window.katex) return; document.querySelectorAll('[data-tex]').forEach(el => { try { katex.render(el.dataset.tex, el, { throwOnError:false }); } catch (e) {} }); }
+if (document.readyState === 'loading') addEventListener('DOMContentLoaded', renderTex); else renderTex();
+requestAnimationFrame(loop);
+// the tutorial belongs to the practice round: give chain.js a moment to say whether a season is live
+setTimeout(() => { if (!LIVE) startTut(); }, 1200);
+window.__mp = { state: () => ({ gen, day: dayNow(), sold: econ.sold, chest: econ.chest, burn: econ.burnEth, ops: econ.ops, tribPaid: econ.tribPaid, fees: econ.feesTotal, revenue: players.reduce((a,p)=>a+p.paid,0), live: sigils.filter(s=>s.state==='alive').length, mine: sigils.filter(s=>s.owner===ME).length }), skip: (turns) => { tutorialStep=-1; renderTut(); fastForward = true; for (let t=0;t<turns*TURN && !isOver();t++){ step(); onGen(); } fastForward = false; }, endTut: () => { tutorialStep=-1; renderTut(); } };
+// read-only view of the live season for the local rehearsal (artifacts/verify/site)
+window.__mp.liveState = () => LIVE && { season: Number(LIVE.g.seasonId), phase: Number(LIVE.g.phase), turn: Number(LIVE.g.turn), gen, sigils: sigils.map(s => [s.i, s.j, s.owner, s.state]), posts: posts.length, chest: econ.chest, me: liveMe, cells: g.reduce((a, b) => a + b, 0), feed: events.map(e => e.html), price: price() };
+})();
+</script>
+<script src="chain.js"></script>
+</body>
+</html>
